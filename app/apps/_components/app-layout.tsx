@@ -30,7 +30,7 @@ export function AppDetailLayout({
       <Container>
         <div className="pt-10 pb-6">
           <Link
-            href="/apps"
+            href="/#apps"
             className="link-underline font-mono text-[11px] uppercase tracking-[0.18em] text-muted"
           >
             <ArrowLeft className="h-3.5 w-3.5" />

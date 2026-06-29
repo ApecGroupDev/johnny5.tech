@@ -51,7 +51,7 @@ export function AppsSection({
 
   return (
     <Section
-      id={isPrivate ? "private" : "free"}
+      id="apps"
       eyebrow={eyebrow ?? defaults.eyebrow}
       title={title ?? defaults.title}
       description={description ?? defaults.description}
@@ -79,7 +79,7 @@ export function AppsSection({
             </div>
           </div>
           <Link
-            href="/login?callbackUrl=/apps"
+            href="/login?callbackUrl=/"
             className="inline-flex items-center gap-1.5 rounded-md bg-ink px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bg transition-all hover:bg-ink/85"
           >
             Sign in
@@ -142,7 +142,7 @@ export function AppsSection({
             isPrivate &&
             !isAuthenticated && (
               <Link
-                href="/login?callbackUrl=/apps"
+                href="/login?callbackUrl=/"
                 className="link-underline inline-flex items-center gap-1 font-mono text-[12px] text-ink"
               >
                 request access

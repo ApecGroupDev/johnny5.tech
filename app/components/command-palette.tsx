@@ -15,7 +15,7 @@ type Item = {
 
 const ITEMS: Item[] = [
   { id: "home", label: "Home", group: "Navigate", href: "/" },
-  { id: "apps", label: "Apps", group: "Navigate", href: "/apps" },
+  { id: "apps", label: "Apps", group: "Navigate", href: "/#apps" },
   { id: "login", label: "Sign in", group: "Navigate", href: "/login" },
 
   { id: "canopy", label: "Canopy Configurator", group: "Apps", href: "/apps/canopy-configurator" },

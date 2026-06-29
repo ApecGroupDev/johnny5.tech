@@ -31,7 +31,6 @@ export default async function HomePage() {
         kind="Private"
         isAuthenticated={isAuthenticated}
         userEmail={userEmail}
-        variant="teaser"
       />
     </>
   );
