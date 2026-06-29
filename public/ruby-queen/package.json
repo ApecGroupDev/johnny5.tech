@@ -1,0 +1,7 @@
+{
+  "name": "ruby-queen",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ruby Queen — POS troubleshooting app + Claude gateway (Vercel)",
+  "engines": { "node": ">=18" }
+}
