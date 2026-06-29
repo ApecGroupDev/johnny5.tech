@@ -38,15 +38,7 @@ export default function SiteFooter() {
                     className="link-underline text-ink/80 hover:text-ink"
                     href="/apps"
                   >
-                    Private apps
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="link-underline text-ink/80 hover:text-ink"
-                    href="/free"
-                  >
-                    Free apps
+                    Apps
                   </Link>
                 </li>
               </ul>
