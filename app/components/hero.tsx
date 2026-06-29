@@ -4,126 +4,7 @@ import { forwardRef, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-/* ─────────────────────────────────────────────────────────────
-   Background canvas — particles + data streams (full section)
-───────────────────────────────────────────────────────────── */
-function DataCanvas() {
-  const ref = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    let raf: number,
-      w = 0,
-      h = 0;
-    const C = ["#06b6d4", "#818cf8", "#eab308", "#3b82f6"];
-    type P = {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      r: number;
-      a: number;
-      c: string;
-    };
-    type S = {
-      x: number;
-      y: number;
-      len: number;
-      spd: number;
-      op: number;
-      lw: number;
-      c: string;
-      prog: number;
-    };
-    const ps: P[] = [],
-      ss: S[] = [];
-    const rp = (): P => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: -Math.random() * 0.45 - 0.08,
-      r: Math.random() * 1.4 + 0.4,
-      a: Math.random() * 0.5 + 0.15,
-      c: C[Math.floor(Math.random() * 4)],
-    });
-    const rs = (): S => ({
-      x: Math.random() * w,
-      y: Math.random() * h * 0.55,
-      len: Math.random() * 180 + 80,
-      spd: Math.random() * 1.3 + 0.4,
-      op: Math.random() * 0.12 + 0.03,
-      lw: Math.random() * 1.3 + 0.4,
-      c: C[Math.floor(Math.random() * 4)],
-      prog: 0,
-    });
-    function resize() {
-      w = canvas!.width = canvas!.offsetWidth;
-      h = canvas!.height = canvas!.offsetHeight;
-    }
-    for (let i = 0; i < 70; i++) ps.push(rp());
-    for (let i = 0; i < 10; i++) ss.push(rs());
-    function draw() {
-      if (!ctx) return;
-      ctx.clearRect(0, 0, w, h);
-      for (const s of ss) {
-        s.prog += s.spd;
-        if (s.prog > s.len + 80) {
-          Object.assign(s, rs());
-          continue;
-        }
-        const t = Math.min(s.prog / s.len, 1);
-        const a = t < 0.2 ? t / 0.2 : t > 0.8 ? (1 - t) / 0.2 : 1;
-        ctx.save();
-        ctx.globalAlpha = s.op * a;
-        ctx.strokeStyle = s.c;
-        ctx.lineWidth = s.lw;
-        ctx.beginPath();
-        ctx.moveTo(s.x, s.y + s.prog - s.len * Math.min(t, 1));
-        ctx.lineTo(s.x, s.y + s.prog);
-        ctx.stroke();
-        ctx.restore();
-      }
-      for (const p of ps) {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.y < -8 || p.x < -8 || p.x > w + 8) {
-          Object.assign(p, rp());
-          p.y = h + 5;
-        }
-        ctx.save();
-        ctx.globalAlpha = p.a;
-        ctx.fillStyle = p.c;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-      raf = requestAnimationFrame(draw);
-    }
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
-    resize();
-    draw();
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-    };
-  }, []);
-  return (
-    <canvas
-      ref={ref}
-      className="absolute inset-0 w-full h-full"
-      style={{
-        pointerEvents: "none",
-        background: "transparent",
-        border: "none",
-        outline: "none",
-      }}
-    />
-  );
-}
+
 
 /* ─────────────────────────────────────────────────────────────
    Globe canvas — fills its container, bigger radius
@@ -603,19 +484,6 @@ export function Hero() {
           "radial-gradient(ellipse 80% 55% at 68% 50%, rgba(99,102,241,0.13) 0%, rgba(6,182,212,0.06) 42%, transparent 72%), radial-gradient(ellipse 45% 45% at 12% 55%, rgba(234,179,8,0.05) 0%, transparent 65%), #000",
       }}
     >
-      {/* Circuit grid */}
-      <div
-        className="absolute inset-0 opacity-[0.035]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right,#06b6d4 1px,transparent 1px),linear-gradient(to bottom,#06b6d4 1px,transparent 1px)",
-          backgroundSize: "52px 52px",
-        }}
-      />
-
-      {/* Particle background */}
-      <DataCanvas />
-
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         {/* ── TOP: Brand + text ───────────────────────────── */}
         <div className="flex flex-col gap-5 pt-16 pb-10">

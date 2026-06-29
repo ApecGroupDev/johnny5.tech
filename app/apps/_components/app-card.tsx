@@ -33,13 +33,26 @@ export function AppCard({
             } as React.CSSProperties)
           : undefined
       }
-      className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-line bg-surface transition-all duration-300 hover:-translate-y-0.5 hover:border-ink/50 hover:shadow-[0_22px_60px_-30px_var(--card-soft,rgba(10,10,10,0.2))]"
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-white/5 bg-zinc-950/80 backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:border-white/20 hover:shadow-[0_30px_60px_-15px_var(--card-soft,rgba(10,10,10,0.25))]"
     >
-      {/* Accent strip */}
+      {/* Accent glow border overlay on hover */}
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
+
+      {/* Ambient background accent glow */}
+      {accent && (
+        <div 
+          className="absolute -inset-20 rounded-full opacity-0 blur-[50px] transition-all duration-500 group-hover:opacity-10 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle, var(--card-accent) 0%, transparent 60%)`
+          }}
+        />
+      )}
+
+      {/* Top neon strip */}
       {accent && (
         <div
-          className="absolute inset-x-0 top-0 h-px opacity-60 transition-opacity duration-300 group-hover:opacity-100"
-          style={{ background: "var(--card-accent)" }}
+          className="absolute inset-x-0 top-0 h-[2px] opacity-75 transition-opacity duration-300 group-hover:opacity-100 group-hover:blur-[0.5px]"
+          style={{ background: "linear-gradient(90deg, transparent, var(--card-accent), transparent)" }}
           aria-hidden
         />
       )}
@@ -47,12 +60,22 @@ export function AppCard({
       {/* Preview */}
       {meta && (
         <div
-          className="relative h-36 border-b border-line"
+          className="relative h-36 border-b border-white/5"
           style={{
             background:
-              "linear-gradient(135deg, var(--card-tint) 0%, transparent 75%), var(--color-bg)",
+              "linear-gradient(135deg, var(--card-tint) 0%, transparent 65%), #030303",
           }}
         >
+          {/* Subtle grid pattern inside preview */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `linear-gradient(to right, var(--card-accent) 1px, transparent 1px), linear-gradient(to bottom, var(--card-accent) 1px, transparent 1px)`,
+              backgroundSize: "16px 16px",
+            }}
+            aria-hidden
+          />
+          
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.5]"
             style={{
@@ -68,12 +91,12 @@ export function AppCard({
           {locked && (
             <div
               className="pointer-events-none absolute inset-0 flex items-center justify-center backdrop-blur-[2px]"
-              style={{ background: "rgba(250, 250, 250, 0.28)" }}
+              style={{ background: "rgba(0, 0, 0, 0.45)" }}
               aria-hidden
             >
-              <div className="inline-flex items-center gap-1.5 rounded-md border border-line bg-bg/90 px-2.5 py-1 font-mono text-[10px] text-muted shadow-sm">
-                <Lock className="h-3 w-3" />
-                Locked
+              <div className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-black/90 px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-wider text-white/50 shadow-md">
+                <Lock className="h-3 w-3 text-cyan-400" />
+                Locked App
               </div>
             </div>
           )}
@@ -81,28 +104,31 @@ export function AppCard({
       )}
 
       {/* Body */}
-      <div className="flex flex-1 flex-col justify-between p-5">
+      <div className="flex flex-1 flex-col justify-between p-5 relative z-10">
         <div>
           <div className="flex items-start justify-between">
-            <div className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-line bg-bg">
-              <Icon className="h-[18px] w-[18px] text-ink/80 transition-transform duration-300 group-hover:-rotate-6" />
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-black/40 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+              <Icon 
+                className="h-5 w-5 text-white/80 transition-transform duration-300 group-hover:-rotate-6" 
+                style={accent ? { color: "var(--card-accent)" } : undefined}
+              />
             </div>
             <Badge tone={tone} dot>
               {locked ? "Locked" : app.status}
             </Badge>
           </div>
 
-          <div className="mt-5 flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted">
+          <div className="mt-5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">
             <span>{app.category}</span>
-            <span className="text-subtle">·</span>
+            <span className="text-white/20">·</span>
             <span>{app.kind}</span>
           </div>
 
-          <h3 className="mt-2 font-display text-[17px] text-ink md:text-[18px]">
+          <h3 className="mt-2 font-display text-[18px] font-bold text-white group-hover:text-[var(--card-accent,rgba(255,255,255,0.9))] transition-colors duration-300">
             {app.title}
           </h3>
 
-          <p className="mt-2 text-[13.5px] leading-relaxed text-muted">
+          <p className="mt-2 text-[13px] leading-relaxed text-white/45">
             {app.description}
           </p>
         </div>
@@ -113,11 +139,11 @@ export function AppCard({
               <Pill key={t}>{t}</Pill>
             ))}
           </div>
-          <span className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink">
+          <span className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.18em] text-white/70 group-hover:text-white transition-colors duration-300">
             {locked ? (
               <>
                 Unlock
-                <Lock className="h-3.5 w-3.5" />
+                <Lock className="h-3.5 w-3.5 text-white/60" />
               </>
             ) : (
               <>

@@ -5,6 +5,7 @@ import SiteHeader from "./components/site-header";
 import SiteFooter from "./components/site-footer";
 import CommandPalette from "./components/command-palette";
 import { Providers } from "./providers";
+import { BackgroundEffects } from "./components/background-effects";
 
 const sans = Geist({
   variable: "--font-sans-ui",
@@ -30,7 +31,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable}`}>
-      <body className="bg-bg text-ink antialiased">
+      <body className="bg-transparent text-ink antialiased">
+        <BackgroundEffects />
         <Providers>
           <a
             href="#main"
