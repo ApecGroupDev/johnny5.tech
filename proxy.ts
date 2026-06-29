@@ -11,6 +11,7 @@ export const config = {
     "/apps/:path*", 
     "/ruby-queen/:path*", 
     "/project-updates/:path*", 
-    "/rain-risk-dashboard.html"
+    "/rain-risk-dashboard.html",
+    "/site360/:path*"
   ],
 };

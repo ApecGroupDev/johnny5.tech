@@ -22,6 +22,7 @@ const ITEMS: Item[] = [
   { id: "rain-risk", label: "Rain Risk Board", group: "Apps", href: "/apps/rain-risk" },
   { id: "pulse-360", label: "PULSE 360", group: "Apps", href: "/apps/project-updates" },
   { id: "ruby-queen", label: "Ruby Queen", group: "Apps", href: "/apps/ruby-queen" },
+  { id: "site360", label: "SITE 360", group: "Apps", href: "/apps/site360" },
 ];
 
 const OPEN_EVENT = "alihusain:open-command-palette";

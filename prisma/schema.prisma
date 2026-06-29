@@ -55,3 +55,17 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Site360Site {
+  id        Int      @id // Maps to the frontend's `_id`
+  data      Json     // Stores the full flat JSON record
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Site360ServiceCall {
+  id        Int      @id @default(autoincrement())
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
