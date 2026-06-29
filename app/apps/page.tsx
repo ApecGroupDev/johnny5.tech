@@ -1,9 +1,9 @@
 import { AppsSection } from "./_components/apps-section";
 
 export const metadata = {
-  title: "Private Apps",
+  title: "Apps",
   description:
-    "A controlled workspace of private applications for sensitive data and compute-heavy workflows.",
+    "A controlled workspace of applications for sensitive data and compute-heavy workflows.",
 };
 
 export default function AppsPage() {

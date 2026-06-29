@@ -33,12 +33,6 @@ export default async function HomePage() {
         userEmail={userEmail}
         variant="teaser"
       />
-
-      <AppsSection
-        kind="Free"
-        isAuthenticated={isAuthenticated}
-        variant="teaser"
-      />
     </>
   );
 }
