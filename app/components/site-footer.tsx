@@ -16,7 +16,8 @@ export default function SiteFooter() {
               </span>
             </div>
             <p className="mt-3 text-[13.5px] leading-relaxed text-muted">
-              Automated workflows, AI-assisted tools, and quick utilities shipped for the web.
+              Automated workflows, AI-assisted tools, and quick utilities
+              shipped for the web.
             </p>
           </div>
 
@@ -53,7 +54,7 @@ export default function SiteFooter() {
 
             <div>
               <div className="mb-3 font-mono text-[11px] text-muted">
-                Affiliations
+                Inspirations
               </div>
               <ul className="space-y-2">
                 <li>
@@ -63,7 +64,7 @@ export default function SiteFooter() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    Nova Robotics
+                    Nova Laboratories
                   </a>
                 </li>
               </ul>
