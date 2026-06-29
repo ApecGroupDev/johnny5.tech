@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rain Risk Board — Construction Scheduling</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#16202b; --muted:#697586; --line:#e3e8ef;
+    --go:#15803d; --go-bg:#dcfce7; --go-line:#86efac;
+    --chance:#b45309; --chance-bg:#fef3c7; --chance-line:#fcd34d;
+    --nogo:#b91c1c; --nogo-bg:#fee2e2; --nogo-line:#fca5a5;
+    --accent:#b91c1c; --shadow:0 1px 2px rgba(16,32,43,.06),0 8px 24px rgba(16,32,43,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1240px;margin:0 auto;padding:22px 20px 60px;}
+  header.app{display:flex;flex-wrap:wrap;align-items:center;gap:14px;justify-content:space-between;margin-bottom:6px;}
+  header.app h1{font-size:22px;margin:0;letter-spacing:-.01em;}
+  header.app .sub{color:var(--muted);font-size:13px;margin-top:2px;}
+  .right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .updated{color:var(--muted);font-size:12.5px;}
+  button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--line);
+    background:#fff;color:var(--ink);padding:9px 14px;transition:.12s;}
+  button:hover{border-color:#c7d0db;}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
+  button.primary:hover{filter:brightness(.95);}
+  button.ghost{background:transparent;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);}
+  section{margin-top:16px;padding:16px 18px;}
+  section h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px;}
+  .row{display:flex;flex-wrap:wrap;gap:18px 26px;align-items:flex-end;}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field label{font-size:12px;color:var(--muted);font-weight:600;}
+  .field input[type=number],.field input[type=time]{
+    width:96px;padding:8px 9px;border:1px solid var(--line);border-radius:8px;font:inherit;color:var(--ink);}
+  .hint{color:var(--muted);font-size:12.5px;margin-top:8px;}
+  .hint code{background:#eef2f7;padding:1px 5px;border-radius:5px;font-size:12px;}
+  details.adv{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.adv summary{cursor:pointer;color:var(--muted);font-size:12.5px;font-weight:600;}
+  .models{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:12px;}
+  .models label{display:flex;gap:7px;align-items:center;font-size:13px;color:var(--ink);}
+  .adv-note{font-size:12px;color:var(--muted);margin-top:10px;}
+  .siterow{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+  .siterow input{flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;color:var(--ink);}
+  .siterow .rm{border:1px solid var(--line);background:#fff;color:var(--muted);width:38px;height:38px;border-radius:9px;font-size:18px;line-height:1;padding:0;flex:none;}
+  .siterow .rm:hover{color:var(--nogo);border-color:var(--nogo-line);}
+  .minlegend{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:16px 0 0;padding:9px 14px;
+    background:#fff;border:1px solid var(--line);border-radius:11px;font-size:12.5px;color:var(--muted);box-shadow:var(--shadow);}
+  .minlegend .k{display:flex;align-items:center;gap:6px;color:var(--ink);}
+  .minlegend .dot{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .minlegend .dot.go{background:var(--go-bg);border:1px solid var(--go-line);}
+  .minlegend .dot.chance{background:var(--chance-bg);border:1px solid var(--chance-line);}
+  .minlegend .dot.nogo{background:var(--nogo-bg);border:1px solid var(--nogo-line);}
+  .minlegend .ml-note{margin-left:auto;}
+  .board-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:var(--shadow);margin-top:10px;}
+  table.board{border-collapse:separate;border-spacing:0;width:100%;min-width:760px;}
+  table.board th,table.board td{padding:0;text-align:center;}
+  table.board thead th{position:sticky;top:0;background:#fff;z-index:3;border-bottom:1px solid var(--line);
+    font-size:11.5px;color:var(--muted);font-weight:700;padding:10px 4px 9px;white-space:nowrap;}
+  table.board thead th .dow{display:block;font-size:11px;color:var(--muted);font-weight:600;}
+  table.board thead th .dt{display:block;font-size:13px;color:var(--ink);font-weight:700;margin-top:1px;}
+  th.band{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:8px 4px;border-bottom:1px solid var(--line);}
+  th.band small{display:block;font-size:9.5px;font-weight:600;letter-spacing:.02em;opacity:.85;margin-top:1px;}
+  th.band.A{background:#f0fdf4;color:var(--go);}
+  th.band.B{background:#fbfdff;color:var(--ink);}
+  th.band.C{background:#f3f4f6;color:var(--muted);}
+  .bnd{border-left:3px solid #aab4c0 !important;}
+  th.site-col,td.site-col{position:sticky;left:0;background:#fff;z-index:2;text-align:left;
+    min-width:208px;max-width:240px;border-right:1px solid var(--line);}
+  thead th.site-col{z-index:4;}
+  td.site-col .nm{font-weight:600;padding:10px 12px 2px;font-size:13.5px;line-height:1.35;}
+  td.site-col .meta{padding:0 12px 10px;color:var(--muted);font-size:11.5px;}
+  td.site-col .meta.err{color:var(--nogo);}
+  td.cell{border-bottom:1px solid var(--line);border-right:1px solid #eef1f5;padding:5px;vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  .chip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+    border-radius:9px;padding:7px 4px 6px;min-height:50px;cursor:pointer;border:1px solid transparent;transition:.1s;}
+  .chip:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(16,32,43,.12);}
+  .chip .pct{font-size:16px;font-weight:800;letter-spacing:-.02em;}
+  .chip .tag{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;opacity:.85;}
+  .chip.go{background:var(--go-bg);border-color:var(--go-line);color:var(--go);}
+  .chip.chance{background:var(--chance-bg);border-color:var(--chance-line);color:var(--chance);}
+  .chip.nogo{background:var(--nogo-bg);border-color:var(--nogo-line);color:var(--nogo);}
+  .chip.nodata{background:#f3f4f6;color:#9aa4b2;border-color:#e5e7eb;cursor:default;}
+  .chip.nodata:hover{transform:none;box-shadow:none;}
+  .conf{display:flex;gap:2px;margin-top:3px;align-items:center;}
+  .conf i{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.28;}
+  .conf i.on{opacity:.9;}
+  .warn{font-size:10px;margin-top:2px;}
+  td.cell.far .chip{opacity:.66;}
+  .skel{height:50px;border-radius:9px;background:linear-gradient(90deg,#f1f3f6,#e7eaef,#f1f3f6);
+    background-size:200% 100%;animation:sh 1.2s infinite;}
+  @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .empty{padding:40px 20px;text-align:center;color:var(--muted);}
+  footer{margin-top:22px;color:var(--muted);font-size:12px;line-height:1.6;}
+  footer a{color:var(--muted);}
+  .scrim{position:fixed;inset:0;background:rgba(16,32,43,.42);opacity:0;pointer-events:none;transition:.16s;z-index:40;}
+  .scrim.open{opacity:1;pointer-events:auto;}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:#fff;z-index:50;
+    box-shadow:-12px 0 40px rgba(16,32,43,.18);transform:translateX(100%);transition:.2s;overflow-y:auto;}
+  .drawer.open{transform:none;}
+  .drawer .dh{padding:18px 20px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;}
+  .drawer .dh .x{float:right;border:none;background:none;font-size:20px;color:var(--muted);padding:2px 6px;cursor:pointer;}
+  .drawer .dh .site{font-weight:700;font-size:15px;padding-right:30px;}
+  .drawer .dh .day{color:var(--muted);font-size:13px;margin-top:2px;}
+  .verdict{margin:16px 20px;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px;}
+  .verdict.go{background:var(--go-bg);}.verdict.chance{background:var(--chance-bg);}.verdict.nogo{background:var(--nogo-bg);}
+  .verdict .big{font-size:30px;font-weight:800;letter-spacing:-.02em;}
+  .verdict.go .big,.verdict.go .vt{color:var(--go);}
+  .verdict.chance .big,.verdict.chance .vt{color:var(--chance);}
+  .verdict.nogo .big,.verdict.nogo .vt{color:var(--nogo);}
+  .verdict .vt{font-weight:800;text-transform:uppercase;font-size:13px;letter-spacing:.04em;}
+  .verdict .vs{color:var(--ink);font-size:13px;opacity:.85;margin-top:2px;}
+  .nowcast{margin:14px 20px 0;background:#eef4ff;border:1px solid #cfe0ff;border-radius:11px;padding:12px 14px;}
+  .nowcast h3{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:#1e3a5f;margin:0 0 5px;}
+  .nowcast .nclead{font-size:14px;font-weight:600;color:#15314f;}
+  .ncbars{display:flex;align-items:flex-end;gap:2px;height:48px;margin-top:10px;}
+  .ncbars .b{flex:1;background:#cdddf7;border-radius:2px 2px 0 0;min-height:3px;}
+  .ncbars .b.rain{background:var(--chance);}
+  .ncbars .b.hard{background:var(--nogo);}
+  .nctimes{display:flex;justify-content:space-between;font-size:10px;color:#1e3a5f;margin-top:4px;}
+  .facts{margin:0 20px;}
+  .fact{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .fact .k{color:var(--muted);}
+  .fact .v{font-weight:600;text-align:right;}
+  .reco{margin:14px 20px;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13.5px;}
+  .hourly{margin:16px 20px 26px;}
+  .hourly h3{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 10px;}
+  .hbar{display:grid;grid-template-columns:54px 1fr 44px;gap:9px;align-items:center;margin-bottom:7px;font-size:12.5px;}
+  .hbar .ht{color:var(--muted);}
+  .hbar .track{height:14px;background:#eef1f5;border-radius:7px;overflow:hidden;}
+  .hbar .fill{height:100%;border-radius:7px;}
+  .hbar .hp{text-align:right;font-weight:700;}
+  .mspread{margin:4px 0 0;font-size:11.5px;color:var(--muted);}
+  .mapmodal{position:fixed;inset:0;z-index:60;background:rgba(16,32,43,.5);display:none;align-items:center;justify-content:center;padding:18px;}
+  .mapmodal.open{display:flex;}
+  .mapcard{background:#fff;border-radius:14px;width:min(740px,96vw);max-height:92vh;overflow:auto;
+    box-shadow:0 24px 70px rgba(16,32,43,.32);padding:16px 18px;}
+  .maphd{display:flex;justify-content:space-between;align-items:center;}
+  .maphd b{font-size:16px;}
+  .maphd .x{border:none;background:none;font-size:22px;color:var(--muted);cursor:pointer;padding:0 4px;}
+  .maprow{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap;}
+  .maprow input[type=text]{flex:1;min-width:220px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;color:var(--ink);}
+  #leafmap{height:380px;border-radius:12px;margin-top:12px;border:1px solid var(--line);z-index:0;}
+  .coordout{font:13px ui-monospace,Menlo,Consolas,monospace;color:var(--ink);background:#eef2f7;padding:8px 11px;border-radius:8px;white-space:nowrap;}
+  @media print{
+    .right,section.controls,section.sites,.minlegend,footer .att,.mapmodal{display:none!important;}
+    body{background:#fff;} .board-wrap{box-shadow:none;}
+    .chip{box-shadow:none!important;} thead th{position:static;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <div>
+      <h1>Rain Risk Board</h1>
+      <div class="sub">Multi-model rain consensus for construction scheduling · scored on your work hours</div>
+    </div>
+    <div class="right">
+      <span class="updated" id="updated"></span>
+      <button class="ghost" onclick="window.print()">Print / PDF</button>
+      <button class="primary" id="refreshBtn" onclick="refreshAll()">Refresh forecast</button>
+    </div>
+  </header>
+
+  <section class="card controls">
+    <h2>Scheduling rules</h2>
+    <div class="row">
+      <div class="field"><label>Work day starts</label><input type="time" id="workStart" value="07:00"></div>
+      <div class="field"><label>Work day ends</label><input type="time" id="workEnd" value="17:00"></div>
+      <div class="field"><label>Green if rain % below</label><input type="number" id="greenMax" min="0" max="100" value="20"></div>
+      <div class="field"><label>Red if rain % at/above</label><input type="number" id="redMin" min="0" max="100" value="60"></div>
+      <div class="field"><label>Days ahead (max 16)</label><input type="number" id="days" min="1" max="16" value="15"></div>
+    </div>
+    <details class="adv">
+      <summary>Advanced — forecast models</summary>
+      <div class="models" id="modelBoxes"></div>
+      <div class="adv-note">All five are <b>global</b> models — every one forecasts your US sites (ECMWF is rated the world's most accurate). More independent models = a stronger consensus and a clearer confidence signal, so leave them on.</div>
+    </details>
+  </section>
+
+  <section class="card sites">
+    <h2>Project sites</h2>
+    <div id="siteList"></div>
+    <div class="row" style="margin-top:4px;">
+      <button class="ghost" onclick="addSiteRow('',true)">+ Add site</button>
+      <button class="ghost" onclick="openMap()">📍 Pin a location</button>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <button class="primary" onclick="updateSites()">Update board</button>
+      <button class="ghost" onclick="clearAll()">Clear all</button>
+    </div>
+    <div class="hint">One site per row — a street address, or <code>Label — lat, lon</code>. No address yet (or a new site)? Use <b>📍 Pin a location</b>.</div>
+  </section>
+
+  <div class="minlegend">
+    <span class="k"><span class="dot go"></span>Go</span>
+    <span class="k"><span class="dot chance"></span>Take a chance</span>
+    <span class="k"><span class="dot nogo"></span>No-go</span>
+    <span class="ml-note">Click any square for hour-by-hour detail · dots = confidence · ⚠ = sources disagree</span>
+  </div>
+
+  <div class="board-wrap" id="boardWrap">
+    <div class="empty" id="emptyState">Add your project sites above and hit <b>Update board</b> to pull the forecast.</div>
+    <table class="board" id="board" style="display:none;"></table>
+  </div>
+
+  <footer>
+    <div>Color = highest rain chance during your work hours that day. Built on free, attribution-licensed data — verify high-stakes calls against your local National Weather Service office.</div>
+    <div class="att" style="margin-top:6px;">Forecasts: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (GFS/HRRR, ECMWF, ICON, GEM, Météo-France) &amp; <a href="https://www.weather.gov/" target="_blank" rel="noopener">US National Weather Service</a>. Geocoding &amp; map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Sites &amp; settings are saved only in this browser.</div>
+  </footer>
+</div>
+
+<div class="mapmodal" id="mapModal" aria-hidden="true">
+  <div class="mapcard">
+    <div class="maphd"><b>📍 Pin a location</b><button class="x" onclick="closeMap()">×</button></div>
+    <div class="maprow">
+      <input type="text" id="mapSearch" placeholder="Search anything: address, highway, intersection, landmark, city — e.g. I-10 &amp; Walden Rd, Beaumont TX">
+      <button class="primary" onclick="mapSearch()">Search</button>
+    </div>
+    <div class="hint" id="mapSearchMsg" style="margin:7px 0 0;">Search to drop a pin, or just click the map where the site is. Drag the pin to fine-tune.</div>
+    <div id="leafmap"></div>
+    <div class="maprow">
+      <input type="text" id="mapLabel" placeholder="Site label (optional) — e.g. Beaumont frontage tract">
+      <span class="coordout" id="coordOut">No point selected</span>
+    </div>
+    <div class="maprow" style="justify-content:flex-end;">
+      <button class="ghost" onclick="closeMap()">Cancel</button>
+      <button class="primary" id="mapAddBtn" onclick="mapAdd()" disabled>Add to board</button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<script>
+"use strict";
+const MODELS = [
+  {id:"gfs_seamless",        label:"GFS · USA",                      on:true},
+  {id:"ecmwf_ifs025",        label:"ECMWF · global (most accurate)", on:true},
+  {id:"icon_seamless",       label:"ICON · global (Germany)",        on:true},
+  {id:"gem_seamless",        label:"GEM · global (Canada)",          on:true},
+  {id:"meteofrance_seamless",label:"Météo-France · global",          on:true},
+];
+const LS = "rainBoard.v1";
+const RAIN_MM = 0.1;
+const RAIN_PROB = 50;
+
+let state = {
+  settings:{workStart:7, workEnd:17, greenMax:20, redMin:60, days:15,
+            models:MODELS.filter(m=>m.on).map(m=>m.id), geoEmail:""},
+  sitesText:"",
+  sites:[],
+  geocache:{},
+};
+
+function save(){ try{ localStorage.setItem(LS, JSON.stringify({
+  settings:state.settings, sitesText:state.sitesText, geocache:state.geocache })); }catch(e){} }
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem(LS)||"null");
+    if(!s) return;
+    Object.assign(state.settings, s.settings||{});
+    state.sitesText = s.sitesText||"";
+    state.geocache = s.geocache||{};
+  }catch(e){}
+}
+
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+const hourOf = iso => parseInt(iso.slice(11,13),10);
+const dateOf = iso => iso.slice(0,10);
+const avg = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : null;
+function fmtDay(d){
+  const dt = new Date(d+"T12:00:00");
+  return {dow: dt.toLocaleDateString(undefined,{weekday:"short"}),
+          dt: (dt.getMonth()+1)+"/"+dt.getDate()};
+}
+function fmtClock(ts){ const d=new Date(ts); let h=d.getHours(), m=d.getMinutes();
+  const ap=h<12?"AM":"PM"; h=h%12; if(h===0)h=12; return h+(m?":"+String(m).padStart(2,"0"):"")+" "+ap; }
+function fmtHour(h){ const ap=h<12?"AM":"PM"; let hh=h%12; if(hh===0)hh=12; return hh+" "+ap; }
+function timeToHour(v){ const m=/^(\d{1,2})/.exec(v||""); return m?Math.min(23,Math.max(0,+m[1])):0; }
+async function fetchJSON(url, opts={}, ms=20000){
+  const c = new AbortController(); const t = setTimeout(()=>c.abort(), ms);
+  try{ const r = await fetch(url,{...opts,signal:c.signal});
+       if(!r.ok) throw new Error("HTTP "+r.status); return await r.json(); }
+  finally{ clearTimeout(t); }
+}
+
+let lastNom = 0;
+function looksLikeLatLon(s){
+  const m = /^\s*(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)\s*$/.exec(s);
+  if(!m) return null;
+  const lat=+m[1], lon=+m[2];
+  if(lat<-90||lat>90||lon<-180||lon>180) return null;
+  return {lat,lon,name:`${lat.toFixed(4)}, ${lon.toFixed(4)}`};
+}
+async function geocode(query){
+  const direct = looksLikeLatLon(query);
+  if(direct) return direct;
+  if(state.geocache[query]) return state.geocache[query];
+  const gap = Date.now()-lastNom; if(gap<1100) await sleep(1100-gap); lastNom = Date.now();
+  const em = state.settings.geoEmail ? "&email="+encodeURIComponent(state.settings.geoEmail) : "";
+  try{
+    const d = await fetchJSON(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=us&addressdetails=0${em}`);
+    if(d && d.length){
+      const r={lat:+d[0].lat, lon:+d[0].lon, name:d[0].display_name};
+      state.geocache[query]=r; save(); return r;
+    }
+  }catch(e){}
+  try{
+    const d = await fetchJSON(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=1`);
+    if(d && d.features && d.features.length){
+      const f=d.features[0], c=f.geometry.coordinates, p=f.properties||{};
+      const nm=[p.name,p.street,p.city,p.state].filter(Boolean).join(", ")||query;
+      const r={lat:c[1], lon:c[0], name:nm};
+      state.geocache[query]=r; save(); return r;
+    }
+  }catch(e){}
+  throw new Error("Not found — add city/state/ZIP, paste lat,lon, or use 📍 Pin a location");
+}
+
+async function fetchForecast(lat, lon){
+  const days = state.settings.days, ids = state.settings.models;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
+    + `&hourly=precipitation_probability,precipitation&models=${ids.join(",")}`
+    + `&forecast_days=${days}&timezone=auto`;
+  const d = await fetchJSON(url);
+  const H = d.hourly, time = H.time;
+  const byDate = {};
+  for(let i=0;i<time.length;i++){ (byDate[dateOf(time[i])] ||= []).push(i); }
+  const ws = state.settings.workStart, we = state.settings.workEnd;
+  const days_out = [];
+  Object.keys(byDate).sort().forEach((date, di)=>{
+    const idxs = byDate[date].filter(i=>{const h=hourOf(time[i]); return h>=ws && h<we;});
+    const hours = [];
+    const modelsRainDay = new Set();
+    const modelsRepDay = new Set();
+    idxs.forEach(i=>{
+      const probs=[], mms=[], per=[];
+      ids.forEach(id=>{
+        const p = H["precipitation_probability_"+id]?.[i];
+        const r = H["precipitation_"+id]?.[i];
+        const has = (p!=null)||(r!=null);
+        if(has) modelsRepDay.add(id);
+        if(p!=null) probs.push(p);
+        if(r!=null) mms.push(r);
+        if((r!=null && r>=RAIN_MM) || (p!=null && p>=RAIN_PROB)) modelsRainDay.add(id);
+        per.push({label:(MODELS.find(m=>m.id===id)||{}).label||id, p, r});
+      });
+      hours.push({ h:hourOf(time[i]), prob:avg(probs), mm:avg(mms), per });
+    });
+    let chance=null, worst=null, mmSum=0;
+    hours.forEach(h=>{ if(h.prob!=null){ if(chance==null||h.prob>chance){chance=h.prob; worst=h;} }
+                       if(h.mm!=null) mmSum+=h.mm; });
+    days_out.push({
+      date, daysOut:di, chance: chance==null?null:Math.round(chance),
+      worst, mmSum, hours,
+      modelsRain: modelsRainDay.size, modelsReporting: modelsRepDay.size,
+    });
+  });
+  return days_out;
+}
+
+async function fetchNWS(lat, lon){
+  try{
+    const pts = await fetchJSON(`https://api.weather.gov/points/${lat.toFixed(4)},${lon.toFixed(4)}`,
+                                {headers:{Accept:"application/geo+json"}});
+    const fh = pts.properties.forecastHourly;
+    const d = await fetchJSON(fh,{headers:{Accept:"application/geo+json"}});
+    const ws = state.settings.workStart, we = state.settings.workEnd, out={};
+    d.properties.periods.forEach(p=>{
+      const h = hourOf(p.startTime); if(h<ws||h>=we) return;
+      const v = p.probabilityOfPrecipitation && p.probabilityOfPrecipitation.value;
+      if(v==null) return; const dt=dateOf(p.startTime);
+      out[dt] = Math.max(out[dt]??0, v);
+    });
+    return out;
+  }catch(e){ return {}; }
+}
+
+async function fetchNowcast(lat, lon){
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
+      + `&minutely_15=precipitation,precipitation_probability&forecast_days=2&timezone=auto`;
+    const d = await fetchJSON(url);
+    return d.minutely_15 || null;
+  }catch(e){ return null; }
+}
+
+function classify(chance){
+  if(chance==null) return "nodata";
+  if(chance >= state.settings.redMin) return "nogo";
+  if(chance <  state.settings.greenMax) return "go";
+  return "chance";
+}
+const TAG = {go:"Go", chance:"Chance", nogo:"No go", nodata:"—"};
+function bucketOf(daysOut){ return daysOut<=2 ? 0 : daysOut<=6 ? 1 : 2; }
+function confDots(day){
+  let d = day.daysOut<=2 ? 3 : day.daysOut<=6 ? 2 : day.daysOut<=9 ? 1 : 0;
+  if(day.modelsReporting>=3){
+    const frac = day.modelsRain/day.modelsReporting;
+    if(frac>0.2 && frac<0.8 && d>0) d--;
+  }
+  return d;
+}
+function diverges(day, nwsVal){
+  return (nwsVal!=null && day.chance!=null && Math.abs(nwsVal-day.chance)>=30);
+}
+
+// returns {lead, bars:[{cls,mm,t}], from, to} for the next ~6h, or null
+function computeNowcast(nc){
+  if(!nc || !nc.time || !nc.precipitation) return null;
+  const t=nc.time, pr=nc.precipitation, now=Date.now();
+  let i0=-1;
+  for(let i=0;i<t.length;i++){ if(new Date(t[i]).getTime() >= now-15*60000){ i0=i; break; } }
+  if(i0<0) return null;
+  const N=Math.min(24, t.length-i0);
+  const idx=[]; for(let k=0;k<N;k++) idx.push(i0+k);
+  const rain=idx.filter(i=>(pr[i]||0)>=RAIN_MM);
+  let lead;
+  if(!rain.length){ lead="Dry — no rain expected in the next 6 hours."; }
+  else{
+    const startI=rain[0], rainingNow=(pr[i0]||0)>=RAIN_MM;
+    let endI=null; for(let i=startI;i<i0+N;i++){ if((pr[i]||0)<RAIN_MM){ endI=i; break; } }
+    if(rainingNow) lead = endI!=null ? `Raining now — easing around ${fmtClock(t[endI])}.`
+                                     : `Raining now — likely through the next 6 hours.`;
+    else lead = `Rain likely to start around ${fmtClock(t[startI])}`
+              + (endI!=null ? `, easing around ${fmtClock(t[endI])}.` : `.`);
+  }
+  const maxP=Math.max(0.5, ...idx.map(i=>pr[i]||0));
+  const bars=idx.map(i=>{ const v=pr[i]||0; const cls=v>=1?"b hard":v>=RAIN_MM?"b rain":"b";
+    const hh=v>0?Math.round(6+(v/maxP)*40):3; return {cls,h:hh,mm:v,t:t[i]}; });
+  return {lead, bars, from:fmtClock(t[idx[0]]), to:fmtClock(t[idx[idx.length-1]])};
+}
+
+function allDates(){
+  const set = new Set();
+  state.sites.forEach(s=>(s.days||[]).forEach(d=>set.add(d.date)));
+  const a=[...set].sort(); return a.slice(0, state.settings.days);
+}
+function short(n){ return n.length>54 ? n.slice(0,52)+"…" : n; }
+function esc(s){ return (s==null?"":""+s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function renderBoard(){
+  const tbl = document.getElementById("board");
+  const empty = document.getElementById("emptyState");
+  if(!state.sites.length){ tbl.style.display="none"; empty.style.display="block"; return; }
+  empty.style.display="none"; tbl.style.display="table";
+  const dates = allDates();
+  const counts=[0,0,0];
+  dates.forEach((d,i)=>counts[bucketOf(i)]++);
+  const bands=[{n:counts[0],cls:"A",t:"Commit",s:"Days 1–3"},
+               {n:counts[1],cls:"B",t:"Plan",s:"Days 4–7"},
+               {n:counts[2],cls:"C",t:"Reference only",s:"Day 8+"}];
+  let head = `<thead><tr><th class="site-col" rowspan="2">Site</th>`;
+  let firstBand=true;
+  bands.forEach(b=>{ if(b.n<=0) return; const bnd=firstBand?"":" bnd"; firstBand=false;
+    head += `<th class="band ${b.cls}${bnd}" colspan="${b.n}">${b.t}<small>${b.s}</small></th>`; });
+  head += `</tr><tr>`;
+  dates.forEach((d,i)=>{ const f=fmtDay(d); const lbl=i===0?"Today":i===1?"Tom":f.dow;
+    const bnd=(i===3||i===7)?" bnd":"";
+    head += `<th class="${bnd}"><span class="dow">${lbl}</span><span class="dt">${f.dt}</span></th>`; });
+  head += `</tr></thead>`;
+  let body = "<tbody>";
+  state.sites.forEach((s,si)=>{
+    body += `<tr><td class="site-col"><div class="nm">${esc(s.label)}</div>`;
+    body += `<div class="meta${s.error?" err":""}">${ s.error?esc(s.error): s.loading?"Loading…": s.name?esc(short(s.name)):"" }</div></td>`;
+    dates.forEach((date,i)=>{
+      const bnd=(i===3||i===7)?" bnd":"";
+      const far=i>=7?" far":"";
+      if(s.loading && !(s.days||[]).length){ body += `<td class="cell${bnd}"><div class="skel"></div></td>`; return; }
+      const day = (s.days||[]).find(d=>d.date===date);
+      if(!day){ body += `<td class="cell${bnd}"><div class="chip nodata"><span class="pct">—</span></div></td>`; return; }
+      const cls = classify(day.chance);
+      const nwsVal = s.nws ? s.nws[date] : null;
+      const dots = confDots(day);
+      const warn = diverges(day,nwsVal);
+      body += `<td class="cell${far}${bnd}">`
+        + `<div class="chip ${cls}" onclick="openDrawer(${si},'${date}')">`
+        + `<span class="pct">${day.chance==null?"—":day.chance+"%"}</span>`
+        + `<span class="tag">${TAG[cls]}</span>`
+        + (cls==="nodata"?"":`<span class="conf" title="confidence">${[0,1,2].map(k=>`<i class="${k<dots?'on':''}"></i>`).join("")}${warn?'<span class="warn" title="Sources disagree">⚠</span>':''}</span>`)
+        + `</div></td>`;
+    });
+    body += `</tr>`;
+  });
+  body += "</tbody>";
+  tbl.innerHTML = head+body;
+}
+
+function openDrawer(si, date){
+  const s = state.sites[si]; if(!s) return;
+  const day = (s.days||[]).find(d=>d.date===date); if(!day || day.chance==null) return;
+  const cls = classify(day.chance), f = fmtDay(date);
+  const nwsVal = s.nws ? s.nws[date] : null;
+  const inches = (day.mmSum/25.4);
+  const recoMap = {
+    go:"Schedule the crew. Rain chance stays low through your work hours.",
+    chance:"Schedulable <b>with a contingency plan</b>. There's real rain risk — line up a backup task or be ready to pause.",
+    nogo:"Avoid committing the crew. Rain is likely during work hours — plan for a wash-out."
+  };
+  let horizonNote = "";
+  if(day.daysOut>=7) horizonNote = " This is "+(day.daysOut+1)+" days out (Reference band) — a rough guide; re-check as it nears.";
+  else if(day.daysOut>=3) horizonNote = " This is "+(day.daysOut+1)+" days out (Plan band) — solid, but firm it up day-of.";
+  // nowcast (today only)
+  let ncHtml = "";
+  if(day.daysOut===0){
+    const nc = computeNowcast(s.nowcast);
+    if(nc){
+      const bars = nc.bars.map(b=>`<div class="${b.cls}" style="height:${b.h}px" title="${fmtClock(b.t)} · ${b.mm.toFixed(1)} mm"></div>`).join("");
+      ncHtml = `<div class="nowcast"><h3>Next 6 hours · 15-min (radar / HRRR)</h3>`
+        + `<div class="nclead">${nc.lead}</div>`
+        + `<div class="ncbars">${bars}</div>`
+        + `<div class="nctimes"><span>${nc.from}</span><span>${nc.to}</span></div></div>`;
+    }
+  }
+  let bars = "";
+  day.hours.forEach(h=>{
+    const p = h.prob==null?0:h.prob;
+    const col = h.prob==null?"#cbd5e1":(h.prob>=state.settings.redMin?"var(--nogo)":h.prob<state.settings.greenMax?"var(--go)":"var(--chance)");
+    const spread = h.per.filter(x=>x.p!=null||x.r!=null)
+        .map(x=>`${x.label.split(" ")[0]} ${x.p==null?"–":x.p+"%"}`).join(" · ");
+    bars += `<div class="hbar"><span class="ht">${fmtHour(h.h)}</span>`
+      + `<span class="track"><span class="fill" style="width:${Math.round(p)}%;background:${col}"></span></span>`
+      + `<span class="hp">${h.prob==null?"–":Math.round(h.prob)+"%"}</span></div>`
+      + `<div class="mspread">${spread}</div>`;
+  });
+  const d = document.getElementById("drawer");
+  d.innerHTML =
+    `<div class="dh"><button class="x" onclick="closeDrawer()">×</button>`
+    + `<div class="site">${esc(s.label)}</div>`
+    + `<div class="day">${f.dow}, ${f.dt} · work hours ${fmtHour(state.settings.workStart)}–${fmtHour(state.settings.workEnd)}</div></div>`
+    + `<div class="verdict ${cls}"><div class="big">${day.chance}%</div>`
+      + `<div><div class="vt">${TAG[cls]==="—"?"No data":TAG[cls]}</div>`
+      + `<div class="vs">peak rain chance in work hours</div></div></div>`
+    + ncHtml
+    + `<div class="facts">`
+      + fact("Model agreement", `${day.modelsRain} of ${day.modelsReporting} models show rain in work hrs`)
+      + fact("Expected rain (work hrs)", `${day.mmSum.toFixed(1)} mm · ${inches.toFixed(2)} in`)
+      + fact("Wettest hour", day.worst?`${fmtHour(day.worst.h)} (${Math.round(day.worst.prob)}%)`:"—")
+      + (nwsVal!=null?fact("Nat'l Weather Service", `${nwsVal}% (official, near-term)`):"")
+      + fact("Forecast horizon", `${day.daysOut+1} day${day.daysOut?"s":""} out`)
+    + `</div>`
+    + `<div class="reco">${recoMap[cls]}${horizonNote}${diverges(day,nwsVal)?" <b>⚠ Heads-up:</b> your sources disagree by 30+ points here — lower confidence, watch it closely.":""}</div>`
+    + `<div class="hourly"><h3>Hour by hour · rain chance</h3>${bars||"<div class='hint'>No work-hour detail.</div>"}</div>`;
+  d.classList.add("open"); d.setAttribute("aria-hidden","false");
+  document.getElementById("scrim").classList.add("open");
+}
+function fact(k,v){ return `<div class="fact"><span class="k">${k}</span><span class="v">${v}</span></div>`; }
+function closeDrawer(){ document.getElementById("drawer").classList.remove("open");
+  document.getElementById("scrim").classList.remove("open"); }
+
+let _map=null, _marker=null, _pt=null;
+function openMap(){
+  const m=document.getElementById("mapModal"); m.classList.add("open"); m.setAttribute("aria-hidden","false");
+  if(typeof L==="undefined"){ document.getElementById("mapSearchMsg").textContent="Map library couldn't load — check your internet connection."; return; }
+  if(!_map){
+    _map = L.map("leafmap").setView([31.0,-99.0], 6);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {maxZoom:19, attribution:"© OpenStreetMap contributors"}).addTo(_map);
+    _map.on("click", e=> setPin(e.latlng.lat, e.latlng.lng, true));
+  }
+  setTimeout(()=>_map.invalidateSize(), 120);
+}
+function closeMap(){ const m=document.getElementById("mapModal"); m.classList.remove("open"); m.setAttribute("aria-hidden","true"); }
+function setPin(lat, lon, keepZoom){
+  _pt={lat,lon};
+  if(!_marker){
+    _marker = L.marker([lat,lon],{draggable:true}).addTo(_map);
+    _marker.on("dragend", ()=>{ const p=_marker.getLatLng(); _pt={lat:p.lat,lon:p.lng}; showCoord(); });
+  } else _marker.setLatLng([lat,lon]);
+  if(!keepZoom) _map.setView([lat,lon], 14);
+  showCoord();
+}
+function showCoord(){
+  const el=document.getElementById("coordOut"), btn=document.getElementById("mapAddBtn");
+  if(_pt){ el.textContent=`${_pt.lat.toFixed(5)}, ${_pt.lon.toFixed(5)}`; btn.disabled=false; }
+  else { el.textContent="No point selected"; btn.disabled=true; }
+}
+async function mapSearch(){
+  const q=document.getElementById("mapSearch").value.trim(); if(!q) return;
+  const msg=document.getElementById("mapSearchMsg"); msg.textContent="Searching…";
+  try{
+    const g=await geocode(q); setPin(g.lat, g.lon, false);
+    msg.textContent="Found: "+short(g.name)+" — drag the pin to fine-tune.";
+    if(!document.getElementById("mapLabel").value) document.getElementById("mapLabel").value=q;
+  }catch(e){ msg.textContent="Couldn't find that — try a nearby intersection or landmark, or just click the map where the site is."; }
+}
+function mapAdd(){
+  if(!_pt) return;
+  const label=(document.getElementById("mapLabel").value||"").trim();
+  const line=(label? label+" — " : "")+`${_pt.lat.toFixed(5)}, ${_pt.lon.toFixed(5)}`;
+  addSiteRow(line, false);
+  document.getElementById("mapLabel").value="";
+  closeMap(); updateSites();
+}
+
+/* ---- site rows ---- */
+function siteRowHtml(v){
+  return `<div class="siterow"><input type="text" value="${esc(v)}" placeholder="Street address, or  Label — lat, lon">`
+    + `<button class="rm" title="Remove" onclick="removeSiteRow(this)">×</button></div>`;
+}
+function renderSiteRows(lines){
+  const wrap=document.getElementById("siteList");
+  const arr=(lines&&lines.length)?lines:[""];
+  wrap.innerHTML = arr.map(siteRowHtml).join("");
+}
+function addSiteRow(v, focus){
+  const wrap=document.getElementById("siteList");
+  wrap.insertAdjacentHTML("beforeend", siteRowHtml(v||""));
+  if(focus){ const ins=wrap.querySelectorAll(".siterow input"); ins[ins.length-1].focus(); }
+}
+function removeSiteRow(btn){
+  const wrap=document.getElementById("siteList");
+  btn.closest(".siterow").remove();
+  if(!wrap.querySelector(".siterow")) addSiteRow("",false);
+}
+function collectSiteLines(){
+  return [...document.querySelectorAll("#siteList .siterow input")]
+    .map(i=>i.value.trim()).filter(Boolean);
+}
+
+/* ---- orchestration ---- */
+function readSettings(){
+  state.settings.workStart = timeToHour(document.getElementById("workStart").value);
+  state.settings.workEnd   = timeToHour(document.getElementById("workEnd").value);
+  state.settings.greenMax  = clampPct(document.getElementById("greenMax").value, 20);
+  state.settings.redMin    = clampPct(document.getElementById("redMin").value, 60);
+  state.settings.days      = Math.min(16, Math.max(1, +document.getElementById("days").value||15));
+  state.settings.models    = [...document.querySelectorAll(".mbox:checked")].map(b=>b.value);
+  if(!state.settings.models.length) state.settings.models = ["gfs_seamless"];
+  if(state.settings.workEnd<=state.settings.workStart) state.settings.workEnd = state.settings.workStart+1;
+  save();
+}
+function clampPct(v,dflt){ v=+v; if(isNaN(v)) v=dflt; return Math.min(100,Math.max(0,v)); }
+function parseSites(text){
+  const coordRe = /(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)\s*$/;
+  return text.split("\n").map(l=>l.trim()).filter(Boolean).map(line=>{
+    const m = coordRe.exec(line);
+    if(m){
+      const lat=+m[1], lon=+m[2];
+      if(lat>=-90&&lat<=90&&lon>=-180&&lon<=180){
+        const lbl = line.slice(0, m.index).replace(/[\s,;:—–-]+$/,"").trim();
+        return {raw:line, label: lbl || `${lat.toFixed(3)}, ${lon.toFixed(3)}`, query:line,
+                name:"Pinned coordinates", lat, lon, loading:true, error:"", days:[], nws:{}, nowcast:null};
+      }
+    }
+    const label = line.split(",")[0].trim() || line;
+    return {raw:line, label, query:line, name:"", lat:null, lon:null, loading:true, error:"", days:[], nws:{}, nowcast:null};
+  });
+}
+function updateSites(){
+  readSettings();
+  const lines = collectSiteLines();
+  state.sitesText = lines.join("\n");
+  state.sites = parseSites(state.sitesText);
+  renderSiteRows(lines);
+  save(); renderBoard(); runAll();
+}
+function clearAll(){
+  if(!confirm("Clear saved sites and cached locations from this browser?")) return;
+  state.sitesText=""; state.sites=[]; state.geocache={};
+  renderSiteRows([""]);
+  save(); renderBoard();
+}
+function refreshAll(){ if(!state.sites.length){ updateSites(); return; } readSettings(); runAll(); }
+
+let running=false;
+async function runAll(){
+  if(running) return; running=true;
+  const btn=document.getElementById("refreshBtn"); btn.disabled=true; btn.textContent="Refreshing…";
+  for(const s of state.sites){
+    s.loading=true; s.error=""; renderBoard();
+    try{
+      if(s.lat==null){ const g=await geocode(s.query); s.lat=g.lat; s.lon=g.lon; s.name=g.name; }
+      const [days, nws, nowcast] = await Promise.all([ fetchForecast(s.lat,s.lon), fetchNWS(s.lat,s.lon), fetchNowcast(s.lat,s.lon) ]);
+      s.days=days; s.nws=nws; s.nowcast=nowcast; s.fetchedAt=Date.now();
+    }catch(e){ s.error = e.message||"Could not load"; s.days=[]; }
+    s.loading=false; renderBoard();
+  }
+  document.getElementById("updated").textContent = "Updated "+new Date().toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+  btn.disabled=false; btn.textContent="Refresh forecast"; running=false;
+}
+
+/* ---- init ---- */
+function buildModelBoxes(){
+  const wrap=document.getElementById("modelBoxes");
+  wrap.innerHTML = MODELS.map(m=>{
+    const on = state.settings.models.includes(m.id);
+    return `<label><input type="checkbox" class="mbox" value="${m.id}" ${on?"checked":""}> ${m.label}</label>`;
+  }).join("");
+}
+function applySettingsToUI(){
+  const S=state.settings;
+  document.getElementById("workStart").value = String(S.workStart).padStart(2,"0")+":00";
+  document.getElementById("workEnd").value   = String(S.workEnd).padStart(2,"0")+":00";
+  document.getElementById("greenMax").value  = S.greenMax;
+  document.getElementById("redMin").value    = S.redMin;
+  document.getElementById("days").value      = S.days;
+  renderSiteRows(state.sitesText ? state.sitesText.split("\n") : [""]);
+}
+window.addEventListener("DOMContentLoaded", ()=>{
+  load(); buildModelBoxes(); applySettingsToUI();
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeDrawer(); closeMap(); } });
+  if(state.sitesText.trim()){ state.sites=parseSites(state.sitesText); renderBoard(); runAll(); }
+  else { renderBoard(); }
+});
+</script>
+</body>
+</html>
