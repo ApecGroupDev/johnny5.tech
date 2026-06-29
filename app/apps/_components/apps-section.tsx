@@ -41,12 +41,7 @@ export function AppsSection({
 }: Props) {
   const isPrivate = kind === "Private";
   const isTeaser = variant === "teaser";
-  const scoped = APPS.filter((a) => {
-    if (a.kind !== kind) return false;
-    if (a.hiddenFrom && userEmail && a.hiddenFrom.includes(userEmail)) return false;
-    if (a.allowedUsers && (!userEmail || !a.allowedUsers.includes(userEmail))) return false;
-    return true;
-  });
+  const scoped = APPS.filter((a) => a.kind === kind);
   const defaults = DEFAULTS[kind];
 
   return (

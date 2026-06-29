@@ -14,8 +14,6 @@ export type AppEntry = {
   kind: AppKind;
   stack: string[];
   category: string;
-  hiddenFrom?: string[];
-  allowedUsers?: string[];
 };
 
 export const APPS: AppEntry[] = [
@@ -31,7 +29,6 @@ export const APPS: AppEntry[] = [
     kind: "Private",
     stack: ["Python", "Railway"],
     category: "Engineering",
-    hiddenFrom: ["wbayoumi@theapecgroup.com"],
   },
   {
     slug: "rain-risk",
@@ -44,7 +41,6 @@ export const APPS: AppEntry[] = [
     kind: "Private",
     stack: ["JavaScript", "Leaflet"],
     category: "Construction",
-    hiddenFrom: ["wbayoumi@theapecgroup.com"],
   },
   {
     slug: "site360",
@@ -80,7 +76,6 @@ export const APPS: AppEntry[] = [
     kind: "Private",
     stack: ["Vanilla JS", "Claude"],
     category: "Support",
-    allowedUsers: ["ali@theapecgroup.com"],
   },
 
   // Free

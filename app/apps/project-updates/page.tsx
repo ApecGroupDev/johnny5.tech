@@ -18,9 +18,6 @@ export default async function ProjectUpdatesPage() {
   if (!session) redirect("/login?callbackUrl=/apps/project-updates");
 
   const app = APPS.find((a) => a.slug === "project-updates")!;
-  if (session?.user?.email && app.hiddenFrom?.includes(session.user.email)) {
-    redirect("/#apps");
-  }
 
   const embedUrl = "/project-updates/index.html";
 

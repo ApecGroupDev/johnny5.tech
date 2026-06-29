@@ -18,9 +18,6 @@ export default async function RainRiskPage() {
   if (!session) redirect("/login?callbackUrl=/apps/rain-risk");
 
   const app = APPS.find((a) => a.slug === "rain-risk")!;
-  if (session?.user?.email && app.hiddenFrom?.includes(session.user.email)) {
-    redirect("/#apps");
-  }
 
   const embedUrl = "/rain-risk-dashboard.html";
 

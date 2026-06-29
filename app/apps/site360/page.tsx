@@ -17,12 +17,6 @@ export default async function Site360Page() {
   if (!session) redirect("/login?callbackUrl=/apps/site360");
 
   const app = APPS.find((a) => a.slug === "site360");
-  if (app?.allowedUsers && (!session?.user?.email || !app.allowedUsers.includes(session.user.email))) {
-    redirect("/#apps");
-  }
-  if (session?.user?.email && app?.hiddenFrom?.includes(session.user.email)) {
-    redirect("/#apps");
-  }
 
   const embedUrl = "/site360/index.html";
 

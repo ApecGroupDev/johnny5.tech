@@ -17,12 +17,6 @@ export default async function RubyQueenPage() {
   if (!session) redirect("/login?callbackUrl=/apps/ruby-queen");
 
   const app = APPS.find((a) => a.slug === "ruby-queen");
-  if (app?.allowedUsers && (!session?.user?.email || !app.allowedUsers.includes(session.user.email))) {
-    redirect("/#apps");
-  }
-  if (session?.user?.email && app?.hiddenFrom?.includes(session.user.email)) {
-    redirect("/#apps");
-  }
 
   const embedUrl = "/ruby-queen/index.html";
 
