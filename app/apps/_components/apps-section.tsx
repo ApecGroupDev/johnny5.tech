@@ -17,7 +17,7 @@ type Props = {
 
 const DEFAULTS = {
   Private: {
-    eyebrow: "Private",
+    eyebrow: "Apps",
     title: "Behind the sign-in wall.",
     description:
       "A controlled workspace for tools that touch personal data or need longer runtimes. Access is by invitation — sign in to run them.",
@@ -95,17 +95,8 @@ export function AppsSection({
               Coming soon
             </div>
             <p className="mt-2 text-[14px] text-ink/80">
-              {isPrivate
-                ? "Private tools are on the way. In the meantime, take a look at the free apps."
-                : "Free apps are on the way. In the meantime, take a look at the private apps."}
+              Apps are on the way.
             </p>
-            <Link
-              href={isPrivate ? "/free" : "/apps"}
-              className="link-underline mt-4 inline-flex items-center gap-1 font-mono text-[12px] text-ink"
-            >
-              {isPrivate ? "browse free apps" : "access private apps"}
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </Link>
           </div>
         ) : (
           <div className="rounded-lg border border-dashed border-line bg-surface/60 p-16 text-center">
@@ -114,8 +105,7 @@ export function AppsSection({
             </div>
             <p className="font-display text-2xl text-ink">No apps yet.</p>
             <p className="mt-2 text-sm text-muted">
-              New {isPrivate ? "private" : "free"} tools will show up here as
-              they ship.
+              New apps will show up here as they ship.
             </p>
           </div>
         )
@@ -136,24 +126,16 @@ export function AppsSection({
       {(scoped.length > 0 || !isTeaser) && (
         <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-line pt-5 sm:flex-row sm:items-center sm:gap-4">
           <span className="inline-flex items-center gap-2 font-mono text-[11px] text-muted">
-            {isPrivate ? (
-              <Lock className="h-3 w-3" />
-            ) : (
-              <Sparkles className="h-3 w-3" />
-            )}
+            <Lock className="h-3 w-3" />
             {scoped.length} {scoped.length === 1 ? "app" : "apps"} ·{" "}
-            {isPrivate
-              ? isAuthenticated
-                ? "full access"
-                : "invite-only"
-              : "open access"}
+            {isAuthenticated ? "full access" : "invite-only"}
           </span>
           {isTeaser ? (
             <Link
-              href={isPrivate ? "/apps" : "/free"}
+              href="/apps"
               className="link-underline inline-flex items-center gap-1 font-mono text-[12px] text-ink"
             >
-              open {isPrivate ? "private" : "free"} portal
+              open portal
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           ) : (

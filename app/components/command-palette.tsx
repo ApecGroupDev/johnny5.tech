@@ -9,17 +9,16 @@ type Item = {
   id: string;
   label: string;
   hint?: string;
-  group: "Navigate" | "Free apps" | "Private apps";
+  group: "Navigate" | "Apps";
   href: string;
 };
 
 const ITEMS: Item[] = [
   { id: "home", label: "Home", group: "Navigate", href: "/" },
-  { id: "private-apps", label: "Private apps", group: "Navigate", href: "/apps" },
-  { id: "free-apps", label: "Free apps", group: "Navigate", href: "/free" },
+  { id: "apps", label: "Apps", group: "Navigate", href: "/apps" },
   { id: "login", label: "Sign in", group: "Navigate", href: "/login" },
 
-  { id: "canopy", label: "Canopy Configurator", group: "Private apps", href: "/apps/canopy-configurator" },
+  { id: "canopy", label: "Canopy Configurator", group: "Apps", href: "/apps/canopy-configurator" },
 ];
 
 const OPEN_EVENT = "alihusain:open-command-palette";
