@@ -1,4 +1,4 @@
-import { Wrench, CloudRain, Brain, Map, Crown, type LucideIcon } from "lucide-react";
+import { Wrench, CloudRain, Globe, Map, Crown, type LucideIcon } from "lucide-react";
 
 export type AppStatus = "Live" | "WIP" | "Private";
 export type AppKind = "Free" | "Private";
@@ -47,23 +47,15 @@ export const APPS: AppEntry[] = [
     hiddenFrom: ["wbayoumi@theapecgroup.com"],
   },
   {
-    slug: "r2d2",
-    title: "R2D2 — Private Recall",
-    description:
-      "Ask your second brain a question — R2D2 answers from your notes and cites them.",
-    href: "/apps/r2d2",
-    icon: Brain,
+    slug: "site360",
+    title: "SITE 360",
+    description: "APEC Site Profile Database over 1,400+ POS install records and service calls.",
+    href: "/apps/site360",
+    icon: Globe,
     status: "Live",
     kind: "Private",
-    stack: ["Claude", "Vercel Blob", "Dropbox"],
-    category: "Productivity",
-    hiddenFrom: [
-      "test@alihusain.me",
-      "dami@theapecgroup.com",
-      "arash@geopetroleum.com",
-      "jsalazar@theapecgroup.com",
-      "wbayoumi@theapecgroup.com",
-    ],
+    stack: ["Vanilla JS"],
+    category: "Database",
   },
   {
     slug: "project-updates",
