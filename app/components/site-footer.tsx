@@ -36,7 +36,7 @@ export default function SiteFooter() {
                 <li>
                   <Link
                     className="link-underline text-ink/80 hover:text-ink"
-                    href="/apps"
+                    href="/#apps"
                   >
                     Apps
                   </Link>

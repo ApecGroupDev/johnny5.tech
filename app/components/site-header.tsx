@@ -11,7 +11,7 @@ import { openCommandPalette } from "./command-palette";
 
 const NAV = [
   { label: "Home", href: "/" },
-  { label: "Apps", href: "/apps" },
+  { label: "Apps", href: "/#apps" },
 ];
 
 export default function SiteHeader() {
