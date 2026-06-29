@@ -20,6 +20,7 @@ const ITEMS: Item[] = [
 
   { id: "canopy", label: "Canopy Configurator", group: "Apps", href: "/apps/canopy-configurator" },
   { id: "rain-risk", label: "Rain Risk Board", group: "Apps", href: "/apps/rain-risk" },
+  { id: "pulse-360", label: "PULSE 360", group: "Apps", href: "/apps/project-updates" },
 ];
 
 const OPEN_EVENT = "alihusain:open-command-palette";
