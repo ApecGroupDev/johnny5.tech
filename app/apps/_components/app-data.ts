@@ -1,0 +1,101 @@
+import { Wrench, CloudRain, Brain, Map, Crown, type LucideIcon } from "lucide-react";
+
+export type AppStatus = "Live" | "WIP" | "Private";
+export type AppKind = "Free" | "Private";
+
+export type AppEntry = {
+  slug: string;
+  title: string;
+  description: string;
+  href: string; // internal route
+  external?: string; // optional external streamlit url
+  icon: LucideIcon;
+  status: AppStatus;
+  kind: AppKind;
+  stack: string[];
+  category: string;
+  hiddenFrom?: string[];
+  allowedUsers?: string[];
+};
+
+export const APPS: AppEntry[] = [
+  // Private
+  {
+    slug: "canopy-configurator",
+    title: "Canopy Configurator",
+    description:
+      "Configure canopy specifications interactively — pick dimensions, materials, and options to generate a tailored canopy build.",
+    href: "/apps/canopy-configurator",
+    icon: Wrench,
+    status: "Live",
+    kind: "Private",
+    stack: ["Python", "Railway"],
+    category: "Engineering",
+    hiddenFrom: ["wbayoumi@theapecgroup.com"],
+  },
+  {
+    slug: "rain-risk",
+    title: "Rain Risk Board",
+    description:
+      "Multi-model rain consensus for construction scheduling — scored on your work hours.",
+    href: "/apps/rain-risk",
+    icon: CloudRain,
+    status: "Live",
+    kind: "Private",
+    stack: ["JavaScript", "Leaflet"],
+    category: "Construction",
+    hiddenFrom: ["wbayoumi@theapecgroup.com"],
+  },
+  {
+    slug: "r2d2",
+    title: "R2D2 — Private Recall",
+    description:
+      "Ask your second brain a question — R2D2 answers from your notes and cites them.",
+    href: "/apps/r2d2",
+    icon: Brain,
+    status: "Live",
+    kind: "Private",
+    stack: ["Claude", "Vercel Blob", "Dropbox"],
+    category: "Productivity",
+    hiddenFrom: [
+      "test@alihusain.me",
+      "dami@theapecgroup.com",
+      "arash@geopetroleum.com",
+      "jsalazar@theapecgroup.com",
+      "wbayoumi@theapecgroup.com",
+    ],
+  },
+  {
+    slug: "project-updates",
+    title: "PULSE 360",
+    description:
+      "Interactive map of every site with crew proximity and 48-hour rain risk, plus a dedicated Claude AI assistant.",
+    href: "/apps/project-updates",
+    icon: Map,
+    status: "Live",
+    kind: "Private",
+    stack: ["Vanilla JS", "Claude", "Python"],
+    category: "Management",
+  },
+  {
+    slug: "ruby-queen",
+    title: "Ruby Queen",
+    description:
+      "POS Troubleshooting Assistant. Built from Ms. Peggy's 235-file library.",
+    href: "/apps/ruby-queen",
+    icon: Crown,
+    status: "Live",
+    kind: "Private",
+    stack: ["Vanilla JS", "Claude"],
+    category: "Support",
+    allowedUsers: ["ali@theapecgroup.com"],
+  },
+
+  // Free
+  // (none yet)
+];
+
+export const STREAMLIT_URLS: Record<string, string> = {
+  "canopy-configurator":
+    "https://apec-canopy-configurator.up.railway.app/?embed=true",
+};
