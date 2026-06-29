@@ -1,10 +1,13 @@
 import { Section } from "./components/ui/section";
 import { Reveal } from "./components/motion/reveal";
 import { AppsSection } from "./apps/_components/apps-section";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-export default function HomePage() {
-  const isAuthenticated = false; // Auth not wired up yet
-  const userEmail = null;
+export default async function HomePage() {
+  const session = await getServerSession(authOptions);
+  const isAuthenticated = !!session;
+  const userEmail = session?.user?.email ?? null;
 
   return (
     <>

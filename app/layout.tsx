@@ -4,6 +4,7 @@ import "./globals.css";
 import SiteHeader from "./components/site-header";
 import SiteFooter from "./components/site-footer";
 import CommandPalette from "./components/command-palette";
+import { Providers } from "./providers";
 
 const sans = Geist({
   variable: "--font-sans-ui",
@@ -30,20 +31,22 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body className="bg-bg text-ink antialiased">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-sm focus:text-bg"
-        >
-          Skip to content
-        </a>
-        <div className="flex min-h-screen flex-col">
-          <SiteHeader />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <SiteFooter />
-        </div>
-        <CommandPalette />
+        <Providers>
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-sm focus:text-bg"
+          >
+            Skip to content
+          </a>
+          <div className="flex min-h-screen flex-col">
+            <SiteHeader />
+            <main id="main" className="flex-1">
+              {children}
+            </main>
+            <SiteFooter />
+          </div>
+          <CommandPalette />
+        </Providers>
       </body>
     </html>
   );
