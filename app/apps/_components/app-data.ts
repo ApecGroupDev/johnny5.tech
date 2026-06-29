@@ -45,7 +45,7 @@ export const APPS: AppEntry[] = [
   {
     slug: "site360",
     title: "SITE 360",
-    description: "APEC Site Profile Database over 1,400+ POS install records and service calls.",
+    description: "Atlanta Petroleum Equipment Company (APEC) Site Profile Database over 1,400+ POS install records and service calls.",
     href: "/apps/site360",
     icon: Globe,
     status: "Live",

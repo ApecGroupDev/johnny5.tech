@@ -4,8 +4,6 @@ import { forwardRef, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-
-
 /* ─────────────────────────────────────────────────────────────
    Globe canvas — fills its container, bigger radius
 ───────────────────────────────────────────────────────────── */
@@ -396,10 +394,9 @@ const EcosystemNode = forwardRef<
 
       {/* Logo */}
       <div
-        className="ml-1.5 flex h-11 w-[68px] shrink-0 items-center justify-center rounded-md overflow-hidden"
+        className="ml-1.5 flex h-11 w-[68px] shrink-0 items-center justify-center rounded-md overflow-hidden bg-white p-1"
         style={{
-          background: "rgba(255,255,255,0.06)",
-          border: `1px solid ${accentColor}28`,
+          border: `1px solid ${accentColor}40`,
         }}
       >
         <Image
@@ -631,7 +628,7 @@ export function Hero() {
               />
               <EcosystemNode
                 ref={card2Ref}
-                name="APEC — Petroleum Equipment"
+                name="Atlanta Petroleum Equipment Company"
                 tag="Services · Live"
                 logoSrc="/logos/apec-logo.webp"
                 accentColor="#eab308"

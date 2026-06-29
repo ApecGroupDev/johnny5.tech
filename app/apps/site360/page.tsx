@@ -9,7 +9,7 @@ import { Badge, Pill } from "@/app/components/ui/badge";
 
 export const metadata = {
   title: "SITE 360",
-  description: "APEC Site Profile Database",
+  description: "Atlanta Petroleum Equipment Company (APEC) Site Profile Database",
 };
 
 export default async function Site360Page() {
@@ -43,7 +43,7 @@ export default async function Site360Page() {
                 SITE 360
               </h1>
               <p className="mt-3 text-muted md:text-lg">
-                APEC Site Profile Database over 1,400+ POS install records and service calls.
+                Atlanta Petroleum Equipment Company (APEC) Site Profile Database over 1,400+ POS install records and service calls.
               </p>
             </div>
 
