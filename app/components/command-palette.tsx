@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Search, ArrowRight } from "lucide-react";
 
@@ -35,6 +36,7 @@ export function openCommandPalette() {
 
 export default function CommandPalette() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [active, setActive] = useState(0);
@@ -65,10 +67,16 @@ export default function CommandPalette() {
   }, [open]);
 
   const results = useMemo(() => {
+    const dynamicItems = ITEMS.map((item) => {
+      if (item.id === "login") {
+        return session ? { ...item, id: "logout", label: "Sign out", href: "#" } : item;
+      }
+      return item;
+    });
     const query = q.trim().toLowerCase();
-    if (!query) return ITEMS;
-    return ITEMS.filter((i) => i.label.toLowerCase().includes(query));
-  }, [q]);
+    if (!query) return dynamicItems;
+    return dynamicItems.filter((i) => i.label.toLowerCase().includes(query));
+  }, [q, session]);
 
   const groups = useMemo(() => {
     const g: Record<string, Item[]> = {};
@@ -82,6 +90,10 @@ export default function CommandPalette() {
 
   const select = (item: Item) => {
     setOpen(false);
+    if (item.id === "logout") {
+      signOut({ callbackUrl: "/" });
+      return;
+    }
     router.push(item.href);
   };
 

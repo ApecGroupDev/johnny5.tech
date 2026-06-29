@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { Search, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Container } from "./ui/container";
@@ -19,6 +20,7 @@ export default function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [isMac, setIsMac] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -87,9 +89,15 @@ export default function SiteHeader() {
 
             {pathname !== "/login" && (
               <div className="hidden md:block">
-                <Button href="/login" variant="primary" size="sm">
-                  Sign in
-                </Button>
+                {session ? (
+                  <Button onClick={() => signOut({ callbackUrl: "/" })} variant="secondary" size="sm">
+                    Sign out
+                  </Button>
+                ) : (
+                  <Button href="/login" variant="primary" size="sm">
+                    Sign in
+                  </Button>
+                )}
               </div>
             )}
 
@@ -117,12 +125,21 @@ export default function SiteHeader() {
                 </Link>
               ))}
               {pathname !== "/login" && (
-                <Link
-                  href="/login"
-                  className="mt-2 inline-flex items-center justify-center rounded-md bg-ink text-bg px-4 py-2.5 text-sm"
-                >
-                  Sign in
-                </Link>
+                session ? (
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="mt-2 inline-flex items-center justify-center rounded-md border border-line text-ink px-4 py-2.5 text-sm hover:bg-surface transition-colors"
+                  >
+                    Sign out
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="mt-2 inline-flex items-center justify-center rounded-md bg-ink text-bg px-4 py-2.5 text-sm"
+                  >
+                    Sign in
+                  </Link>
+                )
               )}
             </nav>
           </div>
