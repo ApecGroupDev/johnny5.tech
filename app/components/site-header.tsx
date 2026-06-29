@@ -11,8 +11,7 @@ import { openCommandPalette } from "./command-palette";
 
 const NAV = [
   { label: "Home", href: "/" },
-  { label: "Private apps", href: "/apps" },
-  { label: "Free apps", href: "/free" },
+  { label: "Apps", href: "/apps" },
 ];
 
 export default function SiteHeader() {
