@@ -3,12 +3,10 @@
 import { useEffect, useRef } from "react";
 
 /* ─────────────────────────────────────────────────────────────
-   Hero Hyperspace Starfield.
-   The hero section has an opaque background (#000 fallback in
-   its inline style), which blocks the global fixed canvas.
-   This canvas sits inside the hero (absolute inset-0) and
-   projects from the VIEWPORT center — not the canvas center —
-   so its warp direction matches the global background exactly.
+   Hero Starfield — two layers matching the global background:
+   1. Distant static stars — tiny gently-twinkling dots.
+   2. Hyperspace warp streaks — projected from the viewport
+      center so they align perfectly with the global canvas.
 ───────────────────────────────────────────────────────────── */
 export function StarsBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -20,7 +18,32 @@ export function StarsBackground() {
     if (!ctx) return;
     let raf: number, w = 0, h = 0;
 
-    // Same constants as the global background for consistency
+    // ── Distant static stars ──────────────────────────────────
+    const DISTANT_COUNT = 200;
+
+    type Distant = {
+      x: number;
+      y: number;
+      r: number;
+      base: number;
+      phase: number;
+      speed: number;
+    };
+
+    const distant: Distant[] = [];
+
+    function spawnDistant(): Distant {
+      return {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 0.6 + 0.15,
+        base: Math.random() * 0.18 + 0.06,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.008 + 0.002,
+      };
+    }
+
+    // ── Warp streaks ──────────────────────────────────────────
     const STAR_COUNT = 160;
     const MAX_Z = 800;
     const SPEED = 1.2;
@@ -34,12 +57,6 @@ export function StarsBackground() {
 
     const stars: Star[] = [];
 
-    // Viewport center expressed in canvas-local coordinates.
-    // The global canvas always projects from (vw/2, vh/2).
-    // The hero canvas is offset by (left, top) from the viewport,
-    // so the matching center in local coords is:
-    //   localCx = vw/2 - canvas.getBoundingClientRect().left
-    //   localCy = vh/2 - canvas.getBoundingClientRect().top
     function viewportCenter() {
       const rect = canvas!.getBoundingClientRect();
       return {
@@ -65,12 +82,30 @@ export function StarsBackground() {
       h = canvas!.height = canvas!.offsetHeight;
       stars.length = 0;
       for (let i = 0; i < STAR_COUNT; i++) stars.push(spawnStar(true));
+      distant.length = 0;
+      for (let i = 0; i < DISTANT_COUNT; i++) distant.push(spawnDistant());
     }
+
+    let t = 0;
 
     function draw() {
       if (!ctx) return;
-      ctx.clearRect(0, 0, w, h); // transparent — hero section bg shows through
+      t += 0.016;
+      ctx.clearRect(0, 0, w, h); // transparent — hero bg shows through
 
+      // ── Distant static stars ─────────────────────────────────
+      for (const d of distant) {
+        const alpha = d.base + Math.sin(t * d.speed * 60 + d.phase) * (d.base * 0.4);
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(alpha, 0.32));
+        ctx.fillStyle = "#d8e8ff";
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // ── Warp streaks ─────────────────────────────────────────
       const { cx, cy } = viewportCenter();
 
       for (const star of stars) {
@@ -90,9 +125,9 @@ export function StarsBackground() {
           continue;
         }
 
-        const t = 1 - star.z / MAX_Z;
-        const alpha = Math.pow(t, 2.2) * 0.38;
-        const lw = t * 0.9 + 0.1;
+        const t2 = 1 - star.z / MAX_Z;
+        const alpha = Math.pow(t2, 2.2) * 0.38;
+        const lw = t2 * 0.9 + 0.1;
 
         ctx.save();
         ctx.globalAlpha = Math.min(alpha, 0.42);
@@ -107,7 +142,7 @@ export function StarsBackground() {
         ctx.globalAlpha = Math.min(alpha * 1.6, 0.55);
         ctx.fillStyle = "#e8f0ff";
         ctx.beginPath();
-        ctx.arc(curr.sx, curr.sy, t * 0.8 + 0.1, 0, Math.PI * 2);
+        ctx.arc(curr.sx, curr.sy, t2 * 0.8 + 0.1, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }

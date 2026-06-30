@@ -3,9 +3,13 @@
 import { useEffect, useRef } from "react";
 
 /* ─────────────────────────────────────────────────────────────
-   Background canvas — subtle Star Wars starfield.
-   Stars drift outward from screen center using 3D perspective.
-   Kept deliberately faint so it doesn't compete with content.
+   Background canvas — Star Wars starfield.
+   Two layers:
+   1. Distant static stars — tiny dots scattered across the scene,
+      giving the impression of a deep star field far away.
+      They twinkle very gently but don't move.
+   2. Hyperspace warp streaks — stars moving outward from center
+      in 3D perspective. Subtle speed, kept faint.
 ───────────────────────────────────────────────────────────── */
 export function BackgroundEffects() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -17,9 +21,35 @@ export function BackgroundEffects() {
     if (!ctx) return;
     let raf: number, w = 0, h = 0;
 
-    const STAR_COUNT = 160;   // fewer stars = less noise
+    // ── Distant static stars ──────────────────────────────────
+    const DISTANT_COUNT = 280;
+
+    type Distant = {
+      x: number;
+      y: number;
+      r: number;      // radius (very small)
+      base: number;   // base alpha
+      phase: number;  // twinkle phase offset
+      speed: number;  // twinkle speed
+    };
+
+    const distant: Distant[] = [];
+
+    function spawnDistant(): Distant {
+      return {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 0.6 + 0.15,            // 0.15–0.75px
+        base: Math.random() * 0.18 + 0.06,         // 0.06–0.24 opacity
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.008 + 0.002,      // very slow twinkle
+      };
+    }
+
+    // ── Warp streaks ──────────────────────────────────────────
+    const STAR_COUNT = 160;
     const MAX_Z = 800;
-    const SPEED = 1.2;        // slow, calm drift
+    const SPEED = 1.2;
 
     type Star = {
       x: number;
@@ -46,16 +76,36 @@ export function BackgroundEffects() {
       if (!canvas) return;
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
+      // Warp stars
       stars.length = 0;
       for (let i = 0; i < STAR_COUNT; i++) stars.push(spawnStar(true));
+      // Distant stars — scatter across entire canvas
+      distant.length = 0;
+      for (let i = 0; i < DISTANT_COUNT; i++) distant.push(spawnDistant());
     }
+
+    let t = 0;
 
     function draw() {
       if (!ctx) return;
+      t += 0.016;
 
       ctx.fillStyle = "#000000";
       ctx.fillRect(0, 0, w, h);
 
+      // ── Draw distant static stars first (back layer) ─────────
+      for (const d of distant) {
+        const alpha = d.base + Math.sin(t * d.speed * 60 + d.phase) * (d.base * 0.4);
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(alpha, 0.32));
+        ctx.fillStyle = "#d8e8ff";
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // ── Draw hyperspace warp streaks on top ──────────────────
       for (const star of stars) {
         const prev = project(star.x, star.y, star.pz);
         star.pz = star.z;
@@ -73,12 +123,9 @@ export function BackgroundEffects() {
           continue;
         }
 
-        // Proximity 0→1 as star approaches viewer
-        const t = 1 - star.z / MAX_Z;
-
-        // Very subtle — barely visible far away, gentle at close range
-        const alpha = Math.pow(t, 2.2) * 0.38;
-        const lw = t * 0.9 + 0.1;
+        const proximity = 1 - star.z / MAX_Z;
+        const alpha = Math.pow(proximity, 2.2) * 0.38;
+        const lw = proximity * 0.9 + 0.1;
 
         ctx.save();
         ctx.globalAlpha = Math.min(alpha, 0.42);
@@ -90,11 +137,10 @@ export function BackgroundEffects() {
         ctx.lineTo(curr.sx, curr.sy);
         ctx.stroke();
 
-        // Soft dot at leading tip
         ctx.globalAlpha = Math.min(alpha * 1.6, 0.55);
         ctx.fillStyle = "#e8f0ff";
         ctx.beginPath();
-        ctx.arc(curr.sx, curr.sy, t * 0.8 + 0.1, 0, Math.PI * 2);
+        ctx.arc(curr.sx, curr.sy, proximity * 0.8 + 0.1, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
