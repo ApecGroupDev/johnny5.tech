@@ -45,7 +45,6 @@ export default function LoginPage() {
       <Reveal>
         <div className="mx-auto max-w-5xl px-4">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
-            
             {/* Left Column: Login Form */}
             <div className="mx-auto w-full max-w-md">
               <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-cyan-400 flex items-center gap-1.5 mb-1">
@@ -56,7 +55,8 @@ export default function LoginPage() {
                 Identity Verification
               </h1>
               <p className="mt-2 text-[13.5px] leading-relaxed text-white/50">
-                Enter secure credentials to establish authorized workspace session.
+                Enter secure credentials to establish authorized workspace
+                session.
               </p>
 
               <form
@@ -64,8 +64,8 @@ export default function LoginPage() {
                 className="mt-8 rounded-xl border border-white/5 bg-zinc-950/80 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-md relative overflow-hidden"
               >
                 {/* top accent border line */}
-                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
-                
+                <div className="absolute inset-x-0 top-0 h-[2px] bg-linear-to-r from-transparent via-cyan-400 to-transparent" />
+
                 <label className="block">
                   <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
                     Registry Key (Email)
@@ -104,7 +104,9 @@ export default function LoginPage() {
                   type="submit"
                   disabled={loading}
                   className="mt-6 w-full rounded-lg px-4 py-2.5 text-[13px] font-semibold text-black transition-all hover:opacity-90 disabled:opacity-60 cursor-pointer shadow-[0_0_20px_rgba(6,182,212,0.15)]"
-                  style={{ background: "linear-gradient(135deg, #06b6d4, #818cf8)" }}
+                  style={{
+                    background: "linear-gradient(135deg, #06b6d4, #818cf8)",
+                  }}
                 >
                   {loading ? "Decrypting Key…" : "Verify Credentials"}
                 </button>
@@ -120,19 +122,25 @@ export default function LoginPage() {
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-white/80 font-bold uppercase tracking-wider">Terminal Diagnostics</span>
+                  <span className="text-white/80 font-bold uppercase tracking-wider">
+                    Terminal Diagnostics
+                  </span>
                 </div>
                 <span className="text-white/20">V1.0.4-LOCKED</span>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-white/20">SYSTEM STATE:</span>
-                  <span className="text-cyan-400 font-semibold">SECURED_PORTAL_ACTIVE</span>
+                  <span className="text-cyan-400 font-semibold">
+                    SECURED_PORTAL_ACTIVE
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/20">SECURE SHELL:</span>
-                  <span className="text-emerald-400">NEXT-AUTH_JWT_ENCRYPTED</span>
+                  <span className="text-emerald-400">
+                    NEXT-AUTH_JWT_ENCRYPTED
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/20">DATA LAYER:</span>
@@ -147,18 +155,33 @@ export default function LoginPage() {
               <div className="h-px bg-white/5 my-1" />
 
               <div className="space-y-1.5 text-[10px] text-white/30">
-                <div className="text-white/50">&gt; INITIALIZING ENCRYPTED AUTH SESSION...</div>
-                <div>&gt; DECRYPTING DATABASE CREDENTIALS: <span className="text-emerald-400">[SUCCESS]</span></div>
-                <div>&gt; PARSING INVITED ACCESS REGISTRY: <span className="text-cyan-400">100% OK</span></div>
-                <div>&gt; peggy@theapecgroup.com &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-white/50">[AUTHORIZED]</span></div>
-                <div>&gt; alihusain.me shared layer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-white/50">[LINK_VERIFIED]</span></div>
+                <div className="text-white/50">
+                  &gt; INITIALIZING ENCRYPTED AUTH SESSION...
+                </div>
+                <div>
+                  &gt; DECRYPTING DATABASE CREDENTIALS:{" "}
+                  <span className="text-emerald-400">[SUCCESS]</span>
+                </div>
+                <div>
+                  &gt; PARSING INVITED ACCESS REGISTRY:{" "}
+                  <span className="text-cyan-400">100% OK</span>
+                </div>
+                <div>
+                  &gt; peggy@theapecgroup.com
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <span className="text-white/50">[AUTHORIZED]</span>
+                </div>
+                <div>
+                  &gt; alihusain.me shared layer
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <span className="text-white/50">[LINK_VERIFIED]</span>
+                </div>
                 <div className="flex items-center gap-1">
                   <span className="text-cyan-400 animate-pulse">&gt;</span>
                   <span className="animate-pulse bg-white/30 h-3 w-1.5 inline-block" />
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </Reveal>

@@ -36,14 +36,14 @@ export function AppCard({
       className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-white/5 bg-zinc-950/80 backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:border-white/20 hover:shadow-[0_30px_60px_-15px_var(--card-soft,rgba(10,10,10,0.25))]"
     >
       {/* Accent glow border overlay on hover */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
+      <div className="absolute inset-0 rounded-xl bg-linear-to-br from-white/2 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
 
       {/* Ambient background accent glow */}
       {accent && (
-        <div 
+        <div
           className="absolute -inset-20 rounded-full opacity-0 blur-[50px] transition-all duration-500 group-hover:opacity-10 pointer-events-none"
           style={{
-            background: `radial-gradient(circle, var(--card-accent) 0%, transparent 60%)`
+            background: `radial-gradient(circle, var(--card-accent) 0%, transparent 60%)`,
           }}
         />
       )}
@@ -52,7 +52,10 @@ export function AppCard({
       {accent && (
         <div
           className="absolute inset-x-0 top-0 h-[2px] opacity-75 transition-opacity duration-300 group-hover:opacity-100 group-hover:blur-[0.5px]"
-          style={{ background: "linear-gradient(90deg, transparent, var(--card-accent), transparent)" }}
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, var(--card-accent), transparent)",
+          }}
           aria-hidden
         />
       )}
@@ -75,7 +78,7 @@ export function AppCard({
             }}
             aria-hidden
           />
-          
+
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.5]"
             style={{
@@ -108,8 +111,8 @@ export function AppCard({
         <div>
           <div className="flex items-start justify-between">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-black/40 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-              <Icon 
-                className="h-5 w-5 text-white/80 transition-transform duration-300 group-hover:-rotate-6" 
+              <Icon
+                className="h-5 w-5 text-white/80 transition-transform duration-300 group-hover:-rotate-6"
                 style={accent ? { color: "var(--card-accent)" } : undefined}
               />
             </div>
@@ -124,7 +127,7 @@ export function AppCard({
             <span>{app.kind}</span>
           </div>
 
-          <h3 className="mt-2 font-display text-[18px] font-bold text-white group-hover:text-[var(--card-accent,rgba(255,255,255,0.9))] transition-colors duration-300">
+          <h3 className="mt-2 font-display text-[18px] font-bold text-white group-hover:text-(--card-accent,rgba(255,255,255,0.9)) transition-colors duration-300">
             {app.title}
           </h3>
 
