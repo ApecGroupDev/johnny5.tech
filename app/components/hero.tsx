@@ -1004,45 +1004,45 @@ export function Hero() {
 
             {/* Layer 6: Floating Holographic Glassmorphic Data Panels */}
             <FloatingPanel
-              title="Risk Profile"
-              value="NOMINAL (0.02%)"
-              status="CALCULATING..."
+              title="Site 360"
+              value="1,433 Sites Cached"
+              status="DATABASE CONNECTED"
               statusColor="#06b6d4"
               className="top-[10%] left-[-2%] animate-[hero-float-1_7s_ease-in-out_infinite]"
             />
             <FloatingPanel
-              title="Data Sources"
-              value="24/24 CONNECTED"
-              status="ALL STREAMS OPERATIONAL"
+              title="Rain Risk"
+              value="Multi-Model Scored"
+              status="CONSENSUS: NOMINAL"
               statusColor="#22c55e"
               className="top-[25%] right-[0%] animate-[hero-float-2_9s_ease-in-out_infinite]"
             />
             <FloatingPanel
-              title="Core Engine"
-              value="CLAUDE 3.5 SONNET"
-              status="AI READY"
+              title="Pulse 360"
+              value="Live Map Sync"
+              status="CLAUDE ASSISTANT ACTIVE"
               statusColor="#818cf8"
               className="top-[48%] left-[-10%] animate-[hero-float-3_8s_ease-in-out_infinite]"
             />
             <FloatingPanel
-              title="Throughput"
-              value="1,420 OPS/SEC"
-              status="SYNCED"
-              statusColor="#06b6d4"
+              title="Ruby Queen"
+              value="235 Troubleshooting Files"
+              status="SUPPORT LIBRARY READY"
+              statusColor="#eab308"
               className="top-[60%] right-[-2%] animate-[hero-float-4_10s_ease-in-out_infinite]"
             />
             <FloatingPanel
-              title="Uptime Health"
-              value="99.98% OPTIMAL"
-              status="OPERATIONAL"
+              title="Canopy Config"
+              value="Dynamic CAD Engine"
+              status="RAILWAY WORKER ONLINE"
               statusColor="#22c55e"
               className="bottom-[15%] left-[0%] animate-[hero-float-2_6s_ease-in-out_infinite]"
             />
             <FloatingPanel
-              title="Latency Speed"
-              value="84ms avg"
-              status="FASTEST ROUTE Active"
-              statusColor="#eab308"
+              title="System Ingest"
+              value="1,420 Ops/sec"
+              status="ALL STREAMS OPERATIONAL"
+              statusColor="#06b6d4"
               className="bottom-[25%] right-[-2%] animate-[hero-float-1_11s_ease-in-out_infinite]"
             />
           </div>
