@@ -3,7 +3,9 @@
 import { useEffect, useRef } from "react";
 
 /* ─────────────────────────────────────────────────────────────
-   Background canvas — particles + data streams (fixed viewport)
+   Background canvas — subtle Star Wars starfield.
+   Stars drift outward from screen center using 3D perspective.
+   Kept deliberately faint so it doesn't compete with content.
 ───────────────────────────────────────────────────────────── */
 export function BackgroundEffects() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -13,103 +15,86 @@ export function BackgroundEffects() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    let raf: number,
-      w = 0,
-      h = 0;
-    const C = ["#06b6d4", "#818cf8", "#eab308", "#3b82f6"];
+    let raf: number, w = 0, h = 0;
 
-    type P = {
+    const STAR_COUNT = 160;   // fewer stars = less noise
+    const MAX_Z = 800;
+    const SPEED = 1.2;        // slow, calm drift
+
+    type Star = {
       x: number;
       y: number;
-      vx: number;
-      vy: number;
-      r: number;
-      a: number;
-      c: string;
-    };
-    type S = {
-      x: number;
-      y: number;
-      len: number;
-      spd: number;
-      op: number;
-      lw: number;
-      c: string;
-      prog: number;
+      z: number;
+      pz: number;
     };
 
-    const ps: P[] = [];
-    const ss: S[] = [];
+    const stars: Star[] = [];
 
-    const rp = (): P => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.18, // slightly slower for global bg so it's not distracting
-      vy: -Math.random() * 0.3 - 0.05,
-      r: Math.random() * 1.3 + 0.3,
-      a: Math.random() * 0.35 + 0.1, // lower opacity so it blends nicely behind text
-      c: C[Math.floor(Math.random() * 4)],
-    });
+    function spawnStar(spread: boolean): Star {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.random() * Math.max(w, h) * 0.9 + 40;
+      const z = spread ? Math.random() * MAX_Z * 0.9 + 20 : MAX_Z;
+      return { x: Math.cos(angle) * dist, y: Math.sin(angle) * dist, z, pz: z };
+    }
 
-    const rs = (): S => ({
-      x: Math.random() * w,
-      y: Math.random() * h * 0.5,
-      len: Math.random() * 150 + 60,
-      spd: Math.random() * 0.9 + 0.3,
-      op: Math.random() * 0.07 + 0.015, // subtle stream opacity
-      lw: Math.random() * 1.1 + 0.3,
-      c: C[Math.floor(Math.random() * 4)],
-      prog: 0,
-    });
+    function project(x: number, y: number, z: number) {
+      const f = (MAX_Z / Math.max(z, 0.5)) * 0.5;
+      return { sx: w / 2 + x * f, sy: h / 2 + y * f };
+    }
 
     function resize() {
       if (!canvas) return;
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
+      stars.length = 0;
+      for (let i = 0; i < STAR_COUNT; i++) stars.push(spawnStar(true));
     }
-
-    // Initialize after dimensions are set in resize
-    resize();
-    for (let i = 0; i < 90; i++) ps.push(rp());
-    for (let i = 0; i < 14; i++) ss.push(rs());
 
     function draw() {
       if (!ctx) return;
-      ctx.clearRect(0, 0, w, h);
 
-      // Draw vertical streams
-      for (const s of ss) {
-        s.prog += s.spd;
-        if (s.prog > s.len + 80) {
-          Object.assign(s, rs());
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, w, h);
+
+      for (const star of stars) {
+        const prev = project(star.x, star.y, star.pz);
+        star.pz = star.z;
+        star.z -= SPEED;
+
+        if (star.z <= 1) {
+          Object.assign(star, spawnStar(false));
           continue;
         }
-        const t = Math.min(s.prog / s.len, 1);
-        const a = t < 0.2 ? t / 0.2 : t > 0.8 ? (1 - t) / 0.2 : 1;
-        ctx.save();
-        ctx.globalAlpha = s.op * a;
-        ctx.strokeStyle = s.c;
-        ctx.lineWidth = s.lw;
-        ctx.beginPath();
-        ctx.moveTo(s.x, s.y + s.prog - s.len * Math.min(t, 1));
-        ctx.lineTo(s.x, s.y + s.prog);
-        ctx.stroke();
-        ctx.restore();
-      }
 
-      // Draw particles
-      for (const p of ps) {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.y < -8 || p.x < -8 || p.x > w + 8) {
-          Object.assign(p, rp());
-          p.y = h + 5;
+        const curr = project(star.x, star.y, star.z);
+
+        if (curr.sx < -20 || curr.sx > w + 20 || curr.sy < -20 || curr.sy > h + 20) {
+          Object.assign(star, spawnStar(false));
+          continue;
         }
+
+        // Proximity 0→1 as star approaches viewer
+        const t = 1 - star.z / MAX_Z;
+
+        // Very subtle — barely visible far away, gentle at close range
+        const alpha = Math.pow(t, 2.2) * 0.38;
+        const lw = t * 0.9 + 0.1;
+
         ctx.save();
-        ctx.globalAlpha = p.a;
-        ctx.fillStyle = p.c;
+        ctx.globalAlpha = Math.min(alpha, 0.42);
+        ctx.strokeStyle = "#c8d8ff";
+        ctx.lineWidth = lw;
+        ctx.lineCap = "round";
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.moveTo(prev.sx, prev.sy);
+        ctx.lineTo(curr.sx, curr.sy);
+        ctx.stroke();
+
+        // Soft dot at leading tip
+        ctx.globalAlpha = Math.min(alpha * 1.6, 0.55);
+        ctx.fillStyle = "#e8f0ff";
+        ctx.beginPath();
+        ctx.arc(curr.sx, curr.sy, t * 0.8 + 0.1, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
@@ -129,33 +114,22 @@ export function BackgroundEffects() {
 
   return (
     <>
-      {/* Solid Black Base Layer */}
+      {/* Subtle circuit grid — barely visible */}
       <div
-        className="fixed inset-0 pointer-events-none bg-black"
-        style={{ zIndex: -3 }}
-        aria-hidden
-      />
-      {/* Global Fixed Circuit Grid Background */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.028]"
+        className="fixed inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(to right, #06b6d4 1px, transparent 1px), linear-gradient(to bottom, #06b6d4 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(6,182,212,0.025) 1px, transparent 1px), linear-gradient(to bottom, rgba(6,182,212,0.025) 1px, transparent 1px)",
           backgroundSize: "52px 52px",
-          zIndex: -2,
+          zIndex: 0,
         }}
         aria-hidden
       />
-      {/* Floating Particles Canvas */}
+      {/* Hyperspace Starfield */}
       <canvas
         ref={ref}
         className="fixed inset-0 w-full h-full pointer-events-none"
-        style={{
-          zIndex: -1,
-          background: "transparent",
-          border: "none",
-          outline: "none",
-        }}
+        style={{ zIndex: 0 }}
       />
     </>
   );

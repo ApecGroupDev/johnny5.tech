@@ -40,7 +40,7 @@ export default function RootLayout({
           >
             Skip to content
           </a>
-          <div className="flex min-h-screen flex-col">
+          <div className="relative z-[1] flex min-h-screen flex-col">
             <SiteHeader />
             <main id="main" className="flex-1">
               {children}

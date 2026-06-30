@@ -43,11 +43,11 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px; /* offset for sticky header (h-16) */
+  background-color: #000; /* prevent flash on load before canvas paints */
 }
 
-html,
 body {
-  background-color: var(--bg);
+  background-color: transparent; /* canvas handles the bg */
   color: var(--ink);
   font-family:
     var(--font-sans),
