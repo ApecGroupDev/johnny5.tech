@@ -187,7 +187,7 @@ function GlobeCanvas() {
         const py = cy + y2;
         const alpha = 0.08 + (z2 > 0 ? (z2 / ringRadius1) * 0.32 : 0);
         ctx.strokeStyle = `rgba(6,182,212,${alpha})`;
-        if (i === 0) ctx.beginPath(), ctx.moveTo(px, py);
+        if (i === 0) (ctx.beginPath(), ctx.moveTo(px, py));
         else ctx.lineTo(px, py);
       }
       ctx.stroke();
@@ -213,7 +213,7 @@ function GlobeCanvas() {
         const py = cy + y2;
         const alpha = 0.05 + (z2 > 0 ? (z2 / ringRadius2) * 0.25 : 0);
         ctx.strokeStyle = `rgba(129,140,248,${alpha})`;
-        if (i === 0) ctx.beginPath(), ctx.moveTo(px, py);
+        if (i === 0) (ctx.beginPath(), ctx.moveTo(px, py));
         else ctx.lineTo(px, py);
       }
       ctx.stroke();
@@ -248,7 +248,7 @@ function GlobeCanvas() {
         { text: "APEC_NODE_01", lat: 0.3, lon: 0 },
         { text: "GEO_DB_SYNC", lat: -0.4, lon: Math.PI * 0.65 },
         { text: "SYS_UPTIME_99.9", lat: 0.5, lon: Math.PI * 1.3 },
-        { text: "CLAUDE_3.5_SONNET", lat: -0.2, lon: Math.PI * 1.8 }
+        { text: "CLAUDE_3.5_SONNET", lat: -0.2, lon: Math.PI * 1.8 },
       ];
       labels.forEach((lbl) => {
         const theta = lbl.lat;
@@ -259,10 +259,10 @@ function GlobeCanvas() {
         let x3 = labelR * cosTheta * Math.sin(phi);
         let y3 = labelR * sinTheta;
         let z3 = labelR * cosTheta * Math.cos(phi);
-        
+
         const yRot = y3 * Math.cos(0.15) - z3 * Math.sin(0.15);
         const zRot = y3 * Math.sin(0.15) + z3 * Math.cos(0.15);
-        
+
         if (zRot > 0) {
           const px = cx + x3;
           const py = cy + yRot;
@@ -271,7 +271,7 @@ function GlobeCanvas() {
           ctx.font = "8px monospace";
           ctx.fillStyle = `rgba(165,180,252,${opacity})`;
           ctx.fillText(lbl.text, px + 8, py + 3);
-          
+
           // Draw connecting dot marker
           ctx.fillStyle = `rgba(6,182,212,${opacity})`;
           ctx.beginPath();
@@ -427,7 +427,7 @@ function ConnectorCanvas({
         const pSize = 0.12; // wave segment length
         const tStart = Math.max(0, pulseProgress - pSize);
         const tEnd = pulseProgress;
-        
+
         ctx.lineWidth = 2.2;
         ctx.strokeStyle = ra(c, 0.45);
         ctx.beginPath();
@@ -443,23 +443,23 @@ function ConnectorCanvas({
         // 3. Draw multiple flowing packets in series with trailing gradient tails
         const speed = 0.38;
         const baseProg = (now * speed + i * 0.3) % 1;
-        
+
         for (let pack = 0; pack < 2; pack++) {
           const prog = (baseProg + pack * 0.5) % 1;
           const bx = bez(srcX, cp1x, cp2x, gx, prog);
           const by = bez(srcY, cp1y, cp2y, gy, prog);
-          
+
           // Draw trail segment
           ctx.save();
           const trailLength = 0.06;
           const trStart = Math.max(0, prog - trailLength);
           const trEnd = prog;
-          
+
           const trailG = ctx.createLinearGradient(
             bez(srcX, cp1x, cp2x, gx, trStart),
             bez(srcY, cp1y, cp2y, gy, trStart),
             bx,
-            by
+            by,
           );
           trailG.addColorStop(0, "transparent");
           trailG.addColorStop(1, ra(c, 0.5));
@@ -617,51 +617,6 @@ function StatBadge({
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Layer 6: Holographic glassmorphic data panels floating component
- ───────────────────────────────────────────────────────────── */
-function FloatingPanel({
-  title,
-  value,
-  status,
-  statusColor = "#06b6d4",
-  className = "",
-  style = {},
-}: {
-  title: string;
-  value: string;
-  status: string;
-  statusColor?: string;
-  className?: string;
-  style?: React.CSSProperties;
-}) {
-  return (
-    <div
-      className={`absolute pointer-events-auto rounded-lg border border-white/[0.08] bg-black/45 px-3 py-2 backdrop-blur-md transition-all duration-300 hover:border-white/20 select-none shadow-[0_8px_32px_rgba(0,0,0,0.4)] ${className}`}
-      style={{
-        boxShadow: `0 0 16px ${statusColor}08, inset 0 1px 0 rgba(255,255,255,0.05)`,
-        ...style,
-      }}
-    >
-      <div className="flex items-center gap-1.5">
-        <span
-          className="h-1 w-1 rounded-full animate-pulse"
-          style={{
-            backgroundColor: statusColor,
-            boxShadow: `0 0 4px ${statusColor}`,
-          }}
-        />
-        <span className="font-mono text-[8px] uppercase tracking-wider text-white/40">
-          {title}
-        </span>
-      </div>
-      <div className="mt-1 font-mono text-[10.5px] font-semibold text-white/90">
-        {value}
-      </div>
-      <div className="mt-0.5 font-mono text-[7.5px] text-white/30">{status}</div>
-    </div>
-  );
-}
 
 /* ─────────────────────────────────────────────────────────────
    Hero
@@ -702,7 +657,9 @@ export function Hero() {
           "radial-gradient(ellipse 80% 55% at 68% 50%, rgba(99,102,241,0.13) 0%, rgba(6,182,212,0.06) 42%, transparent 72%), radial-gradient(ellipse 45% 45% at 12% 55%, rgba(234,179,8,0.05) 0%, transparent 65%), #000",
       }}
     >
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         @keyframes hero-float-1 {
           0%, 100% { transform: translate(calc(var(--mx, 0) * -16px), calc(var(--my, 0) * -16px + 0px)); }
           50% { transform: translate(calc(var(--mx, 0) * -16px), calc(var(--my, 0) * -16px - 8px)); }
@@ -719,7 +676,9 @@ export function Hero() {
           0%, 100% { transform: translate(calc(var(--mx, 0) * 22px), calc(var(--my, 0) * 22px + 0px)); }
           50% { transform: translate(calc(var(--mx, 0) * 22px), calc(var(--my, 0) * 22px - 6px)); }
         }
-      `}} />
+      `,
+        }}
+      />
 
       {/* Layer 1: background twinkling stars */}
       <StarsBackground />
@@ -733,15 +692,16 @@ export function Hero() {
         <div className="absolute top-[15%] right-[-25%] w-[900px] h-[900px] rounded-full bg-cyan-500/08 blur-[130px] animate-[pulse_9s_ease-in-out_infinite]" />
         <div className="absolute top-[25%] right-[5%] w-[700px] h-[700px] rounded-full bg-indigo-500/10 blur-[150px] animate-[pulse_11s_ease-in-out_infinite]" />
         <div className="absolute bottom-[10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-yellow-500/02 blur-[120px] animate-[pulse_13s_ease-in-out_infinite]" />
-        
+
         {/* Top left corner accent illumination for header & content layout */}
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-indigo-600/05 blur-[110px]" />
-        
+
         {/* Interactive Mouse-Following Light Bloom */}
-        <div 
-          className="absolute top-[20%] left-[40%] w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-cyan-500/04 to-indigo-500/04 blur-[140px] transition-transform duration-500 ease-out" 
+        <div
+          className="absolute top-[20%] left-[40%] w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-cyan-500/04 to-indigo-500/04 blur-[140px] transition-transform duration-500 ease-out"
           style={{
-            transform: "translate(calc(var(--mx, 0) * 45px), calc(var(--my, 0) * 45px))",
+            transform:
+              "translate(calc(var(--mx, 0) * 45px), calc(var(--my, 0) * 45px))",
           }}
         />
       </div>
@@ -766,7 +726,9 @@ export function Hero() {
               className="font-display leading-none tracking-[-0.045em] select-none"
               style={{ fontSize: "clamp(40px, 6.2vw, 80px)" }}
             >
-              <span className="text-white drop-shadow-[0_0_24px_rgba(255,255,255,0.15)]">JOHNNY</span>
+              <span className="text-white drop-shadow-[0_0_24px_rgba(255,255,255,0.15)]">
+                JOHNNY
+              </span>
               <span
                 style={{
                   background:
@@ -790,44 +752,6 @@ export function Hero() {
 
           {/* Description + CTAs + Stats */}
           <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div className="flex flex-col gap-3">
-              <p className="max-w-lg text-[14px] leading-relaxed text-white/48">
-                Intelligent systems powering real business decisions — from live
-                construction risk scoring to AI-assisted field operations and
-                enterprise data platforms.
-              </p>
-              <div className="flex flex-wrap items-center gap-3">
-                <Link
-                  href="/#apps"
-                  className="group inline-flex items-center gap-2 rounded-lg px-4 py-2 text-[13px] font-semibold text-black transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(6,182,212,0.5)] active:scale-[0.98]"
-                  style={{
-                    background: "linear-gradient(135deg, #06b6d4, #818cf8)",
-                    boxShadow: "0 0 28px rgba(6,182,212,0.35)",
-                  }}
-                >
-                  Launch Portal
-                  <svg
-                    className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13 7l5 5-5 5M6 12h12"
-                    />
-                  </svg>
-                </Link>
-                <Link
-                  href="/login"
-                  className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/4 px-4 py-2 text-[13px] font-medium text-white/65 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:text-white"
-                >
-                  Sign in
-                </Link>
-              </div>
-            </div>
             <div className="flex flex-wrap gap-2">
               <StatBadge value="5" label="Active Apps" icon="◈" />
               <StatBadge value="AI" label="Powered" icon="◎" />
@@ -907,53 +831,9 @@ export function Hero() {
             className="relative hidden items-center justify-center lg:flex h-full w-full border-0 bg-transparent outline-none z-[2]"
           >
             {/* The actual massive canvas that overflows behind card grids and screen bounds */}
-            <div className="absolute w-[520px] h-[520px] xl:w-[650px] xl:h-[650px] aspect-square rounded-full pointer-events-none select-none">
+            <div className="absolute w-[520px] h-[520px] xl:w-[650px] xl:h-[650px] aspect-square pointer-events-none select-none">
               <GlobeCanvas />
             </div>
-
-            {/* Layer 6: Floating Holographic Glassmorphic Data Panels */}
-            <FloatingPanel
-              title="Site 360"
-              value="1,433 Sites Cached"
-              status="DATABASE CONNECTED"
-              statusColor="#06b6d4"
-              className="top-[10%] left-[-2%] animate-[hero-float-1_7s_ease-in-out_infinite]"
-            />
-            <FloatingPanel
-              title="Rain Risk"
-              value="Multi-Model Scored"
-              status="CONSENSUS: NOMINAL"
-              statusColor="#22c55e"
-              className="top-[25%] right-[0%] animate-[hero-float-2_9s_ease-in-out_infinite]"
-            />
-            <FloatingPanel
-              title="Pulse 360"
-              value="Live Map Sync"
-              status="CLAUDE ASSISTANT ACTIVE"
-              statusColor="#818cf8"
-              className="top-[48%] left-[-10%] animate-[hero-float-3_8s_ease-in-out_infinite]"
-            />
-            <FloatingPanel
-              title="Ruby Queen"
-              value="235 Troubleshooting Files"
-              status="SUPPORT LIBRARY READY"
-              statusColor="#eab308"
-              className="top-[60%] right-[-2%] animate-[hero-float-4_10s_ease-in-out_infinite]"
-            />
-            <FloatingPanel
-              title="Canopy Config"
-              value="Dynamic CAD Engine"
-              status="RAILWAY WORKER ONLINE"
-              statusColor="#22c55e"
-              className="bottom-[15%] left-[0%] animate-[hero-float-2_6s_ease-in-out_infinite]"
-            />
-            <FloatingPanel
-              title="System Ingest"
-              value="1,420 Ops/sec"
-              status="ALL STREAMS OPERATIONAL"
-              statusColor="#06b6d4"
-              className="bottom-[25%] right-[-2%] animate-[hero-float-1_11s_ease-in-out_infinite]"
-            />
           </div>
         </div>
       </div>

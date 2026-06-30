@@ -29,13 +29,13 @@ export function StarsBackground() {
       w = canvas!.width = canvas!.offsetWidth;
       h = canvas!.height = canvas!.offsetHeight;
       stars = [];
-      const count = Math.floor((w * h) / 20000); // density of stars reduced significantly for subtlety
+      const count = Math.floor((w * h) / 10000); // balanced star density
       const colors = ["#ffffff", "#cbd5e1", "#22d3ee", "#818cf8"];
       for (let i = 0; i < count; i++) {
         stars.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          size: Math.random() * 0.7 + 0.2, // size reduced to tiny pinpricks (0.2px to 0.9px)
+          size: Math.random() * 1.1 + 0.4, // size range (0.4px to 1.5px)
           alpha: Math.random(),
           speed: Math.random() * 0.008 + 0.002,
           vx: (Math.random() - 0.5) * 0.03,
@@ -63,7 +63,7 @@ export function StarsBackground() {
         if (star.alpha > 1 || star.alpha < 0) {
           star.speed = -star.speed;
         }
-        ctx!.globalAlpha = Math.max(0.1, Math.min(1, star.alpha)) * 0.55; // lowered max opacity
+        ctx!.globalAlpha = Math.max(0.12, Math.min(1, star.alpha)) * 0.85; // visible but soft opacity
         ctx!.fillStyle = star.color;
         ctx!.beginPath();
         ctx!.arc(star.x, star.y, star.size, 0, Math.PI * 2);
@@ -86,7 +86,7 @@ export function StarsBackground() {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ zIndex: 0, opacity: 0.55 }} // lower layer opacity
+      style={{ zIndex: 0, opacity: 0.8 }} // balanced layer opacity
     />
   );
 }
