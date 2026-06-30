@@ -33,7 +33,7 @@ export function AppCard({
             } as React.CSSProperties)
           : undefined
       }
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-white/5 bg-zinc-950/80 backdrop-blur-md transition-all duration-300 hover:-translate-y-2.5 hover:scale-[1.01] hover:border-[var(--card-accent,rgba(255,255,255,0.22))] hover:shadow-[0_30px_60px_-10px_var(--card-soft,rgba(0,0,0,0.5))]"
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-white/12 bg-[#13131a]/95 backdrop-blur-md transition-all duration-300 hover:-translate-y-3.5 hover:scale-[1.02] hover:border-[var(--card-accent,rgba(255,255,255,0.35))] hover:shadow-[0_30px_70px_-10px_var(--card-soft,rgba(0,0,0,0.65)),_0_0_30px_var(--card-soft,rgba(0,0,0,0.2))] shadow-[0_12px_40px_-12px_rgba(0,0,0,0.9),_0_0_15px_var(--card-soft,rgba(0,0,0,0.03))]"
     >
       {/* Accent glow border overlay on hover */}
       <div className="absolute inset-0 rounded-xl bg-linear-to-br from-white/2 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
@@ -41,7 +41,7 @@ export function AppCard({
       {/* Ambient background accent glow */}
       {accent && (
         <div
-          className="absolute -inset-20 rounded-full opacity-0 blur-[50px] transition-all duration-500 group-hover:opacity-16 pointer-events-none"
+          className="absolute -inset-20 rounded-full opacity-0 blur-[50px] transition-all duration-500 group-hover:opacity-25 pointer-events-none"
           style={{
             background: `radial-gradient(circle, var(--card-accent) 0%, transparent 60%)`,
           }}
