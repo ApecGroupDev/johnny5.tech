@@ -1,4 +1,11 @@
-import { Wrench, CloudRain, Globe, Map, Crown, type LucideIcon } from "lucide-react";
+import {
+  Wrench,
+  CloudRain,
+  Globe,
+  Map,
+  Crown,
+  type LucideIcon,
+} from "lucide-react";
 
 export type AppStatus = "Live" | "WIP" | "Private";
 export type AppKind = "Free" | "Private";
@@ -18,6 +25,42 @@ export type AppEntry = {
 
 export const APPS: AppEntry[] = [
   // Private
+  {
+    slug: "ruby-queen",
+    title: "Ruby Queen",
+    description:
+      "POS Troubleshooting Assistant. Built from Ms. Peggy's 235-file library.",
+    href: "/apps/ruby-queen",
+    icon: Crown,
+    status: "Live",
+    kind: "Private",
+    stack: ["Vanilla JS", "Claude"],
+    category: "Support",
+  },
+  {
+    slug: "site360",
+    title: "SITE 360",
+    description:
+      "Atlanta Petroleum Equipment Company (APEC) Site Profile Database over 1,400+ POS install records and service calls.",
+    href: "/apps/site360",
+    icon: Globe,
+    status: "Live",
+    kind: "Private",
+    stack: ["Vanilla JS"],
+    category: "Database",
+  },
+  {
+    slug: "project-updates",
+    title: "PULSE 360",
+    description:
+      "Interactive map of every site with crew proximity and 48-hour rain risk, plus a dedicated Claude AI assistant.",
+    href: "/apps/project-updates",
+    icon: Map,
+    status: "Live",
+    kind: "Private",
+    stack: ["Vanilla JS", "Claude", "Python"],
+    category: "Management",
+  },
   {
     slug: "canopy-configurator",
     title: "Canopy Configurator",
@@ -41,41 +84,6 @@ export const APPS: AppEntry[] = [
     kind: "Private",
     stack: ["JavaScript", "Leaflet"],
     category: "Construction",
-  },
-  {
-    slug: "site360",
-    title: "SITE 360",
-    description: "Atlanta Petroleum Equipment Company (APEC) Site Profile Database over 1,400+ POS install records and service calls.",
-    href: "/apps/site360",
-    icon: Globe,
-    status: "Live",
-    kind: "Private",
-    stack: ["Vanilla JS"],
-    category: "Database",
-  },
-  {
-    slug: "project-updates",
-    title: "PULSE 360",
-    description:
-      "Interactive map of every site with crew proximity and 48-hour rain risk, plus a dedicated Claude AI assistant.",
-    href: "/apps/project-updates",
-    icon: Map,
-    status: "Live",
-    kind: "Private",
-    stack: ["Vanilla JS", "Claude", "Python"],
-    category: "Management",
-  },
-  {
-    slug: "ruby-queen",
-    title: "Ruby Queen",
-    description:
-      "POS Troubleshooting Assistant. Built from Ms. Peggy's 235-file library.",
-    href: "/apps/ruby-queen",
-    icon: Crown,
-    status: "Live",
-    kind: "Private",
-    stack: ["Vanilla JS", "Claude"],
-    category: "Support",
   },
 
   // Free
