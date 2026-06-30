@@ -27,9 +27,8 @@ function GlobeCanvas() {
       const now = Date.now() / 1000;
       const cx = w * 0.5,
         cy = h * 0.5;
-      const r = Math.min(w, h) * 0.4; // scaled down slightly to prevent clipping glow
+      const r = Math.min(w, h) * 0.4;
 
-      // Ambient outer glow
       const amb = ctx.createRadialGradient(cx, cy, r * 0.12, cx, cy, r * 1.22);
       amb.addColorStop(0, "rgba(99,102,241,.20)");
       amb.addColorStop(0.4, "rgba(6,182,212,.09)");
@@ -39,7 +38,6 @@ function GlobeCanvas() {
       ctx.arc(cx, cy, r * 1.22, 0, Math.PI * 2);
       ctx.fill();
 
-      // Globe body
       const body = ctx.createRadialGradient(
         cx - r * 0.24,
         cy - r * 0.28,
@@ -56,7 +54,6 @@ function GlobeCanvas() {
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.fill();
 
-      // Dot world map
       ctx.save();
       ctx.globalAlpha = 0.21;
       const step = Math.max(r / 13, 13);
@@ -73,7 +70,6 @@ function GlobeCanvas() {
       }
       ctx.restore();
 
-      // Rotating 3D dot grid sphere overlay
       ctx.save();
       const points = 16;
       const rotateY = now * 0.22;
@@ -110,7 +106,6 @@ function GlobeCanvas() {
       }
       ctx.restore();
 
-      // Lat/lng lines
       ctx.save();
       ctx.globalAlpha = 0.055;
       ctx.strokeStyle = "#818cf8";
@@ -136,7 +131,6 @@ function GlobeCanvas() {
       }
       ctx.restore();
 
-      // Pulsing rim (cyan)
       const rp = 0.52 + 0.22 * Math.sin(now * 1.25);
       ctx.save();
       ctx.globalAlpha = rp;
@@ -149,7 +143,6 @@ function GlobeCanvas() {
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.stroke();
-      // Purple outer ring
       ctx.globalAlpha = rp * 0.55;
       const rim2 = ctx.createRadialGradient(cx, cy, r * 1.02, cx, cy, r * 1.18);
       rim2.addColorStop(0, "rgba(129,140,248,.45)");
@@ -161,8 +154,7 @@ function GlobeCanvas() {
       ctx.stroke();
       ctx.restore();
 
-      // "AI" text
-      const aiSz = Math.max(r * 0.42, 28);
+      const aiSz = Math.max(r * 0.42, 24);
       ctx.save();
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -180,7 +172,7 @@ function GlobeCanvas() {
       ctx.shadowColor = "#818cf8";
       ctx.shadowBlur = 18;
       ctx.fillText("AI", cx, cy - r * 0.06);
-      ctx.font = `500 ${Math.max(r * 0.1, 9)}px monospace`;
+      ctx.font = `500 ${Math.max(r * 0.1, 8)}px monospace`;
       ctx.globalAlpha = 0.42;
       ctx.fillStyle = "#c4c8ff";
       ctx.shadowBlur = 0;
@@ -214,9 +206,7 @@ function GlobeCanvas() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Connector canvas — absolutely positioned over the bottom grid.
-   Measures actual DOM positions of cards + globe, draws bezier
-   lines with traveling dots from each card → globe center.
+   Connector canvas
 ───────────────────────────────────────────────────────────── */
 function ConnectorCanvas({
   containerRef,
@@ -271,7 +261,6 @@ function ConnectorCanvas({
 
       const contRect = cont.getBoundingClientRect();
       const globeRect = globe.getBoundingClientRect();
-      // Globe center relative to container
       const gx = globeRect.left - contRect.left + globeRect.width / 2;
       const gy = globeRect.top - contRect.top + globeRect.height / 2;
 
@@ -279,7 +268,6 @@ function ConnectorCanvas({
         const card = cRef.current;
         if (!card) return;
         const cardRect = card.getBoundingClientRect();
-        // Source: right edge, vertical center of card
         const srcX = cardRect.right - contRect.left;
         const srcY = cardRect.top - contRect.top + cardRect.height / 2;
         const c = ACCENT[i];
@@ -290,7 +278,6 @@ function ConnectorCanvas({
         const cp2x = srcX + dx * 0.7;
         const cp2y = gy;
 
-        // Gradient line
         ctx.save();
         const lg = ctx.createLinearGradient(srcX, srcY, gx, gy);
         const lp = 0.28 + 0.14 * Math.sin(now * 1.9 + i * 1.5);
@@ -304,7 +291,6 @@ function ConnectorCanvas({
         ctx.moveTo(srcX, srcY);
         ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, gx, gy);
         ctx.stroke();
-        // Thin secondary glow
         ctx.globalAlpha = 0.28;
         ctx.lineWidth = 0.85;
         ctx.beginPath();
@@ -313,7 +299,6 @@ function ConnectorCanvas({
         ctx.stroke();
         ctx.restore();
 
-        // Traveling dot
         const prog = (now * 0.5 + i * 0.34) % 1;
         const bx = bez(srcX, cp1x, cp2x, gx, prog);
         const by = bez(srcY, cp1y, cp2y, gy, prog);
@@ -364,7 +349,7 @@ function ConnectorCanvas({
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Ecosystem node card — forwardRef so Hero can measure position
+   Ecosystem node card — compact version, forwardRef for measuring
 ───────────────────────────────────────────────────────────── */
 const EcosystemNode = forwardRef<
   HTMLDivElement,
@@ -378,7 +363,7 @@ const EcosystemNode = forwardRef<
   return (
     <div
       ref={ref}
-      className="relative flex items-center gap-3 rounded-lg border px-3 py-3 backdrop-blur-sm"
+      className="relative flex items-center gap-2.5 rounded-lg border px-2.5 py-2 backdrop-blur-sm"
       style={{
         borderColor: `${accentColor}40`,
         background:
@@ -386,42 +371,37 @@ const EcosystemNode = forwardRef<
         boxShadow: `0 0 24px ${accentColor}18, inset 0 1px 0 rgba(255,255,255,0.05)`,
       }}
     >
-      {/* Left accent bar */}
       <div
-        className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full"
+        className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full"
         style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }}
       />
 
-      {/* Logo */}
       <div
-        className="ml-1.5 flex h-11 w-[68px] shrink-0 items-center justify-center rounded-md overflow-hidden bg-white p-1"
-        style={{
-          border: `1px solid ${accentColor}40`,
-        }}
+        className="ml-1.5 flex h-9 w-[58px] shrink-0 items-center justify-center rounded-md overflow-hidden bg-white p-1"
+        style={{ border: `1px solid ${accentColor}40` }}
       >
         <Image
           src={logoSrc}
           alt={name}
-          width={60}
-          height={36}
+          width={50}
+          height={30}
           className="object-contain"
-          style={{ maxHeight: 36, maxWidth: 60 }}
+          style={{ maxHeight: 30, maxWidth: 50 }}
         />
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="truncate text-[12.5px] font-semibold tracking-tight text-white/90">
+        <div className="truncate text-[11.5px] font-semibold tracking-tight text-white/90">
           {name}
         </div>
         <div
-          className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.18em]"
+          className="mt-0.5 font-mono text-[8.5px] uppercase tracking-[0.18em]"
           style={{ color: `${accentColor}90` }}
         >
           {tag}
         </div>
       </div>
 
-      {/* Live dot */}
       <div className="shrink-0">
         <span className="relative flex h-1.5 w-1.5">
           <span
@@ -439,7 +419,7 @@ const EcosystemNode = forwardRef<
 });
 
 /* ─────────────────────────────────────────────────────────────
-   Stat badge
+   Stat badge — slim
 ───────────────────────────────────────────────────────────── */
 function StatBadge({
   value,
@@ -451,10 +431,12 @@ function StatBadge({
   icon: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-0.5 rounded-lg border border-white/[0.07] bg-white/3 px-4 py-2.5 backdrop-blur-sm">
+    <div className="flex items-center gap-2 rounded-lg border border-white/[0.07] bg-white/3 px-3 py-1.5 backdrop-blur-sm">
       <span className="font-mono text-[10px] text-white/28">{icon}</span>
-      <span className="font-display text-lg font-bold text-white">{value}</span>
-      <span className="font-mono text-[8.5px] uppercase tracking-[0.18em] text-white/38">
+      <span className="font-display text-[13px] font-bold text-white">
+        {value}
+      </span>
+      <span className="font-mono text-[8px] uppercase tracking-[0.16em] text-white/38">
         {label}
       </span>
     </div>
@@ -462,10 +444,9 @@ function StatBadge({
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Hero
+   Hero — fits a single viewport, no scroll required to see it all
 ───────────────────────────────────────────────────────────── */
 export function Hero() {
-  // Refs for connector lines
   const bottomRef = useRef<HTMLDivElement>(null);
   const card0Ref = useRef<HTMLDivElement>(null);
   const card1Ref = useRef<HTMLDivElement>(null);
@@ -474,18 +455,19 @@ export function Hero() {
 
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative flex flex-col overflow-hidden"
       style={{
-        minHeight: "92vh",
+        height: "100svh",
+        minHeight: 640,
         background:
           "radial-gradient(ellipse 80% 55% at 68% 50%, rgba(99,102,241,0.13) 0%, rgba(6,182,212,0.06) 42%, transparent 72%), radial-gradient(ellipse 45% 45% at 12% 55%, rgba(234,179,8,0.05) 0%, transparent 65%), #000",
       }}
     >
-      <div className="relative z-10 mx-auto max-w-7xl px-6">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col px-6">
         {/* ── TOP: Brand + text ───────────────────────────── */}
-        <div className="flex flex-col gap-5 pt-16 pb-10">
+        <div className="flex flex-col gap-3 pt-[clamp(20px,4.5vh,56px)]">
           {/* Status pill */}
-          <div className="flex items-center gap-2 self-start rounded-full border border-cyan-500/30 bg-cyan-500/[0.07] px-3 py-1.5 backdrop-blur-sm">
+          <div className="flex items-center gap-2 self-start rounded-full border border-cyan-500/30 bg-cyan-500/[0.07] px-3 py-1 backdrop-blur-sm">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-cyan-400" />
@@ -495,11 +477,11 @@ export function Hero() {
             </span>
           </div>
 
-          {/* JOHNNY5.TECH — one word */}
+          {/* JOHNNY5.TECH */}
           <div>
             <h1
               className="font-display leading-none tracking-[-0.045em]"
-              style={{ fontSize: "clamp(54px, 7.5vw, 92px)" }}
+              style={{ fontSize: "clamp(40px, 6.2vw, 80px)" }}
             >
               <span className="text-white">JOHNNY</span>
               <span
@@ -515,7 +497,7 @@ export function Hero() {
               </span>
             </h1>
             <p
-              className="mt-2 font-mono text-[11px] uppercase tracking-[0.3em]"
+              className="mt-1.5 font-mono text-[10.5px] uppercase tracking-[0.3em]"
               style={{ color: "rgba(6,182,212,0.68)" }}
             >
               AI · Big Data · Automation
@@ -523,9 +505,9 @@ export function Hero() {
           </div>
 
           {/* Description + CTAs + Stats */}
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="flex flex-col gap-5">
-              <p className="max-w-lg text-[15.5px] leading-relaxed text-white/48">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div className="flex flex-col gap-3">
+              <p className="max-w-lg text-[14px] leading-relaxed text-white/48">
                 Intelligent systems powering real business decisions — from live
                 construction risk scoring to AI-assisted field operations and
                 enterprise data platforms.
@@ -533,7 +515,7 @@ export function Hero() {
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href="/#apps"
-                  className="group inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-[13px] font-semibold text-black transition-all duration-300 hover:opacity-90"
+                  className="group inline-flex items-center gap-2 rounded-lg px-4 py-2 text-[13px] font-semibold text-black transition-all duration-300 hover:opacity-90"
                   style={{
                     background: "linear-gradient(135deg, #06b6d4, #818cf8)",
                     boxShadow: "0 0 28px rgba(6,182,212,0.35)",
@@ -556,7 +538,7 @@ export function Hero() {
                 </Link>
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/4 px-5 py-2.5 text-[13px] font-medium text-white/65 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:text-white"
+                  className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/4 px-4 py-2 text-[13px] font-medium text-white/65 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:text-white"
                 >
                   Sign in
                 </Link>
@@ -565,8 +547,8 @@ export function Hero() {
             <div className="flex flex-wrap gap-2">
               <StatBadge value="5" label="Active Apps" icon="◈" />
               <StatBadge value="AI" label="Powered" icon="◎" />
-              <StatBadge value="Live" label="Real-time Data" icon="◉" />
-              <StatBadge value="Secure" label="Auth Required" icon="◆" />
+              <StatBadge value="Live" label="Real-time" icon="◉" />
+              <StatBadge value="Secure" label="Auth" icon="◆" />
             </div>
           </div>
 
@@ -580,13 +562,11 @@ export function Hero() {
           />
         </div>
 
-        {/* ── BOTTOM: Cards LEFT | Globe RIGHT ──────────── */}
-        {/* relative container so ConnectorCanvas can be absolute over both columns */}
+        {/* ── BOTTOM: Cards LEFT | Globe RIGHT — fills remaining space ── */}
         <div
           ref={bottomRef}
-          className="relative grid grid-cols-1 gap-8 pb-16 lg:grid-cols-2 lg:items-center"
+          className="relative grid min-h-0 flex-1 grid-cols-1 items-center gap-6 py-[clamp(10px,3vh,28px)] lg:grid-cols-2"
         >
-          {/* Connector lines drawn over both columns */}
           <ConnectorCanvas
             containerRef={bottomRef}
             cardRefs={[card0Ref, card1Ref, card2Ref]}
@@ -594,7 +574,7 @@ export function Hero() {
           />
 
           {/* Left — Ecosystem cards */}
-          <div className="relative flex flex-col gap-3" style={{ zIndex: 3 }}>
+          <div className="relative flex flex-col gap-2" style={{ zIndex: 3 }}>
             <div className="flex items-center justify-between">
               <div>
                 <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/30">
@@ -611,7 +591,7 @@ export function Hero() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-2">
               <EcosystemNode
                 ref={card0Ref}
                 name="Metal Products Company"
@@ -634,16 +614,12 @@ export function Hero() {
                 accentColor="#eab308"
               />
             </div>
-
-            <div className="mt-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white/15">
-              Ecosystem Registry
-            </div>
           </div>
 
-          {/* Right — AI Globe (ref'd so connector knows its center) */}
+          {/* Right — AI Globe, sized to whatever vertical space remains */}
           <div
             ref={globeRef}
-            className="hidden lg:block w-full max-w-[460px] aspect-square mx-auto bg-transparent border-0 outline-none"
+            className="mx-auto hidden aspect-square w-full max-w-[min(420px,38vh)] border-0 bg-transparent outline-none lg:block"
             style={{ zIndex: 3 }}
           >
             <GlobeCanvas />
@@ -653,7 +629,7 @@ export function Hero() {
 
       {/* Bottom fade */}
       <div
-        className="pointer-events-none absolute bottom-0 left-0 right-0 h-28"
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-16"
         style={{ background: "linear-gradient(to bottom, transparent, #000)" }}
       />
     </section>
