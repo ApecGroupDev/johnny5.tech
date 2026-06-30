@@ -28,7 +28,7 @@ function GlobeCanvas() {
       const now = Date.now() / 1000;
       const cx = w * 0.5,
         cy = h * 0.5;
-      const r = Math.min(w, h) * 0.38;
+      const r = Math.min(w, h) * 0.34;
 
       // Ambient outer bloom (Cyan/Indigo/Gold gradient)
       const amb = ctx.createRadialGradient(cx, cy, r * 0.1, cx, cy, r * 1.4);
@@ -389,8 +389,10 @@ function ConnectorCanvas({
 
       const contRect = cont.getBoundingClientRect();
       const globeRect = globe.getBoundingClientRect();
-      const gx = globeRect.left - contRect.left + globeRect.width / 2;
-      const gy = globeRect.top - contRect.top + globeRect.height / 2;
+      const globeCanvas = globe.querySelector("canvas");
+      const targetRect = globeCanvas ? globeCanvas.getBoundingClientRect() : globeRect;
+      const gx = targetRect.left - contRect.left + targetRect.width / 2;
+      const gy = targetRect.top - contRect.top + targetRect.height / 2;
 
       cardRefs.forEach((cRef, i) => {
         const card = cRef.current;
@@ -773,7 +775,7 @@ export function Hero() {
         {/* ── BOTTOM: Cards LEFT | Massive Globe RIGHT — fills remaining space ── */}
         <div
           ref={bottomRef}
-          className="relative grid min-h-0 flex-1 grid-cols-1 items-center gap-6 py-[clamp(10px,3vh,28px)] lg:grid-cols-2"
+          className="relative grid min-h-0 flex-1 grid-cols-1 items-start pt-6 gap-6 py-[clamp(10px,3vh,28px)] lg:grid-cols-2"
         >
           {/* Layer 4: Network Connectors */}
           <ConnectorCanvas
@@ -828,10 +830,10 @@ export function Hero() {
           {/* Right — AI Globe container & Floating Panels (Layer 5 & 6) */}
           <div
             ref={globeRef}
-            className="relative hidden items-center justify-center lg:flex h-full w-full border-0 bg-transparent outline-none z-[2]"
+            className="relative hidden items-start justify-center lg:flex h-full w-full border-0 bg-transparent outline-none z-[2] pt-4"
           >
             {/* The actual massive canvas that overflows behind card grids and screen bounds */}
-            <div className="absolute w-[520px] h-[520px] xl:w-[650px] xl:h-[650px] aspect-square pointer-events-none select-none">
+            <div className="absolute top-[-100px] xl:top-[-160px] w-[520px] h-[520px] xl:w-[650px] xl:h-[650px] aspect-square pointer-events-none select-none">
               <GlobeCanvas />
             </div>
           </div>
