@@ -10,8 +10,9 @@ export function StarsBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     let raf: number;
-    let w = 0, h = 0;
-    
+    let w = 0,
+      h = 0;
+
     interface Star {
       x: number;
       y: number;
@@ -22,9 +23,9 @@ export function StarsBackground() {
       vy: number;
       color: string;
     }
-    
+
     let stars: Star[] = [];
-    
+
     function resize() {
       w = canvas!.width = canvas!.offsetWidth;
       h = canvas!.height = canvas!.offsetHeight;
@@ -44,14 +45,14 @@ export function StarsBackground() {
         });
       }
     }
-    
+
     function draw() {
       ctx!.clearRect(0, 0, w, h);
-      stars.forEach(star => {
+      stars.forEach((star) => {
         // Drift movement
         star.x += star.vx;
         star.y += star.vy;
-        
+
         // Wrap screen bounds
         if (star.x < 0) star.x = w;
         if (star.x > w) star.x = 0;
@@ -71,7 +72,7 @@ export function StarsBackground() {
       });
       raf = requestAnimationFrame(draw);
     }
-    
+
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
     resize();
@@ -81,7 +82,7 @@ export function StarsBackground() {
       ro.disconnect();
     };
   }, []);
-  
+
   return (
     <canvas
       ref={canvasRef}

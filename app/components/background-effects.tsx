@@ -9,14 +9,35 @@ export function BackgroundEffects() {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = ref.current; if (!canvas) return;
-    const ctx = canvas.getContext("2d"); if (!ctx) return;
-    let raf: number, w = 0, h = 0;
+    const canvas = ref.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    let raf: number,
+      w = 0,
+      h = 0;
     const C = ["#06b6d4", "#818cf8", "#eab308", "#3b82f6"];
-    
-    type P = { x:number;y:number;vx:number;vy:number;r:number;a:number;c:string };
-    type S = { x:number;y:number;len:number;spd:number;op:number;lw:number;c:string;prog:number };
-    
+
+    type P = {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      a: number;
+      c: string;
+    };
+    type S = {
+      x: number;
+      y: number;
+      len: number;
+      spd: number;
+      op: number;
+      lw: number;
+      c: string;
+      prog: number;
+    };
+
     const ps: P[] = [];
     const ss: S[] = [];
 

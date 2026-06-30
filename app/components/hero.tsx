@@ -390,7 +390,9 @@ function ConnectorCanvas({
       const contRect = cont.getBoundingClientRect();
       const globeRect = globe.getBoundingClientRect();
       const globeCanvas = globe.querySelector("canvas");
-      const targetRect = globeCanvas ? globeCanvas.getBoundingClientRect() : globeRect;
+      const targetRect = globeCanvas
+        ? globeCanvas.getBoundingClientRect()
+        : globeRect;
       const gx = targetRect.left - contRect.left + targetRect.width / 2;
       const gy = targetRect.top - contRect.top + targetRect.height / 2;
 
@@ -619,7 +621,6 @@ function StatBadge({
   );
 }
 
-
 /* ─────────────────────────────────────────────────────────────
    Hero
  ───────────────────────────────────────────────────────────── */
@@ -653,8 +654,8 @@ export function Hero() {
       ref={containerRef}
       className="relative flex flex-col overflow-hidden"
       style={{
-        height: "100svh",
-        minHeight: 640,
+        height: "calc(100svh - 64px)",
+        minHeight: 580,
         background:
           "radial-gradient(ellipse 80% 55% at 68% 50%, rgba(99,102,241,0.13) 0%, rgba(6,182,212,0.06) 42%, transparent 72%), radial-gradient(ellipse 45% 45% at 12% 55%, rgba(234,179,8,0.05) 0%, transparent 65%), #000",
       }}
@@ -708,7 +709,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col px-6">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-6 pb-24">
         {/* ── TOP: Brand + text ───────────────────────────── */}
         <div className="flex flex-col gap-3 pt-[clamp(20px,4.5vh,56px)]">
           {/* Status pill */}
@@ -775,7 +776,7 @@ export function Hero() {
         {/* ── BOTTOM: Cards LEFT | Massive Globe RIGHT — fills remaining space ── */}
         <div
           ref={bottomRef}
-          className="relative grid min-h-0 flex-1 grid-cols-1 items-start pt-6 gap-6 py-[clamp(10px,3vh,28px)] lg:grid-cols-2"
+          className="relative grid min-h-0 flex-initial grid-cols-1 items-start pt-6 gap-6 py-[clamp(10px,3vh,28px)] lg:grid-cols-2"
         >
           {/* Layer 4: Network Connectors */}
           <ConnectorCanvas

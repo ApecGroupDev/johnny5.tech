@@ -90,7 +90,11 @@ export default function SiteHeader() {
             {pathname !== "/login" && (
               <div className="hidden md:block">
                 {session ? (
-                  <Button onClick={() => signOut({ callbackUrl: "/" })} variant="secondary" size="sm">
+                  <Button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    variant="secondary"
+                    size="sm"
+                  >
                     Sign out
                   </Button>
                 ) : (
@@ -124,8 +128,8 @@ export default function SiteHeader() {
                   {item.label}
                 </Link>
               ))}
-              {pathname !== "/login" && (
-                session ? (
+              {pathname !== "/login" &&
+                (session ? (
                   <button
                     onClick={() => signOut({ callbackUrl: "/" })}
                     className="mt-2 inline-flex items-center justify-center rounded-md border border-line text-ink px-4 py-2.5 text-sm hover:bg-surface transition-colors"
@@ -139,8 +143,7 @@ export default function SiteHeader() {
                   >
                     Sign in
                   </Link>
-                )
-              )}
+                ))}
             </nav>
           </div>
         )}

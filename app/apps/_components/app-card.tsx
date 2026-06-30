@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, Lock } from "lucide-react";
 import { Badge, Pill } from "@/app/components/ui/badge";
 import type { AppEntry } from "./app-data";
-import { ACCENTS, APP_META, PreviewRenderer } from "./app-previews";
+import { ACCENTS, APP_META } from "./app-previews";
 
 export function AppCard({
   app,
@@ -33,7 +33,7 @@ export function AppCard({
             } as React.CSSProperties)
           : undefined
       }
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-white/5 bg-zinc-950/80 backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:border-white/20 hover:shadow-[0_30px_60px_-15px_var(--card-soft,rgba(10,10,10,0.25))]"
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-white/5 bg-zinc-950/80 backdrop-blur-md transition-all duration-300 hover:-translate-y-2.5 hover:scale-[1.01] hover:border-[var(--card-accent,rgba(255,255,255,0.22))] hover:shadow-[0_30px_60px_-10px_var(--card-soft,rgba(0,0,0,0.5))]"
     >
       {/* Accent glow border overlay on hover */}
       <div className="absolute inset-0 rounded-xl bg-linear-to-br from-white/2 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
@@ -41,7 +41,7 @@ export function AppCard({
       {/* Ambient background accent glow */}
       {accent && (
         <div
-          className="absolute -inset-20 rounded-full opacity-0 blur-[50px] transition-all duration-500 group-hover:opacity-10 pointer-events-none"
+          className="absolute -inset-20 rounded-full opacity-0 blur-[50px] transition-all duration-500 group-hover:opacity-16 pointer-events-none"
           style={{
             background: `radial-gradient(circle, var(--card-accent) 0%, transparent 60%)`,
           }}
@@ -60,47 +60,46 @@ export function AppCard({
         />
       )}
 
-      {/* Preview */}
+      {/* Mini Node Active Banner */}
       {meta && (
         <div
-          className="relative h-36 border-b border-white/5"
+          className="relative h-10 border-b border-white/5 overflow-hidden flex items-center justify-between px-4"
           style={{
             background:
-              "linear-gradient(135deg, var(--card-tint) 0%, transparent 65%), #030303",
+              "linear-gradient(90deg, var(--card-tint) 0%, transparent 75%), #050507",
           }}
         >
-          {/* Subtle grid pattern inside preview */}
+          {/* Subtle grid pattern inside mini banner */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-[0.03]"
+            className="pointer-events-none absolute inset-0 opacity-[0.04]"
             style={{
               backgroundImage: `linear-gradient(to right, var(--card-accent) 1px, transparent 1px), linear-gradient(to bottom, var(--card-accent) 1px, transparent 1px)`,
-              backgroundSize: "16px 16px",
+              backgroundSize: "8px 8px",
             }}
             aria-hidden
           />
-
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.5]"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(135deg, rgba(10,10,10,0.04) 0px, rgba(10,10,10,0.04) 1px, transparent 1px, transparent 8px)",
-            }}
-            aria-hidden
-          />
-          <div className="relative flex h-full w-full items-center justify-center p-4">
-            <PreviewRenderer kind={meta.preview} />
+          
+          <div className="relative flex items-center gap-1.5">
+            <span
+              className="h-1 w-1 rounded-full animate-pulse"
+              style={{
+                backgroundColor: "var(--card-accent)",
+                boxShadow: `0 0 6px var(--card-accent)`,
+              }}
+            />
+            <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/30">
+              {app.category} REGISTRY
+            </span>
           </div>
 
-          {locked && (
-            <div
-              className="pointer-events-none absolute inset-0 flex items-center justify-center backdrop-blur-[2px]"
-              style={{ background: "rgba(0, 0, 0, 0.45)" }}
-              aria-hidden
-            >
-              <div className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-black/90 px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-wider text-white/50 shadow-md">
-                <Lock className="h-3 w-3 text-cyan-400" />
-                Locked App
-              </div>
+          {locked ? (
+            <div className="relative inline-flex items-center gap-1 font-mono text-[7.5px] uppercase tracking-wider text-cyan-400/80">
+              <Lock className="h-2.5 w-2.5" />
+              LOCKED
+            </div>
+          ) : (
+            <div className="relative inline-flex items-center gap-1 font-mono text-[7.5px] uppercase tracking-wider text-emerald-400/80 animate-pulse">
+              <span>ONLINE</span>
             </div>
           )}
         </div>
@@ -131,7 +130,7 @@ export function AppCard({
             {app.title}
           </h3>
 
-          <p className="mt-2 text-[13px] leading-relaxed text-white/45">
+          <p className="mt-2 text-[12px] leading-relaxed text-white/40 line-clamp-2">
             {app.description}
           </p>
         </div>
