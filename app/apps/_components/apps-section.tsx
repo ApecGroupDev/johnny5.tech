@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Lock, ArrowUpRight, Sparkles } from "lucide-react";
 import { Section } from "@/app/components/ui/section";
 import { Reveal } from "@/app/components/motion/reveal";
 import { AppCard } from "./app-card";
 import { APPS, type AppKind } from "./app-data";
+import { StarsBackground } from "../../components/stars-background";
 
 type Props = {
   kind: AppKind;
@@ -52,9 +55,18 @@ export function AppsSection({
       description={description ?? defaults.description}
       className="relative overflow-hidden"
     >
-      {/* Background neon glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[550px] h-[550px] rounded-full bg-indigo-500/[0.03] blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/3 w-[350px] h-[350px] rounded-full bg-cyan-500/[0.015] blur-[100px] pointer-events-none" />
+      {/* Layer 1: background twinkling stars */}
+      <StarsBackground />
+
+      {/* Layer 2: masked perspective grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:45px_45px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_40%,transparent_100%)] opacity-20 pointer-events-none z-[1]" />
+
+      {/* Layer 3: ambient light layers */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[650px] h-[650px] rounded-full bg-indigo-500/[0.03] blur-[130px] animate-[pulse_10s_ease-in-out_infinite]" />
+        <div className="absolute bottom-1/4 left-1/3 w-[500px] h-[500px] rounded-full bg-cyan-500/[0.015] blur-[110px] animate-[pulse_12s_ease-in-out_infinite]" />
+        <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-yellow-500/[0.005] blur-[100px] animate-[pulse_14s_ease-in-out_infinite]" />
+      </div>
 
       {/* Locked banner (private + unauthenticated, page variant only) */}
       {!isTeaser && isPrivate && !isAuthenticated && (

@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Section } from "../components/ui/section";
 import { Reveal } from "../components/motion/reveal";
+import { StarsBackground } from "../components/stars-background";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -41,9 +42,22 @@ export default function LoginPage() {
   };
 
   return (
-    <Section id="login" className="pt-16 pb-24 md:pt-24 md:pb-32">
+    <Section id="login" className="relative overflow-hidden pt-16 pb-24 md:pt-24 md:pb-32">
+      {/* Layer 1: background twinkling stars */}
+      <StarsBackground />
+
+      {/* Layer 2: masked perspective grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:45px_45px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_40%,transparent_100%)] opacity-20 pointer-events-none z-[1]" />
+
+      {/* Layer 3: ambient light layers */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[650px] h-[650px] rounded-full bg-indigo-500/[0.03] blur-[130px] animate-[pulse_10s_ease-in-out_infinite]" />
+        <div className="absolute bottom-1/4 left-1/3 w-[500px] h-[500px] rounded-full bg-cyan-500/[0.015] blur-[110px] animate-[pulse_12s_ease-in-out_infinite]" />
+        <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-yellow-500/[0.005] blur-[100px] animate-[pulse_14s_ease-in-out_infinite]" />
+      </div>
+
       <Reveal>
-        <div className="mx-auto max-w-5xl px-4">
+        <div className="mx-auto max-w-5xl px-4 relative z-10">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
             {/* Left Column: Login Form */}
             <div className="mx-auto w-full max-w-md">

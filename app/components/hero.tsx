@@ -3,98 +3,7 @@
 import { forwardRef, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-/* ─────────────────────────────────────────────────────────────
-   Layer 1: Stars background canvas — twinkling & drifting
- ───────────────────────────────────────────────────────────── */
-function StarsBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    let raf: number;
-    let w = 0, h = 0;
-    
-    interface Star {
-      x: number;
-      y: number;
-      size: number;
-      alpha: number;
-      speed: number;
-      vx: number;
-      vy: number;
-      color: string;
-    }
-    
-    let stars: Star[] = [];
-    
-    function resize() {
-      w = canvas!.width = canvas!.offsetWidth;
-      h = canvas!.height = canvas!.offsetHeight;
-      stars = [];
-      const count = Math.floor((w * h) / 6000); // density of stars
-      const colors = ["#ffffff", "#cbd5e1", "#22d3ee", "#818cf8"];
-      for (let i = 0; i < count; i++) {
-        stars.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          size: Math.random() * 1.6 + 0.6, // larger size (0.6px to 2.2px)
-          alpha: Math.random(),
-          speed: Math.random() * 0.010 + 0.003,
-          vx: (Math.random() - 0.5) * 0.04,
-          vy: (Math.random() - 0.5) * 0.04,
-          color: colors[Math.floor(Math.random() * colors.length)],
-        });
-      }
-    }
-    
-    function draw() {
-      ctx!.clearRect(0, 0, w, h);
-      stars.forEach(star => {
-        // Drift movement
-        star.x += star.vx;
-        star.y += star.vy;
-        
-        // Wrap screen bounds
-        if (star.x < 0) star.x = w;
-        if (star.x > w) star.x = 0;
-        if (star.y < 0) star.y = h;
-        if (star.y > h) star.y = 0;
-
-        // Twinkling alpha pulse (with higher minimum opacity baseline)
-        star.alpha += star.speed;
-        if (star.alpha > 1 || star.alpha < 0) {
-          star.speed = -star.speed;
-        }
-        ctx!.globalAlpha = Math.max(0.18, Math.min(1, star.alpha)) * 0.95; // much brighter
-        ctx!.fillStyle = star.color;
-        ctx!.beginPath();
-        ctx!.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx!.fill();
-      });
-      raf = requestAnimationFrame(draw);
-    }
-    
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
-    resize();
-    draw();
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-    };
-  }, []);
-  
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ zIndex: 0, opacity: 0.95 }} // higher layer opacity
-    />
-  );
-}
+import { StarsBackground } from "./stars-background";
 
 /* ─────────────────────────────────────────────────────────────
    Globe canvas — 3D orbital rings, Concentric dust shells, text projection
@@ -816,21 +725,21 @@ export function Hero() {
       <StarsBackground />
 
       {/* Layer 2: masked perspective grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:45px_45px] [mask-image:radial-gradient(ellipse_60%_50%_at_68%_50%,#000_40%,transparent_100%)] opacity-70 pointer-events-none z-[1]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:45px_45px] [mask-image:radial-gradient(ellipse_60%_50%_at_68%_50%,#000_40%,transparent_100%)] opacity-40 pointer-events-none z-[1]" />
 
       {/* Layer 3: ambient light layers */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
         {/* Deep background glows */}
-        <div className="absolute top-[15%] right-[-25%] w-[900px] h-[900px] rounded-full bg-cyan-500/18 blur-[120px] animate-[pulse_9s_ease-in-out_infinite]" />
-        <div className="absolute top-[25%] right-[5%] w-[700px] h-[700px] rounded-full bg-indigo-500/22 blur-[140px] animate-[pulse_11s_ease-in-out_infinite]" />
-        <div className="absolute bottom-[10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-yellow-500/05 blur-[100px] animate-[pulse_13s_ease-in-out_infinite]" />
+        <div className="absolute top-[15%] right-[-25%] w-[900px] h-[900px] rounded-full bg-cyan-500/08 blur-[130px] animate-[pulse_9s_ease-in-out_infinite]" />
+        <div className="absolute top-[25%] right-[5%] w-[700px] h-[700px] rounded-full bg-indigo-500/10 blur-[150px] animate-[pulse_11s_ease-in-out_infinite]" />
+        <div className="absolute bottom-[10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-yellow-500/02 blur-[120px] animate-[pulse_13s_ease-in-out_infinite]" />
         
         {/* Top left corner accent illumination for header & content layout */}
-        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[110px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-indigo-600/05 blur-[110px]" />
         
         {/* Interactive Mouse-Following Light Bloom */}
         <div 
-          className="absolute top-[20%] left-[40%] w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-cyan-500/08 to-indigo-500/08 blur-[140px] transition-transform duration-500 ease-out" 
+          className="absolute top-[20%] left-[40%] w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-cyan-500/04 to-indigo-500/04 blur-[140px] transition-transform duration-500 ease-out" 
           style={{
             transform: "translate(calc(var(--mx, 0) * 45px), calc(var(--my, 0) * 45px))",
           }}
