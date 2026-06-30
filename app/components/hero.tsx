@@ -23,6 +23,9 @@ function StarsBackground() {
       size: number;
       alpha: number;
       speed: number;
+      vx: number;
+      vy: number;
+      color: string;
     }
     
     let stars: Star[] = [];
@@ -31,27 +34,42 @@ function StarsBackground() {
       w = canvas!.width = canvas!.offsetWidth;
       h = canvas!.height = canvas!.offsetHeight;
       stars = [];
-      const count = Math.floor((w * h) / 14000); // density of stars
+      const count = Math.floor((w * h) / 6000); // density of stars
+      const colors = ["#ffffff", "#cbd5e1", "#22d3ee", "#818cf8"];
       for (let i = 0; i < count; i++) {
         stars.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          size: Math.random() * 0.8 + 0.3,
+          size: Math.random() * 1.6 + 0.6, // larger size (0.6px to 2.2px)
           alpha: Math.random(),
-          speed: Math.random() * 0.02 + 0.005,
+          speed: Math.random() * 0.010 + 0.003,
+          vx: (Math.random() - 0.5) * 0.04,
+          vy: (Math.random() - 0.5) * 0.04,
+          color: colors[Math.floor(Math.random() * colors.length)],
         });
       }
     }
     
     function draw() {
       ctx!.clearRect(0, 0, w, h);
-      ctx!.fillStyle = "#ffffff";
       stars.forEach(star => {
+        // Drift movement
+        star.x += star.vx;
+        star.y += star.vy;
+        
+        // Wrap screen bounds
+        if (star.x < 0) star.x = w;
+        if (star.x > w) star.x = 0;
+        if (star.y < 0) star.y = h;
+        if (star.y > h) star.y = 0;
+
+        // Twinkling alpha pulse (with higher minimum opacity baseline)
         star.alpha += star.speed;
         if (star.alpha > 1 || star.alpha < 0) {
           star.speed = -star.speed;
         }
-        ctx!.globalAlpha = Math.max(0, Math.min(1, star.alpha)) * 0.6;
+        ctx!.globalAlpha = Math.max(0.18, Math.min(1, star.alpha)) * 0.95; // much brighter
+        ctx!.fillStyle = star.color;
         ctx!.beginPath();
         ctx!.arc(star.x, star.y, star.size, 0, Math.PI * 2);
         ctx!.fill();
@@ -72,8 +90,8 @@ function StarsBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 pointer-events-none"
-      style={{ zIndex: 0, opacity: 0.55 }}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      style={{ zIndex: 0, opacity: 0.95 }} // higher layer opacity
     />
   );
 }
@@ -802,9 +820,21 @@ export function Hero() {
 
       {/* Layer 3: ambient light layers */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
-        <div className="absolute top-[20%] right-[-20%] w-[800px] h-[800px] rounded-full bg-cyan-500/10 blur-[130px] animate-[pulse_10s_ease-in-out_infinite]" />
-        <div className="absolute top-[30%] right-[10%] w-[600px] h-[600px] rounded-full bg-indigo-500/12 blur-[150px] animate-[pulse_12s_ease-in-out_infinite]" />
-        <div className="absolute bottom-[10%] left-[5%] w-[500px] h-[500px] rounded-full bg-yellow-500/03 blur-[120px] animate-[pulse_14s_ease-in-out_infinite]" />
+        {/* Deep background glows */}
+        <div className="absolute top-[15%] right-[-25%] w-[900px] h-[900px] rounded-full bg-cyan-500/18 blur-[120px] animate-[pulse_9s_ease-in-out_infinite]" />
+        <div className="absolute top-[25%] right-[5%] w-[700px] h-[700px] rounded-full bg-indigo-500/22 blur-[140px] animate-[pulse_11s_ease-in-out_infinite]" />
+        <div className="absolute bottom-[10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-yellow-500/05 blur-[100px] animate-[pulse_13s_ease-in-out_infinite]" />
+        
+        {/* Top left corner accent illumination for header & content layout */}
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[110px]" />
+        
+        {/* Interactive Mouse-Following Light Bloom */}
+        <div 
+          className="absolute top-[20%] left-[40%] w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-cyan-500/08 to-indigo-500/08 blur-[140px] transition-transform duration-500 ease-out" 
+          style={{
+            transform: "translate(calc(var(--mx, 0) * 45px), calc(var(--my, 0) * 45px))",
+          }}
+        />
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col px-6">
