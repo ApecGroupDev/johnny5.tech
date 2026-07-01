@@ -687,7 +687,7 @@ export function Hero() {
       <StarsBackground />
 
       {/* Layer 2: masked perspective grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:45px_45px] [mask-image:radial-gradient(ellipse_60%_50%_at_68%_50%,#000_40%,transparent_100%)] opacity-40 pointer-events-none z-[1]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-size-[45px_45px] mask-[radial-gradient(ellipse_60%_50%_at_68%_50%,#000_40%,transparent_100%)] opacity-40 pointer-events-none z-1" />
 
       {/* Layer 3: ambient light layers */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
@@ -701,7 +701,7 @@ export function Hero() {
 
         {/* Interactive Mouse-Following Light Bloom */}
         <div
-          className="absolute top-[20%] left-[40%] w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-cyan-500/04 to-indigo-500/04 blur-[140px] transition-transform duration-500 ease-out"
+          className="absolute top-[20%] left-[40%] w-[700px] h-[700px] rounded-full bg-linear-to-tr from-cyan-500/04 to-indigo-500/04 blur-[140px] transition-transform duration-500 ease-out"
           style={{
             transform:
               "translate(calc(var(--mx, 0) * 45px), calc(var(--my, 0) * 45px))",
@@ -831,7 +831,7 @@ export function Hero() {
           {/* Right — AI Globe container & Floating Panels (Layer 5 & 6) */}
           <div
             ref={globeRef}
-            className="relative hidden items-start justify-center lg:flex h-full w-full border-0 bg-transparent outline-none z-[2] pt-4"
+            className="relative hidden items-start justify-center lg:flex h-full w-full border-0 bg-transparent outline-none z-2 pt-4"
           >
             {/* The actual massive canvas that overflows behind card grids and screen bounds */}
             <div className="absolute top-[-100px] xl:top-[-160px] w-[520px] h-[520px] xl:w-[650px] xl:h-[650px] aspect-square pointer-events-none select-none">

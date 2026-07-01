@@ -59,23 +59,21 @@ export function AppsSection({
       <StarsBackground />
 
       {/* Layer 2: masked perspective grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:45px_45px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_40%,transparent_100%)] opacity-20 pointer-events-none z-[1]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-size-[45px_45px] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_40%,transparent_100%)] opacity-20 pointer-events-none z-1" />
 
       {/* Layer 3: ambient light layers */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[650px] h-[650px] rounded-full bg-indigo-500/[0.03] blur-[130px] animate-[pulse_10s_ease-in-out_infinite]" />
-        <div className="absolute bottom-1/4 left-1/3 w-[500px] h-[500px] rounded-full bg-cyan-500/[0.015] blur-[110px] animate-[pulse_12s_ease-in-out_infinite]" />
-        <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-yellow-500/[0.005] blur-[100px] animate-[pulse_14s_ease-in-out_infinite]" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[650px] h-[650px] rounded-full bg-indigo-500/3 blur-[130px] animate-[pulse_10s_ease-in-out_infinite]" />
+        <div className="absolute bottom-1/4 left-1/3 w-[500px] h-[500px] rounded-full bg-cyan-500/1.5 blur-[110px] animate-[pulse_12s_ease-in-out_infinite]" />
+        <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-yellow-500/0.5 blur-[100px] animate-[pulse_14s_ease-in-out_infinite]" />
       </div>
 
       {/* Locked banner (private + unauthenticated, page variant only) */}
       {!isTeaser && isPrivate && !isAuthenticated && (
-        <div
-          className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-white/5 bg-zinc-950/80 px-5 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.4)] backdrop-blur-md relative overflow-hidden"
-        >
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-white/5 bg-zinc-950/80 px-5 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.4)] backdrop-blur-md relative overflow-hidden">
           {/* subtle glowing cyan accent line */}
           <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
-          
+
           <div className="flex items-center gap-3">
             <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-black/40 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
               <Lock className="h-4 w-4 text-cyan-400" />
@@ -115,7 +113,9 @@ export function AppsSection({
             <div className="mx-auto mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-black/40 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
               <Sparkles className="h-4 w-4 text-cyan-400" />
             </div>
-            <p className="font-display text-2xl font-bold text-white">No apps yet.</p>
+            <p className="font-display text-2xl font-bold text-white">
+              No apps yet.
+            </p>
             <p className="mt-2 text-sm text-white/45">
               New apps will show up here as they ship.
             </p>

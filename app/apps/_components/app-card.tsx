@@ -33,7 +33,7 @@ export function AppCard({
             } as React.CSSProperties)
           : undefined
       }
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-white/12 bg-[#13131a]/95 backdrop-blur-md transition-all duration-300 hover:-translate-y-3.5 hover:scale-[1.02] hover:border-[var(--card-accent,rgba(255,255,255,0.35))] hover:shadow-[0_30px_70px_-10px_var(--card-soft,rgba(0,0,0,0.65)),_0_0_30px_var(--card-soft,rgba(0,0,0,0.2))] shadow-[0_12px_40px_-12px_rgba(0,0,0,0.9),_0_0_15px_var(--card-soft,rgba(0,0,0,0.03))]"
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-white/12 bg-[#13131a]/95 backdrop-blur-md transition-all duration-300 hover:-translate-y-3.5 hover:scale-[1.02] hover:border-(--card-accent,rgba(255,255,255,0.35)) hover:shadow-[0_30px_70px_-10px_var(--card-soft,rgba(0,0,0,0.65)),0_0_30px_var(--card-soft,rgba(0,0,0,0.2))] shadow-[0_12px_40px_-12px_rgba(0,0,0,0.9),0_0_15px_var(--card-soft,rgba(0,0,0,0.03))]"
     >
       {/* Accent glow border overlay on hover */}
       <div className="absolute inset-0 rounded-xl bg-linear-to-br from-white/2 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
@@ -78,7 +78,7 @@ export function AppCard({
             }}
             aria-hidden
           />
-          
+
           <div className="relative flex items-center gap-1.5">
             <span
               className="h-1 w-1 rounded-full animate-pulse"

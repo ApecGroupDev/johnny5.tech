@@ -42,17 +42,20 @@ export default function LoginPage() {
   };
 
   return (
-    <Section id="login" className="relative overflow-hidden pt-24 pb-32 flex items-center justify-center min-h-[calc(100vh-160px)]">
+    <Section
+      id="login"
+      className="relative overflow-hidden pt-24 pb-32 flex items-center justify-center min-h-[calc(100vh-160px)]"
+    >
       {/* Layer 1: background twinkling stars */}
       <StarsBackground />
 
       {/* Layer 2: masked perspective grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:45px_45px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_40%,transparent_100%)] opacity-20 pointer-events-none z-[1]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-size-[45px_45px] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_40%,transparent_100%)] opacity-20 pointer-events-none z-1" />
 
       {/* Layer 3: ambient light layers */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-indigo-500/[0.04] blur-[130px] animate-[pulse_10s_ease-in-out_infinite]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-cyan-500/[0.02] blur-[110px] animate-[pulse_12s_ease-in-out_infinite]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-indigo-500/4 blur-[130px] animate-[pulse_10s_ease-in-out_infinite]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-cyan-500/2 blur-[110px] animate-[pulse_12s_ease-in-out_infinite]" />
       </div>
 
       <Reveal>
@@ -73,7 +76,8 @@ export default function LoginPage() {
               Identity Verification
             </h1>
             <p className="mt-2 text-[13px] text-white/45 max-w-sm">
-              Enter secure credentials to establish your authorized workspace session.
+              Enter secure credentials to establish your authorized workspace
+              session.
             </p>
           </div>
 
