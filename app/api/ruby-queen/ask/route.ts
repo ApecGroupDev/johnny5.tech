@@ -55,6 +55,30 @@ export async function OPTIONS() {
   });
 }
 
+function webEnabled() {
+  return String(process.env.WEB_FALLBACK == null ? "true" : process.env.WEB_FALLBACK).toLowerCase() !== "false";
+}
+
+async function webAnswer(question: string) {
+  const p = await call({
+    model: process.env.ANSWER_MODEL || "claude-sonnet-4-6",
+    max_tokens: 700,
+    system:
+      SCOPE +
+      `\n\nUse web search to find a credible answer for this POS / fuel service question, then reply JSON: {"source":"web","answer":"..."}.`,
+    tools: [
+      {
+        type: process.env.WEB_SEARCH_TOOL || "web_search_20250305",
+        name: "web_search",
+        max_uses: 3,
+      },
+    ],
+    messages: [{ role: "user", content: question }],
+  });
+  const j = pickJSON(textOf(p));
+  return j && j.answer ? j.answer : textOf(p) || "No web answer found.";
+}
+
 export async function POST(req: Request) {
   const apiKey = process.env.RUBY_QUEEN_ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
@@ -66,10 +90,17 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const { question, history = [], context = [], service = [] } = body;
+    const { question, history = [], context = [], service = [], web = false } = body;
 
     if (!question) {
       return NextResponse.json({ source: "none", answer: "No question received." });
+    }
+
+    if (web === true || web === "true") {
+      if (!webEnabled()) {
+        return NextResponse.json({ source: "none", answer: "Web search is turned off on the server." });
+      }
+      return NextResponse.json({ source: "web", answer: await webAnswer(question) });
     }
 
     const lib =
@@ -118,27 +149,8 @@ export async function POST(req: Request) {
       });
     }
 
-    if (String(process.env.WEB_FALLBACK).toLowerCase() === "true") {
-      const p2 = await call({
-        model: process.env.ANSWER_MODEL || "claude-sonnet-4-6",
-        max_tokens: 700,
-        system:
-          SCOPE +
-          `\n\nThe APEC library did not contain this. Use web search to find a credible answer for this POS / fuel service question, then reply JSON: {"source":"web","answer":"..."}.`,
-        tools: [
-          {
-            type: process.env.WEB_SEARCH_TOOL || "web_search_20250305",
-            name: "web_search",
-            max_uses: 3,
-          },
-        ],
-        messages: [{ role: "user", content: question }],
-      });
-      const j2 = pickJSON(textOf(p2));
-      return NextResponse.json({
-        source: "web",
-        answer: j2 && j2.answer ? j2.answer : textOf(p2) || "No web answer found.",
-      });
+    if (webEnabled()) {
+      return NextResponse.json({ source: "web", answer: await webAnswer(question) });
     }
 
     return NextResponse.json({

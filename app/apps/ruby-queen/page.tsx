@@ -53,7 +53,7 @@ export default async function RubyQueenPage() {
                   Live
                 </Badge>
                 <Badge tone="accent">
-                  v2.0
+                  v3.0
                 </Badge>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -91,7 +91,7 @@ export default async function RubyQueenPage() {
 
         <div className="mt-10 grid grid-cols-1 gap-6 border-t border-line pt-8 md:grid-cols-4">
           <Info label="Status" value="Live" />
-          <Info label="Version" value="2.0" />
+          <Info label="Version" value="3.0" />
           <Info label="Category" value="Support" />
           <Info label="Data" value="APEC Verified Library" />
         </div>
@@ -100,23 +100,23 @@ export default async function RubyQueenPage() {
           <div className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted">
             Release Notes
           </div>
-          <h2 className="mt-4 font-display text-2xl text-ink">What&apos;s new in v2.0</h2>
+          <h2 className="mt-4 font-display text-2xl text-ink">What&apos;s new in v3.0</h2>
           <ul className="mt-4 space-y-3 text-muted max-w-2xl">
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
-              <span><strong className="text-ink font-medium">Secured Data Access:</strong> Integrated NextAuth middleware protection for all static data routes (including site profiles and service history), ensuring that sensitive data is fully protected from unauthorized access.</span>
+              <span><strong className="text-ink font-medium">Contribution Leaderboard:</strong> Introduced a new technician leaderboard tracking approved solutions and active contributions.</span>
             </li>
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
-              <span><strong className="text-ink font-medium">Seamless Authentication:</strong> Removed the redundant site-level password check, allowing logged-in users to access the app immediately.</span>
+              <span><strong className="text-ink font-medium">Manager Review Portal:</strong> Added submission queues for Service Managers to review, edit, and approve fixes directly into the knowledge base.</span>
             </li>
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
-              <span><strong className="text-ink font-medium">Next.js API Gateway Integration:</strong> Replaced the old Vercel Serverless JavaScript functions with native Next.js App Router API routes (`/api/ruby-queen/ask` and `/api/ruby-queen/screen`).</span>
+              <span><strong className="text-ink font-medium">Web Search Fallback:</strong> Web search is now enabled by default for answers not found in the APEC verified library.</span>
             </li>
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
-              <span><strong className="text-ink font-medium">Database Refresh:</strong> Loaded the latest site profiles (1,433 sites) and service history (5,226 past calls) from the latest downloads package.</span>
+              <span><strong className="text-ink font-medium">Data Integration:</strong> Added Vercel KV for persistent leaderboard statistics and gamification.</span>
             </li>
           </ul>
         </div>
