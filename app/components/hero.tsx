@@ -555,16 +555,15 @@ const EcosystemNode = forwardRef<
       />
 
       <div
-        className="ml-1.5 flex h-11 w-[68px] shrink-0 items-center justify-center rounded-md overflow-hidden bg-white p-1"
+        className="ml-1.5 relative flex h-11 w-[68px] shrink-0 items-center justify-center rounded-md overflow-hidden bg-white p-1"
         style={{ border: `1px solid ${accentColor}40` }}
       >
         <Image
           src={logoSrc}
           alt={name}
-          width={60}
-          height={36}
-          className="object-contain"
-          style={{ maxHeight: 36, maxWidth: 60 }}
+          fill
+          className="object-contain p-1"
+          sizes="60px"
         />
       </div>
 
@@ -822,7 +821,7 @@ export function Hero() {
                 ref={card2Ref}
                 name="Atlanta Petroleum Equipment Company"
                 tag="Services · Live"
-                logoSrc="/logos/apec-logo.webp"
+                logoSrc="/logos/apec-logo.png"
                 accentColor="#eab308"
               />
             </div>
