@@ -91,7 +91,7 @@ export default async function RubyQueenPage() {
 
         <div className="mt-10 grid grid-cols-1 gap-6 border-t border-line pt-8 md:grid-cols-4">
           <Info label="Status" value="Live" />
-          <Info label="Version" value="3.0" />
+          <Info label="Version" value="3.2" />
           <Info label="Category" value="Support" />
           <Info label="Data" value="APEC Verified Library" />
         </div>
