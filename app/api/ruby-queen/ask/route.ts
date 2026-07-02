@@ -90,7 +90,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const { question, history = [], context = [], service = [], web = false } = body;
+    const { question, history = [], context = [], service = [], manuals = [], web = false } = body;
 
     if (!question) {
       return NextResponse.json({ source: "none", answer: "No question received." });
@@ -123,19 +123,32 @@ export async function POST(req: Request) {
         )
         .join("\n") || "(none)";
 
+    const mans =
+      (Array.isArray(manuals) ? manuals : [])
+        .slice(0, 3)
+        .map(
+          (m: any) =>
+            `[${m.type || "manual"}${m.brand ? " / " + m.brand : ""}] ${m.title}\n${
+              m.summary || ""
+            }${m.facts && m.facts.length ? "\nKey facts: " + m.facts.join(" | ") : ""}${
+              m.body ? "\n" + m.body : ""
+            }`
+        )
+        .join("\n\n---\n\n") || "(none)";
+
     const p1 = await call({
       model: process.env.ANSWER_MODEL || "claude-sonnet-4-6",
       max_tokens: 700,
       system:
         SCOPE +
-        `\n\nAnswer using the APEC library entries in <library> (the team's verified fixes) and, where helpful, the past service calls in <service>.\nIf the library/service cover it, reply JSON: {"source":"library","answer":"...","entries":[ids used]}.\nIf they do NOT cover it, reply EXACTLY {"source":"none"}. Do not use outside knowledge in this step.`,
+        `\n\nAnswer using the APEC library entries in <library> (the team's verified fixes), the manuals/field notes in <manuals> (brand manuals, network configs, port maps and APEC's own setup notes), and, where helpful, the past service calls in <service>.\nIf the library/manuals/service cover it, reply JSON: {"source":"library","answer":"...","entries":[ids used]}.\nIf they do NOT cover it, reply EXACTLY {"source":"none"}. Do not use outside knowledge in this step.`,
       messages: [
         ...(Array.isArray(history) ? history : [])
           .filter((m: any) => m && m.role && m.content)
           .slice(-6),
         {
           role: "user",
-          content: `Question: ${question}\n\n<library>\n${lib}\n</library>\n\n<service>\n${svc}\n</service>`,
+          content: `Question: ${question}\n\n<library>\n${lib}\n</library>\n\n<manuals>\n${mans}\n</manuals>\n\n<service>\n${svc}\n</service>`,
         },
       ],
     });

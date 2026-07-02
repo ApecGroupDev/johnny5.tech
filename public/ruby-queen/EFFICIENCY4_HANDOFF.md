@@ -1,4 +1,11 @@
-# Ruby Queen v3.2 — Handoff for efficiency4 (2026-07-02)
+# Ruby Queen v3.3 — Handoff for efficiency4 (2026-07-02)
+
+> **v3.3 (same day):** adds a 4th knowledge layer — **Manuals & Guides** (`data/manuals.json`,
+> 91 entries: brand manuals, network-config guides, port maps, SPM part-number sheets and
+> APEC field notes from `Box/Ruby_Queen/2_Input_data/Loose Batch 2`). New **Manuals** tab in
+> the app; the Ask flow now also cites manuals and passes them to `/api/ask`. Files changed
+> vs v3.2: `index.html`, `api/ask.js`, **NEW** `data/manuals.json`. Deploy steps unchanged —
+> everything below (esp. the KV database in Part 2) still applies.
 
 The app is already live on Johnny5.tech. This version adds **server-side storage for tech
 fix submissions** (new `api/fixes.js`) plus 643 new service invoices in `data/service.json`.
@@ -18,6 +25,7 @@ Files changed vs v3.1:
 - `api/fixes.js`   — NEW: stores submissions/approvals in the database
 - `data/service.json` — grew 6,277 → 6,920 records
 - `EFFICIENCY4_HANDOFF.md`, `README_DEPLOY.md` — this documentation
+- v3.3: `data/manuals.json` (NEW) + `index.html` (Manuals tab) + `api/ask.js` (<manuals> context)
 - Unchanged: `api/ask.js`, `api/screen.js`, `api/contrib.js`, other `data/*`, `package.json`, `vercel.json`
 
 ---

@@ -1,4 +1,4 @@
-# Ruby Queen — Deployment Notes (for the web developer)  ·  v3.2 (2026-07-02)
+# Ruby Queen — Deployment Notes (for the web developer)  ·  v3 (2026-06-30)
 
 ## What this is
 Internal POS assistant for APEC/GEO field techs. Zero-config **Vercel** project: a static front-end
@@ -38,6 +38,7 @@ index.html              the app (UI + search); loads data/*.json on start
 data/kb.json            235 troubleshooting entries
 data/service.json       5,226 service calls (source = "Invoice" | "Site Log")
 data/sites.json         1,433 site profiles
+data/manuals.json       91 manuals & field-note entries (v3.3)
 data/field_labels.json  decodes the site field codes (label + group)
 api/ask.js              POST /api/ask     — library + service grounded, web fallback (on by default)
 api/screen.js           POST /api/screen  — AI junk-screen for tech-submitted fixes
@@ -73,3 +74,12 @@ ticket. Click **Service Manager**, enter `Summerville` → **Review** + **🏆 L
 
 ## v3.2 (2026-07-02)
 New `api/fixes.js`: server-side store for Log-a-Fix submissions + manager review (same Vercel KV as the leaderboard). Full backup: `GET /api/fixes?export=1&key=<manager password>`.
+
+## v3.3 (2026-07-02)
+Fourth knowledge layer: **Manuals & Guides** (`data/manuals.json`) — 91 entries synthesized from
+`Box/Ruby_Queen/2_Input_data/Loose Batch 2`: 19 APEC field notes/captures (full text: BP trigger-pull
+IP change, Citgo setup, Buypass+Cybera / Buypass+Mako / HPS+Cybera configs, pinpad install stacks,
+Chevron unconfirmed-log procedure, Murphy Pop&Drop per-site IP table, SPM part numbers, help-desk
+directory) + 72 summarized official manuals with Box paths. New **Manuals** tab (browse by section +
+search); Ask answers cite matching manuals and send top-3 to `/api/ask` in a `<manuals>` block.
+Full PDFs stay in Box (proprietary Verifone/DFS docs are NOT deployed to the public site).
