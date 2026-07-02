@@ -54,7 +54,7 @@ export default async function ProjectUpdatesPage() {
                   Live
                 </Badge>
                 <Badge tone="accent">
-                  v2.0
+                  v3.0
                 </Badge>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -93,7 +93,7 @@ export default async function ProjectUpdatesPage() {
 
         <div className="mt-10 grid grid-cols-1 gap-6 border-t border-line pt-8 md:grid-cols-4">
           <Info label="Status" value="Live" />
-          <Info label="Version" value="2.0" />
+          <Info label="Version" value="3.0" />
           <Info label="Category" value="Management" />
           <Info label="Data" value="Serverless API" />
         </div>
@@ -102,7 +102,7 @@ export default async function ProjectUpdatesPage() {
           <div className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted">
             Release Notes
           </div>
-          <h2 className="mt-4 font-display text-2xl text-ink">What's new in v2.0</h2>
+          <h2 className="mt-4 font-display text-2xl text-ink">What's new in v3.0</h2>
           <ul className="mt-4 space-y-3 text-muted max-w-2xl">
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
