@@ -1,4 +1,4 @@
-# Ruby Queen — Deployment Notes (for the web developer)  ·  v3 (2026-06-30)
+# Ruby Queen — Deployment Notes (for the web developer)  ·  v3.2 (2026-07-02)
 
 ## What this is
 Internal POS assistant for APEC/GEO field techs. Zero-config **Vercel** project: a static front-end

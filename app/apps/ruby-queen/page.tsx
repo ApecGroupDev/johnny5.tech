@@ -100,7 +100,7 @@ export default async function RubyQueenPage() {
           <div className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted">
             Release Notes
           </div>
-          <h2 className="mt-4 font-display text-2xl text-ink">What&apos;s new in v3.0</h2>
+          <h2 className="mt-4 font-display text-2xl text-ink">What&apos;s new in v3.2</h2>
           <ul className="mt-4 space-y-3 text-muted max-w-2xl">
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
