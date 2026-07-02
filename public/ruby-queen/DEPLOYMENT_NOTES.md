@@ -1,84 +1,75 @@
-# Ruby Queen — Deployment Notes (for the web developer)
+# Ruby Queen — Deployment Notes (for the web developer)  ·  v3 (2026-06-30)
 
 ## What this is
-A small, zero-config **Vercel** project: a single-page web app (`index.html`) plus two serverless
-functions (`api/ask.js`, `api/screen.js`) that call the Anthropic **Claude** API. It's an internal
-POS-troubleshooting assistant for APEC's service technicians. The app answers from an embedded
-knowledge base (235 entries) and, when enabled, falls back to a web search — always labelling whether
-an answer came from the library or the web.
+Internal POS assistant for APEC/GEO field techs. Zero-config **Vercel** project: a static front-end
+(`index.html`) that loads its data from `/data/*.json`, plus serverless functions that call Claude and
+store contributions. Three knowledge layers, searched in the browser:
+- **Peggy's troubleshooting library** — 235 verified fixes.
+- **Service history** — 5,226 past calls (1,699 invoices with problem→solution→parts + 3,527 site logs).
+- **Site profiles** — 1,433 sites: equipment, software, network, dispensers, access details.
+
+## What changed in v3
+- **Service Manager gate** — clicking "Service Manager" now asks for a password. It is hard-coded as
+  `Summerville` in `index.html` (function `tryManager`). Techs get the normal single login; only people
+  you give the word to can open the manager tabs (Review + Leaderboard). Note: a hard-coded password is
+  visible in page source to anyone signed in — that's inherent to "hard-code it," and fine for internal use.
+- **Contribution leaderboard** — every submitted / approved fix is recorded with the tech's name via the
+  new `api/contrib.js`. Managers get a **🏆 Leaderboard** tab (week / month / quarter / all-time, with a
+  top + runner-up), and an **admin export**. This needs **Vercel KV** (see below) — without it the app
+  still runs, contributions just aren't stored.
+- **Web answers ON by default** — `api/ask.js` now falls back to the web automatically when the library
+  has nothing, and techs get an **"Also search the web"** button on any answer. Set `WEB_FALLBACK=false`
+  to turn it off.
+- **Service History tab** now lists only the 1,699 coherent invoices; each row is clickable to the full
+  ticket incl. solution. (Terse site logs still show under each site's own profile, newest first.)
+- **Simplified Ask screen**, prominent input at top, a **Clear** button, and access fields shown without
+  masking (inner-circle use).
 
 ## SECURITY — read first
-- The Anthropic API key is **never** in the front-end. It is read server-side from the
-  `ANTHROPIC_API_KEY` environment variable.
-- **Ali will give you the API key separately** (it is NOT in this zip). Do not commit it anywhere,
-  and do not place it in any client-side file.
-- Set it only as a **Vercel Environment Variable** (encrypted at rest).
-- `.env.example` lists the variable names. For local dev you'd copy it to `.env.local` (gitignored).
+- The Anthropic API key is **never** in the front-end; read server-side from `ANTHROPIC_API_KEY`
+  (Ali provides it separately, not in this package).
+- Site profiles include pump passwords, keys and IPs, shown to all signed-in users, so the whole app
+  **must** sit **behind login and HTTPS**. Don't expose `data/*.json` on public URLs.
+- Site is now **Johnny5.tech** (migrated from alihusain.me). R2D2 stays private on the old site.
 
-## Project layout
+## Layout
 ```
-index.html      The whole app (login, Ask chat, Log-a-Fix, Review Queue, Browse; 235-entry KB embedded)
-api/ask.js      POST /api/ask    — answers, library-first, optional web fallback
-api/screen.js   POST /api/screen — AI screen for tech-submitted fixes
-package.json    Node >= 18 (functions use global fetch; no dependencies)
-vercel.json     Function settings (maxDuration 60s for the two-pass + web search)
-.env.example    Variable names (copy to .env.local for local dev)
+index.html              the app (UI + search); loads data/*.json on start
+data/kb.json            235 troubleshooting entries
+data/service.json       5,226 service calls (source = "Invoice" | "Site Log")
+data/sites.json         1,433 site profiles
+data/field_labels.json  decodes the site field codes (label + group)
+api/ask.js              POST /api/ask     — library + service grounded, web fallback (on by default)
+api/screen.js           POST /api/screen  — AI junk-screen for tech-submitted fixes
+api/contrib.js          GET/POST /api/contrib — records contributions, serves the leaderboard
+package.json, vercel.json, .env.example
 ```
 
-## How the API works
-- **POST `/api/ask`** `{ question, history[], context[] }` → `{ source:"library"|"web"|"none", answer, entries[] }`
-  Pass 1 answers strictly from the library entries the page sends in `context`. If the library doesn't
-  cover it and `WEB_FALLBACK=true`, Pass 2 uses the Anthropic `web_search` tool and marks the answer as
-  `web`. The system prompt also keeps it on POS/fuel/payment topics only.
-- **POST `/api/screen`** `{ sys, symptom, found, fix, who }` → `{ verdict:"accept"|"clarify"|"reject", reason, clarifying_question, cleaned{...} }`
-  Screens tech-submitted fixes (rejects anecdotal/junk before a manager sees them).
+## Environment variables (Vercel → Project → Settings → Environment Variables)
+- `ANTHROPIC_API_KEY` — **required** (sent separately).
+- `WEB_FALLBACK` — optional; omit or `true` = web answers on, `false` = off.
+- `ANSWER_MODEL=claude-sonnet-4-6` · `SCREEN_MODEL=claude-haiku-4-5-20251001` · `WEB_SEARCH_TOOL=web_search_20250305`.
+- `ALLOWED_ORIGIN` — only if the app is served from a different domain than the API.
+- `ADMIN_KEY` — optional; guards the leaderboard export. Defaults to `Summerville` if unset.
+- `KV_REST_API_URL`, `KV_REST_API_TOKEN` — **auto-added by Vercel when you attach KV** (next section).
 
-## Environment variables  (Vercel → Project → Settings → Environment Variables)
-| Name | Required | Default | Notes |
-|---|---|---|---|
-| `ANTHROPIC_API_KEY` | yes | — | Provided separately by Ali. Set for Production (and Preview if you want preview testing). |
-| `WEB_FALLBACK` | no | `true` | `true` allows web search when the library lacks an answer. |
-| `ANSWER_MODEL` | no | `claude-sonnet-4-6` | Confirm the exact model name in Ali's Anthropic Console → Models. |
-| `SCREEN_MODEL` | no | `claude-haiku-4-5-20251001` | Cheap model for the screen step. |
-| `WEB_SEARCH_TOOL` | no | `web_search_20250305` | Anthropic web-search tool version. |
-| `ALLOWED_ORIGIN` | no | unset | Only needed if the app is served from a different domain than the API. Same-project Vercel: leave unset. |
+## Turn on the leaderboard (Vercel KV — ~2 minutes)
+1. Vercel dashboard → your project → **Storage** → create a **KV / Upstash Redis** store, connect it to the project.
+2. Vercel injects `KV_REST_API_URL` + `KV_REST_API_TOKEN` automatically. **Redeploy.**
+3. Done. Submissions now persist and the Leaderboard fills in. No code changes needed.
+- **Admin export** (pull the raw data any time): `https://<your-app>/api/contrib?export=1&key=Summerville`
+  (change the word by setting `ADMIN_KEY`). Returns JSON of every contribution event.
 
 ## Deploy
-**Option 1 — Git + Vercel dashboard (recommended)**
-1. Put these files in a Git repo (the repo root = this folder).
-2. Vercel → Add New → Project → import the repo. Framework preset: **Other** (zero-config).
-3. Add the environment variables above (at minimum `ANTHROPIC_API_KEY`).
-4. Deploy. App serves at `/`, API at `/api/ask` and `/api/screen` (same origin, no CORS needed).
-
-**Option 2 — Vercel CLI**
-```
-npm i -g vercel
-vercel            # set up the project (accept defaults)
-vercel --prod     # production deploy
-```
-Set env vars in the dashboard or with `vercel env add ANTHROPIC_API_KEY production`.
-
-## Access control (important — this is an internal tool)
-Put the deployment **behind a login**:
-- Easiest on Vercel Pro: enable **Deployment Protection / Vercel Authentication** (only invited users)
-  or **Password Protection** on the project.
-- Or wire it into APEC's existing site auth / a middleware password.
-- The `apec` password on the app's login screen is **only a front-end placeholder for demos — not real
-  security**. Remove or replace it and rely on the platform login.
-
-## Models note
-If Anthropic returns a "model not found" error, the model names differ for this account. Open the
-Anthropic Console → **Models** and set `ANSWER_MODEL` / `SCREEN_MODEL` to the exact names shown.
+1. Put these files in a Git repo; import to Vercel (framework preset **Other**, zero-config).
+2. Add `ANTHROPIC_API_KEY` (and attach KV for the leaderboard).
+3. Deploy. App at `/`, data at `/data/*`, API at `/api/ask`, `/api/screen`, `/api/contrib`.
+4. Keep it behind your SSO/login.
 
 ## Quick test after deploy
-1. Open the deployed URL (through the login). App password: `apec` (until real auth is wired).
-2. Ask "pump stuck on blue at 0.00" → answers from the library, green **APEC Verified**.
-3. Ask a brand-new problem → amber **From the web** (if `WEB_FALLBACK` is on).
-4. Ask "what's the weather" → it should politely decline (scope-limited).
-5. Log a Fix with a real fix → switch the role toggle to **Service Manager** → it's in the Review Queue → Approve.
+Open through login (page password `apec`). Ask "pump stuck on blue" → answer + "Also search the web".
+**Sites** → open a site (equipment + newest-first history). **Service History** → search a brand, click a
+ticket. Click **Service Manager**, enter `Summerville` → **Review** + **🏆 Leaderboard** appear.
 
-## Data persistence note (v1)
-Tech submissions and approvals are stored per-browser (localStorage), with a Settings → Export to JSON.
-Ali folds new fixes and invoice batches into the next version of the embedded knowledge base. If you
-later want submissions shared server-side across all users, that's a small add-on (a KV store or DB
-behind a third function) — not required for v1.
+## v3.2 (2026-07-02)
+New `api/fixes.js`: server-side store for Log-a-Fix submissions + manager review (same Vercel KV as the leaderboard). Full backup: `GET /api/fixes?export=1&key=<manager password>`.
