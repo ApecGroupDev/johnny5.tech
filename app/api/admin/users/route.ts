@@ -59,3 +59,40 @@ export async function POST(req: Request) {
 
   return NextResponse.json(user);
 }
+
+export async function PATCH(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "admin") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id, email, password, name, role } = await req.json();
+  if (!id) return NextResponse.json({ error: "Missing ID" }, { status: 400 });
+
+  if (email) {
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing && existing.id !== id) {
+      return NextResponse.json({ error: "Email already taken by another user" }, { status: 400 });
+    }
+  }
+
+  const dataToUpdate: any = {};
+  if (email) dataToUpdate.email = email.toLowerCase();
+  if (name !== undefined) dataToUpdate.name = name;
+  if (role) dataToUpdate.role = role;
+  
+  if (password) {
+    dataToUpdate.password = await bcrypt.hash(password, 10);
+  }
+
+  try {
+    const user = await prisma.user.update({
+      where: { id },
+      data: dataToUpdate,
+      select: { id: true, name: true, email: true, role: true },
+    });
+    return NextResponse.json(user);
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
+  }
+}
