@@ -28,6 +28,7 @@ export const authOptions: AuthOptions = {
         });
 
         if (!user || !user.password) return null;
+        if (!user.active) throw new Error("Your account has been deactivated. Contact an administrator.");
 
         const valid = await bcrypt.compare(
           credentials.password,

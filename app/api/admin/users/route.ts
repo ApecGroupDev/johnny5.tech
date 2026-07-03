@@ -11,7 +11,7 @@ export async function GET(req: Request) {
   }
 
   const users = await prisma.user.findMany({
-    select: { id: true, name: true, email: true, role: true, createdAt: true },
+    select: { id: true, name: true, email: true, role: true, active: true, createdAt: true },
     orderBy: { createdAt: "desc" },
   });
   return NextResponse.json(users);
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { email, password, name, role } = await req.json();
+  const { email, password, name, role, active } = await req.json();
   if (!email || !password) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
   const existing = await prisma.user.findUnique({ where: { email } });
@@ -53,8 +53,8 @@ export async function POST(req: Request) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
-    data: { email: email.toLowerCase(), password: hashedPassword, name, role: role || "user" },
-    select: { id: true, name: true, email: true, role: true },
+    data: { email: email.toLowerCase(), password: hashedPassword, name, role: role || "user", active: active !== false },
+    select: { id: true, name: true, email: true, role: true, active: true },
   });
 
   return NextResponse.json(user);
@@ -66,7 +66,7 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id, email, password, name, role } = await req.json();
+  const { id, email, password, name, role, active } = await req.json();
   if (!id) return NextResponse.json({ error: "Missing ID" }, { status: 400 });
 
   if (email) {
@@ -80,6 +80,7 @@ export async function PATCH(req: Request) {
   if (email) dataToUpdate.email = email.toLowerCase();
   if (name !== undefined) dataToUpdate.name = name;
   if (role) dataToUpdate.role = role;
+  if (active !== undefined) dataToUpdate.active = active;
   
   if (password) {
     dataToUpdate.password = await bcrypt.hash(password, 10);
@@ -89,7 +90,7 @@ export async function PATCH(req: Request) {
     const user = await prisma.user.update({
       where: { id },
       data: dataToUpdate,
-      select: { id: true, name: true, email: true, role: true },
+      select: { id: true, name: true, email: true, role: true, active: true },
     });
     return NextResponse.json(user);
   } catch (error) {

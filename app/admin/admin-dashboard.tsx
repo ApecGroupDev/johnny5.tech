@@ -11,7 +11,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const [form, setForm] = useState({ name: "", email: "", password: "", role: "user" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "user", active: true });
   const [editingUser, setEditingUser] = useState<any>(null);
 
   async function handleDelete(id: string) {
@@ -42,7 +42,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
       const data = await res.json();
       if (res.ok) {
         setUsers([data, ...users]);
-        setForm({ name: "", email: "", password: "", role: "user" });
+        setForm({ name: "", email: "", password: "", role: "user", active: true });
       } else {
         setError(data.error || "Failed to create user");
       }
@@ -58,7 +58,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
     setLoading(true);
     setError("");
     try {
-      const payload: any = { id: editingUser.id, name: form.name, email: form.email, role: form.role };
+      const payload: any = { id: editingUser.id, name: form.name, email: form.email, role: form.role, active: form.active };
       if (form.password) payload.password = form.password; // only send if changing
 
       const res = await fetch(`/api/admin/users`, {
@@ -70,7 +70,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
       if (res.ok) {
         setUsers(users.map((u: any) => u.id === data.id ? data : u));
         setEditingUser(null);
-        setForm({ name: "", email: "", password: "", role: "user" });
+        setForm({ name: "", email: "", password: "", role: "user", active: true });
       } else {
         setError(data.error || "Failed to update user");
       }
@@ -83,13 +83,13 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
 
   function startEditing(user: any) {
     setEditingUser(user);
-    setForm({ name: user.name || "", email: user.email, password: "", role: user.role });
+    setForm({ name: user.name || "", email: user.email, password: "", role: user.role, active: user.active !== false });
     setError("");
   }
 
   function cancelEditing() {
     setEditingUser(null);
-    setForm({ name: "", email: "", password: "", role: "user" });
+    setForm({ name: "", email: "", password: "", role: "user", active: true });
     setError("");
   }
 
@@ -143,6 +143,9 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
                         <span className="font-bold text-slate-900 tracking-tight">{user.name || "Unnamed"}</span>
                         {user.role === "admin" && (
                           <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 ring-1 ring-inset ring-blue-700/10">Jedi Master</span>
+                        )}
+                        {user.active === false && (
+                          <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-700 ring-1 ring-inset ring-red-700/10">Inactive</span>
                         )}
                         {user.id === currentUser?.id && (
                           <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-700 ring-1 ring-inset ring-slate-400/20">You</span>
@@ -242,6 +245,18 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
                 >
                   <option value="user">Trooper (User)</option>
                   <option value="admin">Sith Lord (Admin)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">Status</label>
+                <select
+                  value={form.active ? "true" : "false"}
+                  onChange={(e) => setForm({ ...form, active: e.target.value === "true" })}
+                  className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-inner outline-none transition-all appearance-none ${editingUser ? 'focus:border-amber-500 focus:ring-1 focus:ring-amber-500' : 'focus:border-red-500 focus:ring-1 focus:ring-red-500'}`}
+                >
+                  <option value="true">Active Deployment</option>
+                  <option value="false">Inactive / Suspended</option>
                 </select>
               </div>
 
