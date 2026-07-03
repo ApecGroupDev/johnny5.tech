@@ -17,6 +17,7 @@ model User {
   image         String?
   role          String   @default("user")
   active        Boolean  @default(true)
+  allowedApps   String   @default("")
   createdAt     DateTime @default(now())
   accounts      Account[]
   sessions      Session[]

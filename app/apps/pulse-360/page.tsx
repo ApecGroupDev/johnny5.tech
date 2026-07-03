@@ -16,6 +16,9 @@ export const metadata = {
 export default async function ProjectUpdatesPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login?callbackUrl=/apps/pulse-360");
+  if (session.user.role !== "admin" && !session.user.allowedApps?.includes("pulse-360")) {
+    redirect("/?error=RestrictedAccess");
+  }
 
   const app = APPS.find((a) => a.slug === "pulse-360")!;
 

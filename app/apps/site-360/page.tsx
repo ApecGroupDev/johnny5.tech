@@ -15,6 +15,9 @@ export const metadata = {
 export default async function Site360Page() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login?callbackUrl=/apps/site-360");
+  if (session.user.role !== "admin" && !session.user.allowedApps?.includes("site-360")) {
+    redirect("/?error=RestrictedAccess");
+  }
 
   const app = APPS.find((a) => a.slug === "site-360");
 

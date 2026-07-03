@@ -32,6 +32,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
     password: "",
     role: "user",
     active: true,
+    allowedApps: "",
   });
   const [editingUser, setEditingUser] = useState<any>(null);
 
@@ -90,6 +91,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
         email: form.email,
         role: form.role,
         active: form.active,
+        allowedApps: form.allowedApps,
       };
       if (form.password) payload.password = form.password; // only send if changing
 
@@ -120,6 +122,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
       password: "",
       role: user.role,
       active: user.active !== false,
+      allowedApps: user.allowedApps || "",
     });
     setError("");
     setIsFormOpen(true);
@@ -127,7 +130,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
 
   function startCreating() {
     setEditingUser(null);
-    setForm({ name: "", email: "", password: "", role: "user", active: true });
+    setForm({ name: "", email: "", password: "", role: "user", active: true, allowedApps: "" });
     setError("");
     setIsFormOpen(true);
   }
@@ -136,7 +139,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
     setIsFormOpen(false);
     setTimeout(() => {
       setEditingUser(null);
-      setForm({ name: "", email: "", password: "", role: "user", active: true });
+      setForm({ name: "", email: "", password: "", role: "user", active: true, allowedApps: "" });
       setError("");
     }, 300); // wait for animation
   }
@@ -257,6 +260,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
                       <th className="px-6 py-4 font-bold">Designation</th>
                       <th className="px-6 py-4 font-bold">Comlink</th>
                       <th className="px-6 py-4 font-bold">Rank</th>
+                      <th className="px-6 py-4 font-bold">Access</th>
                       <th className="px-6 py-4 font-bold">Status</th>
                       <th className="px-6 py-4 font-bold text-right">Actions</th>
                     </tr>
@@ -288,6 +292,21 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
                             <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-inset ring-slate-500/10">
                               Trooper
                             </span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          {user.role === 'admin' ? (
+                            <span className="text-xs font-mono text-slate-500">All Systems (Admin)</span>
+                          ) : user.allowedApps ? (
+                            <div className="flex flex-wrap gap-1">
+                              {user.allowedApps.split(',').filter(Boolean).map((slug: string) => {
+                                const app = APPS.find(a => a.slug === slug);
+                                if (!app) return null;
+                                return <span key={slug} className="px-2 py-0.5 rounded bg-amber-50 text-amber-700 text-[10px] border border-amber-200 uppercase tracking-widest font-bold">{app.title}</span>
+                              })}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-slate-400 italic">None</span>
                           )}
                         </td>
                         <td className="px-6 py-4">
@@ -477,6 +496,39 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
                     </select>
                   </div>
                 </div>
+
+                {form.role !== 'admin' && (
+                  <div className="pt-2">
+                    <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-2">
+                      System Access Permissions
+                    </label>
+                    <div className="space-y-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                      {APPS.map((app) => {
+                        const isSelected = form.allowedApps.split(',').filter(Boolean).includes(app.slug);
+                        return (
+                          <label key={app.slug} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${isSelected ? (editingUser ? "bg-amber-50 border-amber-200 shadow-sm" : "bg-red-50 border-red-200 shadow-sm") : "bg-white border-slate-200 hover:bg-slate-50"}`}>
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={(e) => {
+                                const current = form.allowedApps ? form.allowedApps.split(',').filter(Boolean) : [];
+                                let next;
+                                if (e.target.checked) next = [...current, app.slug];
+                                else next = current.filter(s => s !== app.slug);
+                                setForm({ ...form, allowedApps: next.join(',') });
+                              }}
+                              className={`h-4 w-4 rounded border-slate-300 text-${editingUser ? 'amber' : 'red'}-600 focus:ring-${editingUser ? 'amber' : 'red'}-500 transition-colors`}
+                            />
+                            <div className="flex items-center gap-2">
+                              <app.icon className={`h-4 w-4 ${isSelected ? (editingUser ? "text-amber-600" : "text-red-600") : "text-slate-400"}`} />
+                              <span className={`text-sm font-medium ${isSelected ? "text-slate-900" : "text-slate-600"}`}>{app.title}</span>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 <div className="pt-4">
                   <button

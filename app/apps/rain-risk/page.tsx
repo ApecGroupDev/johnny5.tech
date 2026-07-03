@@ -16,6 +16,9 @@ export const metadata = {
 export default async function RainRiskPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login?callbackUrl=/apps/rain-risk");
+  if (session.user.role !== "admin" && !session.user.allowedApps?.includes("rain-risk")) {
+    redirect("/?error=RestrictedAccess");
+  }
 
   const app = APPS.find((a) => a.slug === "rain-risk")!;
 

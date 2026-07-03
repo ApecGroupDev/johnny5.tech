@@ -42,6 +42,7 @@ export const authOptions: AuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
+          allowedApps: user.allowedApps,
         };
       },
     }),
@@ -50,6 +51,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
+        token.allowedApps = (user as any).allowedApps;
       }
       return token;
     },
@@ -57,6 +59,7 @@ export const authOptions: AuthOptions = {
       if (session.user) {
         session.user.role = token.role;
         session.user.id = token.sub;
+        session.user.allowedApps = token.allowedApps as string;
       }
       return session;
     },
