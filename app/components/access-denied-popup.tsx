@@ -11,12 +11,12 @@ export function AccessDeniedPopup() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if (searchParams.get("error") === "RestrictedAccess") {
+    if (searchParams?.get("error") === "RestrictedAccess") {
       setShow(true);
       // Clean up the URL to prevent showing the popup again on refresh
       const url = new URL(window.location.href);
       url.searchParams.delete("error");
-      router.replace(url.pathname + url.search);
+      router.replace(url.pathname + url.search + url.hash, { scroll: false });
       
       // Auto-hide after 8 seconds
       const timer = setTimeout(() => setShow(false), 8000);
