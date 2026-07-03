@@ -12,11 +12,13 @@ import {
   X,
   Users,
   Activity,
-  UserCheck
+  UserCheck,
+  AppWindow
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { StarsBackground } from "@/app/components/stars-background";
+import { APPS } from "@/app/apps/_components/app-data";
 
 export default function AdminDashboard({ initialUsers, currentUser }: any) {
   const [users, setUsers] = useState(initialUsers);
@@ -196,7 +198,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
             </div>
 
             {/* Stat Cards */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-xl border border-blue-500/20 bg-slate-900/60 p-6 backdrop-blur-xl shadow-[0_0_20px_rgba(59,130,246,0.1)]">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30">
@@ -229,6 +231,18 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
                   <div>
                     <div className="text-sm font-bold uppercase tracking-widest text-purple-400/80">Jedi Council</div>
                     <div className="text-3xl font-display font-bold text-white">{adminUsers}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-amber-500/20 bg-slate-900/60 p-6 backdrop-blur-xl shadow-[0_0_20px_rgba(245,158,11,0.1)]">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                    <AppWindow className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold uppercase tracking-widest text-amber-400/80">Active Systems</div>
+                    <div className="text-3xl font-display font-bold text-white">{APPS.length}</div>
                   </div>
                 </div>
               </div>
