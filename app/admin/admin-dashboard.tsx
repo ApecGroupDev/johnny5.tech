@@ -5,7 +5,6 @@ import { Container } from "@/app/components/ui/container";
 import { ArrowLeft, Shield, Trash2, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Badge } from "@/app/components/ui/badge";
 
 export default function AdminDashboard({ initialUsers, currentUser }: any) {
   const [users, setUsers] = useState(initialUsers);
@@ -86,29 +85,29 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* User List */}
           <div className="lg:col-span-2 space-y-4">
-            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-              Active Users ({users.length})
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+              Jedi Archives ({users.length})
             </h2>
-            <div className="rounded-xl border border-line bg-surface/50 backdrop-blur-xl shadow-sm overflow-hidden">
-              <div className="divide-y divide-line">
+            <div className="rounded-xl border border-blue-400/40 bg-slate-50/95 backdrop-blur-xl shadow-[0_0_20px_rgba(59,130,246,0.2)] overflow-hidden">
+              <div className="divide-y divide-slate-200">
                 {users.map((user: any) => (
                   <motion.div
                     key={user.id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="flex items-center justify-between p-4 hover:bg-line-subtle/50 transition-colors"
+                    className="flex items-center justify-between p-4 hover:bg-blue-50 transition-colors"
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-ink">{user.name || "Unnamed"}</span>
+                        <span className="font-bold text-slate-900 tracking-tight">{user.name || "Unnamed"}</span>
                         {user.role === "admin" && (
-                          <Badge tone="accent">Admin</Badge>
+                          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 ring-1 ring-inset ring-blue-700/10">Jedi Master</span>
                         )}
                         {user.id === currentUser?.id && (
-                          <Badge tone="live" dot>You</Badge>
+                          <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-700 ring-1 ring-inset ring-slate-400/20">You</span>
                         )}
                       </div>
-                      <div className="text-sm text-muted">{user.email}</div>
+                      <div className="text-sm text-slate-500 font-mono mt-0.5">{user.email}</div>
                     </div>
                     {user.id !== currentUser?.id && (
                       <button
@@ -127,71 +126,71 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
 
           {/* Add User Form */}
           <div>
-            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted mb-4">
-              Add New User
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)] mb-4">
+              Imperial Recruitment
             </h2>
-            <form onSubmit={handleCreate} className="rounded-xl border border-line bg-surface/50 backdrop-blur-xl p-5 shadow-sm space-y-4">
+            <form onSubmit={handleCreate} className="rounded-xl border border-red-500/40 bg-slate-50/95 backdrop-blur-xl p-5 shadow-[0_0_20px_rgba(239,68,68,0.2)] space-y-4">
               {error && (
-                <div className="rounded-lg bg-red-500/10 p-3 text-sm text-red-500 border border-red-500/20">
+                <div className="rounded-lg bg-red-100 p-3 text-sm font-medium text-red-700 border border-red-200">
                   {error}
                 </div>
               )}
               
               <div>
-                <label className="text-xs text-muted block mb-1.5">Name</label>
+                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">Designation (Name)</label>
                 <input
                   required
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full rounded-lg border border-line bg-transparent px-3 py-2 text-sm text-ink outline-none focus:border-subtle"
-                  placeholder="John Doe"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 shadow-inner outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                  placeholder="CT-7567 (Rex)"
                 />
               </div>
 
               <div>
-                <label className="text-xs text-muted block mb-1.5">Email</label>
+                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">Comlink (Email)</label>
                 <input
                   required
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full rounded-lg border border-line bg-transparent px-3 py-2 text-sm text-ink outline-none focus:border-subtle"
-                  placeholder="john@example.com"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 shadow-inner outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                  placeholder="clone@empire.gov"
                 />
               </div>
 
               <div>
-                <label className="text-xs text-muted block mb-1.5">Password</label>
+                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">Clearance Code (Password)</label>
                 <input
                   required
                   type="password"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="w-full rounded-lg border border-line bg-transparent px-3 py-2 text-sm text-ink outline-none focus:border-subtle"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 shadow-inner outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
                   placeholder="••••••••"
                   minLength={6}
                 />
               </div>
 
               <div>
-                <label className="text-xs text-muted block mb-1.5">Role</label>
+                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">Rank (Role)</label>
                 <select
                   value={form.role}
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
-                  className="w-full rounded-lg border border-line bg-transparent px-3 py-2 text-sm text-ink outline-none focus:border-subtle appearance-none"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-inner outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all appearance-none"
                 >
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
+                  <option value="user">Trooper (User)</option>
+                  <option value="admin">Sith Lord (Admin)</option>
                 </select>
               </div>
 
               <button
                 disabled={loading}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-ink py-2.5 text-sm font-medium text-bg transition-transform hover:scale-[1.02] active:scale-100 disabled:opacity-50"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 py-3 text-xs font-bold uppercase tracking-widest text-white shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all hover:bg-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50"
               >
                 <UserPlus className="h-4 w-4" />
-                {loading ? "Creating..." : "Create User"}
+                {loading ? "Deploying..." : "Deploy Trooper"}
               </button>
             </form>
           </div>
