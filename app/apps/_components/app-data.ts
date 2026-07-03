@@ -38,11 +38,11 @@ export const APPS: AppEntry[] = [
     category: "Support",
   },
   {
-    slug: "site360",
+    slug: "site-360",
     title: "SITE 360",
     description:
       "APEC Site Profile Database with over 1,400+ POS install records and service calls.",
-    href: "/apps/site360",
+    href: "/apps/site-360",
     icon: Globe,
     status: "Live",
     kind: "Private",
@@ -50,11 +50,11 @@ export const APPS: AppEntry[] = [
     category: "Database",
   },
   {
-    slug: "project-updates",
+    slug: "pulse-360",
     title: "PULSE 360",
     description:
       "Interactive map tracking crew proximity, 48-hour rain risk, and Claude AI assistance.",
-    href: "/apps/project-updates",
+    href: "/apps/pulse-360",
     icon: Map,
     status: "Live",
     kind: "Private",

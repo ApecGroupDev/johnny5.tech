@@ -15,9 +15,9 @@ export const metadata = {
 
 export default async function ProjectUpdatesPage() {
   const session = await getServerSession(authOptions);
-  if (!session) redirect("/login?callbackUrl=/apps/project-updates");
+  if (!session) redirect("/login?callbackUrl=/apps/pulse-360");
 
-  const app = APPS.find((a) => a.slug === "project-updates")!;
+  const app = APPS.find((a) => a.slug === "pulse-360")!;
 
   const embedUrl = "/project-updates/index.html";
 

@@ -43,8 +43,8 @@ export const APP_META: Record<
 > = {
   "canopy-configurator": { preview: "cad", accent: "blue" },
   "rain-risk": { preview: "rain", accent: "blue" },
-  site360: { preview: "database", accent: "emerald" },
-  "project-updates": { preview: "map", accent: "violet" },
+  "site-360": { preview: "database", accent: "emerald" },
+  "pulse-360": { preview: "map", accent: "violet" },
   "ruby-queen": { preview: "chat", accent: "rose" },
 };
 

@@ -14,11 +14,11 @@ export const metadata = {
 
 export default async function Site360Page() {
   const session = await getServerSession(authOptions);
-  if (!session) redirect("/login?callbackUrl=/apps/site360");
+  if (!session) redirect("/login?callbackUrl=/apps/site-360");
 
-  const app = APPS.find((a) => a.slug === "site360");
+  const app = APPS.find((a) => a.slug === "site-360");
 
-  const embedUrl = "/site360/index.html";
+  const embedUrl = "https://site-360-apec.vercel.app/";
 
   return (
     <div className="relative">
@@ -68,7 +68,7 @@ export default async function Site360Page() {
             </div>
             <span className="flex items-center gap-2 font-mono text-[11px] text-muted">
               <Globe className="h-3.5 w-3.5" />
-              site360
+              site-360
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-600">
               ● live
