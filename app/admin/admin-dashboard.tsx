@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { Container } from "@/app/components/ui/container";
-import { ArrowLeft, Shield, Trash2, UserPlus, Pencil, Save, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Shield,
+  Trash2,
+  UserPlus,
+  Pencil,
+  Save,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { StarsBackground } from "@/app/components/stars-background";
@@ -12,13 +20,21 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const [form, setForm] = useState({ name: "", email: "", password: "", role: "user", active: true });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "user",
+    active: true,
+  });
   const [editingUser, setEditingUser] = useState<any>(null);
 
   async function handleDelete(id: string) {
     if (!confirm("Are you sure you want to delete this user?")) return;
     try {
-      const res = await fetch(`/api/admin/users?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/users?id=${id}`, {
+        method: "DELETE",
+      });
       if (res.ok) {
         setUsers(users.filter((u: any) => u.id !== id));
       } else {
@@ -43,7 +59,13 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
       const data = await res.json();
       if (res.ok) {
         setUsers([data, ...users]);
-        setForm({ name: "", email: "", password: "", role: "user", active: true });
+        setForm({
+          name: "",
+          email: "",
+          password: "",
+          role: "user",
+          active: true,
+        });
       } else {
         setError(data.error || "Failed to create user");
       }
@@ -59,7 +81,13 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
     setLoading(true);
     setError("");
     try {
-      const payload: any = { id: editingUser.id, name: form.name, email: form.email, role: form.role, active: form.active };
+      const payload: any = {
+        id: editingUser.id,
+        name: form.name,
+        email: form.email,
+        role: form.role,
+        active: form.active,
+      };
       if (form.password) payload.password = form.password; // only send if changing
 
       const res = await fetch(`/api/admin/users`, {
@@ -69,9 +97,15 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
       });
       const data = await res.json();
       if (res.ok) {
-        setUsers(users.map((u: any) => u.id === data.id ? data : u));
+        setUsers(users.map((u: any) => (u.id === data.id ? data : u)));
         setEditingUser(null);
-        setForm({ name: "", email: "", password: "", role: "user", active: true });
+        setForm({
+          name: "",
+          email: "",
+          password: "",
+          role: "user",
+          active: true,
+        });
       } else {
         setError(data.error || "Failed to update user");
       }
@@ -84,7 +118,13 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
 
   function startEditing(user: any) {
     setEditingUser(user);
-    setForm({ name: user.name || "", email: user.email, password: "", role: user.role, active: user.active !== false });
+    setForm({
+      name: user.name || "",
+      email: user.email,
+      password: "",
+      role: user.role,
+      active: user.active !== false,
+    });
     setError("");
   }
 
@@ -142,23 +182,33 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-900 tracking-tight">{user.name || "Unnamed"}</span>
+                        <span className="font-bold text-slate-900 tracking-tight">
+                          {user.name || "Unnamed"}
+                        </span>
                         {user.role === "admin" && (
-                          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 ring-1 ring-inset ring-blue-700/10">Jedi Master</span>
+                          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                            Jedi Master
+                          </span>
                         )}
                         {user.active === false && (
-                          <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-700 ring-1 ring-inset ring-red-700/10">Inactive</span>
+                          <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-700 ring-1 ring-inset ring-red-700/10">
+                            Inactive
+                          </span>
                         )}
                         {user.id === currentUser?.id && (
-                          <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-700 ring-1 ring-inset ring-slate-400/20">You</span>
+                          <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-700 ring-1 ring-inset ring-slate-400/20">
+                            You
+                          </span>
                         )}
                       </div>
-                      <div className="text-sm text-slate-500 font-mono mt-0.5">{user.email}</div>
+                      <div className="text-sm text-slate-500 font-mono mt-0.5">
+                        {user.email}
+                      </div>
                     </div>
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => startEditing(user)}
-                        className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors"
+                        className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer"
                         title="Edit User"
                       >
                         <Pencil className="h-4 w-4" />
@@ -166,7 +216,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
                       {user.id !== currentUser?.id && (
                         <button
                           onClick={() => handleDelete(user.id)}
-                          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
                           title="Delete User"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -182,25 +232,39 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
           {/* Form Area */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className={`font-mono text-[11px] uppercase tracking-[0.18em] ${editingUser ? 'text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]' : 'text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}>
-                {editingUser ? "Modify Trooper Protocol" : "Imperial Recruitment"}
+              <h2
+                className={`font-mono text-[11px] uppercase tracking-[0.18em] ${editingUser ? "text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" : "text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]"}`}
+              >
+                {editingUser
+                  ? "Modify Trooper Protocol"
+                  : "Imperial Recruitment"}
               </h2>
               {editingUser && (
-                <button onClick={cancelEditing} className="p-1 text-slate-400 hover:text-slate-600 transition-colors">
+                <button
+                  onClick={cancelEditing}
+                  className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
+                >
                   <X className="h-4 w-4" />
                 </button>
               )}
             </div>
-            
-            <form onSubmit={editingUser ? handleUpdate : handleCreate} className={`rounded-xl border ${editingUser ? 'border-amber-500/40 shadow-[0_0_20px_rgba(245,158,11,0.2)]' : 'border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.2)]'} bg-slate-50/95 backdrop-blur-xl p-5 space-y-4`}>
+
+            <form
+              onSubmit={editingUser ? handleUpdate : handleCreate}
+              className={`rounded-xl border ${editingUser ? "border-amber-500/40 shadow-[0_0_20px_rgba(245,158,11,0.2)]" : "border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.2)]"} bg-slate-50/95 backdrop-blur-xl p-5 space-y-4`}
+            >
               {error && (
-                <div className={`rounded-lg p-3 text-sm font-medium border ${editingUser ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-red-100 text-red-700 border-red-200'}`}>
+                <div
+                  className={`rounded-lg p-3 text-sm font-medium border ${editingUser ? "bg-amber-100 text-amber-700 border-amber-200" : "bg-red-100 text-red-700 border-red-200"}`}
+                >
                   {error}
                 </div>
               )}
-              
+
               <div>
-                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">Designation (Name)</label>
+                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
+                  Designation (Name)
+                </label>
                 <input
                   required
                   type="text"
@@ -212,7 +276,9 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
               </div>
 
               <div>
-                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">Comlink (Email)</label>
+                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
+                  Comlink (Email)
+                </label>
                 <input
                   required
                   type="email"
@@ -225,25 +291,34 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
 
               <div>
                 <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
-                  Clearance Code (Password) {editingUser && <span className="text-slate-400 font-normal lowercase tracking-normal">(Leave blank to keep)</span>}
+                  Clearance Code (Password){" "}
+                  {editingUser && (
+                    <span className="text-slate-400 font-normal lowercase tracking-normal">
+                      (Leave blank to keep)
+                    </span>
+                  )}
                 </label>
                 <input
                   required={!editingUser}
                   type="password"
                   value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 shadow-inner outline-none transition-all ${editingUser ? 'focus:border-amber-500 focus:ring-1 focus:ring-amber-500' : 'focus:border-red-500 focus:ring-1 focus:ring-red-500'}`}
+                  onChange={(e) =>
+                    setForm({ ...form, password: e.target.value })
+                  }
+                  className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 shadow-inner outline-none transition-all ${editingUser ? "focus:border-amber-500 focus:ring-1 focus:ring-amber-500" : "focus:border-red-500 focus:ring-1 focus:ring-red-500"}`}
                   placeholder="••••••••"
                   minLength={6}
                 />
               </div>
 
               <div>
-                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">Rank (Role)</label>
+                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
+                  Rank (Role)
+                </label>
                 <select
                   value={form.role}
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
-                  className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-inner outline-none transition-all appearance-none ${editingUser ? 'focus:border-amber-500 focus:ring-1 focus:ring-amber-500' : 'focus:border-red-500 focus:ring-1 focus:ring-red-500'}`}
+                  className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-inner outline-none transition-all appearance-none ${editingUser ? "focus:border-amber-500 focus:ring-1 focus:ring-amber-500" : "focus:border-red-500 focus:ring-1 focus:ring-red-500"}`}
                 >
                   <option value="user">Trooper (User)</option>
                   <option value="admin">Sith Lord (Admin)</option>
@@ -251,11 +326,15 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
               </div>
 
               <div>
-                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">Status</label>
+                <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
+                  Status
+                </label>
                 <select
                   value={form.active ? "true" : "false"}
-                  onChange={(e) => setForm({ ...form, active: e.target.value === "true" })}
-                  className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-inner outline-none transition-all appearance-none ${editingUser ? 'focus:border-amber-500 focus:ring-1 focus:ring-amber-500' : 'focus:border-red-500 focus:ring-1 focus:ring-red-500'}`}
+                  onChange={(e) =>
+                    setForm({ ...form, active: e.target.value === "true" })
+                  }
+                  className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-inner outline-none transition-all appearance-none ${editingUser ? "focus:border-amber-500 focus:ring-1 focus:ring-amber-500" : "focus:border-red-500 focus:ring-1 focus:ring-red-500"}`}
                 >
                   <option value="true">Active Deployment</option>
                   <option value="false">Inactive / Suspended</option>
@@ -264,10 +343,20 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
 
               <button
                 disabled={loading}
-                className={`mt-4 flex w-full items-center justify-center gap-2 rounded-lg py-3 text-xs font-bold uppercase tracking-widest text-white transition-all focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 ${editingUser ? 'bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:bg-amber-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.6)] focus:ring-amber-500' : 'bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.4)] hover:bg-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] focus:ring-red-500'}`}
+                className={`mt-4 flex w-full items-center justify-center gap-2 rounded-lg py-3 text-xs font-bold uppercase tracking-widest text-white transition-all focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 ${editingUser ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:bg-amber-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.6)] focus:ring-amber-500" : "bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.4)] hover:bg-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] focus:ring-red-500"}`}
               >
-                {editingUser ? <Save className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
-                {loading ? (editingUser ? "Saving..." : "Deploying...") : (editingUser ? "Save Protocol" : "Deploy Trooper")}
+                {editingUser ? (
+                  <Save className="h-4 w-4" />
+                ) : (
+                  <UserPlus className="h-4 w-4" />
+                )}
+                {loading
+                  ? editingUser
+                    ? "Saving..."
+                    : "Deploying..."
+                  : editingUser
+                    ? "Save Protocol"
+                    : "Deploy Trooper"}
               </button>
             </form>
           </div>
