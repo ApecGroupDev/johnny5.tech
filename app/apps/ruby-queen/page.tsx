@@ -18,7 +18,7 @@ export default async function RubyQueenPage() {
 
   const app = APPS.find((a) => a.slug === "ruby-queen");
 
-  const embedUrl = "/ruby-queen/index.html";
+  const embedUrl = "https://ruby-queen.vercel.app/";
 
   return (
     <div className="relative">
@@ -53,7 +53,7 @@ export default async function RubyQueenPage() {
                   Live
                 </Badge>
                 <Badge tone="accent">
-                  v3.0
+                  v3.4
                 </Badge>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -91,7 +91,7 @@ export default async function RubyQueenPage() {
 
         <div className="mt-10 grid grid-cols-1 gap-6 border-t border-line pt-8 md:grid-cols-4">
           <Info label="Status" value="Live" />
-          <Info label="Version" value="3.3" />
+          <Info label="Version" value="3.4" />
           <Info label="Category" value="Support" />
           <Info label="Data" value="APEC Verified Library" />
         </div>
@@ -100,23 +100,23 @@ export default async function RubyQueenPage() {
           <div className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted">
             Release Notes
           </div>
-          <h2 className="mt-4 font-display text-2xl text-ink">What&apos;s new in v3.3</h2>
+          <h2 className="mt-4 font-display text-2xl text-ink">What&apos;s new in v3.4</h2>
           <ul className="mt-4 space-y-3 text-muted max-w-2xl">
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
-              <span><strong className="text-ink font-medium">Contribution Leaderboard:</strong> Introduced a new technician leaderboard tracking approved solutions and active contributions.</span>
+              <span><strong className="text-ink font-medium">Guided Troubleshooting:</strong> New Step-by-Step walkthrough mode for junior techs to guide them through complex repairs.</span>
             </li>
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
-              <span><strong className="text-ink font-medium">Manager Review Portal:</strong> Added submission queues for Service Managers to review, edit, and approve fixes directly into the knowledge base.</span>
+              <span><strong className="text-ink font-medium">Manager Library Controls:</strong> Managers can now directly remove or unpublish verified entries from the library across all devices.</span>
             </li>
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
-              <span><strong className="text-ink font-medium">Web Search Fallback:</strong> Web search is now enabled by default for answers not found in the APEC verified library.</span>
+              <span><strong className="text-ink font-medium">Image Attachments:</strong> Techs can now submit images of fixes directly from the field, which will be securely saved into the library.</span>
             </li>
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
-              <span><strong className="text-ink font-medium">Data Integration:</strong> Added Vercel KV for persistent leaderboard statistics and gamification.</span>
+              <span><strong className="text-ink font-medium">Standalone Architecture:</strong> The app is now fully separated onto its own isolated Vercel container for drastically improved security.</span>
             </li>
           </ul>
         </div>
