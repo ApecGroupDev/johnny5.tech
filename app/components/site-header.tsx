@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { Search, Menu, X } from "lucide-react";
+import { Search, Menu, X, Shield } from "lucide-react";
 import { Button } from "./ui/button";
 import { Container } from "./ui/container";
 import { cn } from "@/lib/cn";
@@ -71,6 +71,12 @@ export default function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            {session?.user?.role === "admin" && (
+              <Link href="/admin" className="hover:text-ink transition-colors flex items-center gap-1.5 text-emerald-600/90 hover:text-emerald-500">
+                <Shield className="h-3.5 w-3.5" />
+                Admin
+              </Link>
+            )}
           </nav>
 
           {/* Right */}
@@ -128,6 +134,15 @@ export default function SiteHeader() {
                   {item.label}
                 </Link>
               ))}
+              {session?.user?.role === "admin" && (
+                <Link
+                  href="/admin"
+                  className="py-3 text-sm flex items-center gap-2 text-emerald-600/90 hover:text-emerald-500"
+                >
+                  <Shield className="h-4 w-4" />
+                  Admin Dashboard
+                </Link>
+              )}
               {pathname !== "/login" &&
                 (session ? (
                   <button
