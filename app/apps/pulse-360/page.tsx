@@ -19,7 +19,7 @@ export default async function ProjectUpdatesPage() {
 
   const app = APPS.find((a) => a.slug === "pulse-360")!;
 
-  const embedUrl = "/project-updates/index.html";
+  const embedUrl = "https://pulse-360-apec.vercel.app/project-updates/index.html";
 
   return (
     <div className="relative">
