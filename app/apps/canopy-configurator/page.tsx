@@ -16,7 +16,7 @@ export default async function Page() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login?callbackUrl=/apps/canopy-configurator");
   if (session.user.role !== "admin" && !session.user.allowedApps?.includes("canopy-configurator")) {
-    redirect("/?error=RestrictedAccess");
+    redirect("/?error=RestrictedAccess#apps");
   }
 
   const locked = app.kind === "Private" && !session;

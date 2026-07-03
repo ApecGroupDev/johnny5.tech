@@ -16,7 +16,7 @@ export default async function RubyQueenPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login?callbackUrl=/apps/ruby-queen");
   if (session.user.role !== "admin" && !session.user.allowedApps?.includes("ruby-queen")) {
-    redirect("/?error=RestrictedAccess");
+    redirect("/?error=RestrictedAccess#apps");
   }
 
   const app = APPS.find((a) => a.slug === "ruby-queen");
