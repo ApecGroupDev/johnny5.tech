@@ -5,6 +5,7 @@ import { Container } from "@/app/components/ui/container";
 import { ArrowLeft, Shield, Trash2, UserPlus, Pencil, Save, X } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { StarsBackground } from "@/app/components/stars-background";
 
 export default function AdminDashboard({ initialUsers, currentUser }: any) {
   const [users, setUsers] = useState(initialUsers);
@@ -94,8 +95,9 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
   }
 
   return (
-    <div className="relative pb-24">
-      <Container>
+    <div className="relative pb-24 min-h-screen overflow-hidden">
+      <StarsBackground />
+      <Container className="relative z-10">
         <div className="pt-10 pb-6">
           <Link
             href="/"
