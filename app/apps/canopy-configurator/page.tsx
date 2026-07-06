@@ -19,6 +19,5 @@ export default async function Page() {
     redirect("/?error=RestrictedAccess#apps");
   }
 
-  const locked = app.kind === "Private" && !session;
-  return <AppDetailLayout app={app} embedUrl={STREAMLIT_URLS[SLUG]} locked={locked} />;
+  return <AppDetailLayout app={app} embedUrl={STREAMLIT_URLS[SLUG]} />;
 }

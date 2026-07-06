@@ -66,20 +66,6 @@ export default function SiteFooter() {
 
         <div className="flex flex-col-reverse items-center justify-between gap-3 border-t border-line py-6 font-mono text-[11px] text-muted md:flex-row">
           <span>© {new Date().getFullYear()} Johnny5.tech</span>
-          <div className="flex items-center gap-4">
-            <Link
-              className="link-underline text-ink/80 hover:text-ink"
-              href="/privacy"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              className="link-underline text-ink/80 hover:text-ink"
-              href="/terms"
-            >
-              Terms of Use
-            </Link>
-          </div>
         </div>
       </Container>
     </footer>

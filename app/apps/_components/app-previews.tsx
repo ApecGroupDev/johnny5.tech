@@ -1,8 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-
-export type PreviewKind = "cad" | "rain" | "database" | "map" | "chat";
 export type AccentKind = "blue" | "emerald" | "amber" | "violet" | "rose";
 
 export const ACCENTS: Record<
@@ -39,7 +36,7 @@ export const ACCENTS: Record<
 /* Per-slug preview + accent mapping */
 export const APP_META: Record<
   string,
-  { preview: PreviewKind; accent: AccentKind }
+  { preview: string; accent: AccentKind }
 > = {
   "canopy-configurator": { preview: "cad", accent: "blue" },
   "rain-risk": { preview: "rain", accent: "blue" },
@@ -47,14 +44,6 @@ export const APP_META: Record<
   "pulse-360": { preview: "map", accent: "violet" },
   "ruby-queen": { preview: "chat", accent: "rose" },
 };
-
-export function PreviewRenderer({ kind }: { kind: PreviewKind }) {
-  if (kind === "cad") return <CadPreview />;
-  if (kind === "rain") return <RainPreview />;
-  if (kind === "database") return <DatabasePreview />;
-  if (kind === "map") return <MapPreview />;
-  return <ChatPreview />;
-}
 
 /* -------------------------------------------------------------------------- */
 

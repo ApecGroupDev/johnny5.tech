@@ -2,8 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 // alihusain.me database (source)
 const source = new PrismaClient({
-  datasourceUrl:
-    "mysql://root:ykpnjzQKrvaXuWTDyJHAUEmawsdxIvfD@metro.proxy.rlwy.net:54948/railway?connection_limit=5&pool_timeout=0",
+  datasourceUrl: process.env.SOURCE_DATABASE_URL,
 });
 
 // johnny5.tech database (target) — uses DATABASE_URL from .env
