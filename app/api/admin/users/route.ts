@@ -76,7 +76,7 @@ export async function PATCH(req: Request) {
     }
   }
 
-  const dataToUpdate: any = {};
+  const dataToUpdate: Record<string, unknown> = {};
   if (email) dataToUpdate.email = email.toLowerCase();
   if (name !== undefined) dataToUpdate.name = name;
   if (role) dataToUpdate.role = role;

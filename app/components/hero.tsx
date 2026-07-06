@@ -87,9 +87,9 @@ function GlobeCanvas() {
         const longPoints = 26;
         for (let lon = 0; lon < longPoints; lon++) {
           const phi = (lon / longPoints) * 2 * Math.PI + rotateY1;
-          let x3 = r * cosTheta * Math.sin(phi);
-          let y3 = r * sinTheta;
-          let z3 = r * cosTheta * Math.cos(phi);
+          const x3 = r * cosTheta * Math.sin(phi);
+          const y3 = r * sinTheta;
+          const z3 = r * cosTheta * Math.cos(phi);
           const yRot = y3 * Math.cos(rotateX1) - z3 * Math.sin(rotateX1);
           const zRot = y3 * Math.sin(rotateX1) + z3 * Math.cos(rotateX1);
           if (zRot > 0) {
@@ -123,9 +123,9 @@ function GlobeCanvas() {
         const longPoints = 16;
         for (let lon = 0; lon < longPoints; lon++) {
           const phi = (lon / longPoints) * 2 * Math.PI + rotateY2;
-          let x3 = outerR * cosTheta * Math.sin(phi);
-          let y3 = outerR * sinTheta;
-          let z3 = outerR * cosTheta * Math.cos(phi);
+          const x3 = outerR * cosTheta * Math.sin(phi);
+          const y3 = outerR * sinTheta;
+          const z3 = outerR * cosTheta * Math.cos(phi);
           const yRot = y3 * Math.cos(rotateX2) - z3 * Math.sin(rotateX2);
           const zRot = y3 * Math.sin(rotateX2) + z3 * Math.cos(rotateX2);
           if (zRot > 0) {
@@ -176,13 +176,13 @@ function GlobeCanvas() {
       const tiltY1 = now * 0.16;
       for (let i = 0; i <= ringPoints1; i++) {
         const angle = (i / ringPoints1) * 2 * Math.PI;
-        let rx = ringRadius1 * Math.cos(angle);
-        let ry = 0;
-        let rz = ringRadius1 * Math.sin(angle);
-        let x1 = rx * Math.cos(tiltY1) + rz * Math.sin(tiltY1);
-        let z1 = -rx * Math.sin(tiltY1) + rz * Math.cos(tiltY1);
-        let y2 = ry * Math.cos(tiltX1) - z1 * Math.sin(tiltX1);
-        let z2 = ry * Math.sin(tiltX1) + z1 * Math.cos(tiltX1);
+        const rx = ringRadius1 * Math.cos(angle);
+        const ry = 0;
+        const rz = ringRadius1 * Math.sin(angle);
+        const x1 = rx * Math.cos(tiltY1) + rz * Math.sin(tiltY1);
+        const z1 = -rx * Math.sin(tiltY1) + rz * Math.cos(tiltY1);
+        const y2 = ry * Math.cos(tiltX1) - z1 * Math.sin(tiltX1);
+        const z2 = ry * Math.sin(tiltX1) + z1 * Math.cos(tiltX1);
         const px = cx + x1;
         const py = cy + y2;
         const alpha = 0.08 + (z2 > 0 ? (z2 / ringRadius1) * 0.32 : 0);
@@ -202,13 +202,13 @@ function GlobeCanvas() {
       const tiltY2 = -now * 0.12;
       for (let i = 0; i <= ringPoints2; i++) {
         const angle = (i / ringPoints2) * 2 * Math.PI;
-        let rx = ringRadius2 * Math.cos(angle);
-        let ry = 0;
-        let rz = ringRadius2 * Math.sin(angle);
-        let x1 = rx * Math.cos(tiltY2) + rz * Math.sin(tiltY2);
-        let z1 = -rx * Math.sin(tiltY2) + rz * Math.cos(tiltY2);
-        let y2 = ry * Math.cos(tiltX2) - z1 * Math.sin(tiltX2);
-        let z2 = ry * Math.sin(tiltX2) + z1 * Math.cos(tiltX2);
+        const rx = ringRadius2 * Math.cos(angle);
+        const ry = 0;
+        const rz = ringRadius2 * Math.sin(angle);
+        const x1 = rx * Math.cos(tiltY2) + rz * Math.sin(tiltY2);
+        const z1 = -rx * Math.sin(tiltY2) + rz * Math.cos(tiltY2);
+        const y2 = ry * Math.cos(tiltX2) - z1 * Math.sin(tiltX2);
+        const z2 = ry * Math.sin(tiltX2) + z1 * Math.cos(tiltX2);
         const px = cx + x1;
         const py = cy + y2;
         const alpha = 0.05 + (z2 > 0 ? (z2 / ringRadius2) * 0.25 : 0);
@@ -256,9 +256,9 @@ function GlobeCanvas() {
         const labelR = r * 1.06;
         const cosTheta = Math.cos(theta);
         const sinTheta = Math.sin(theta);
-        let x3 = labelR * cosTheta * Math.sin(phi);
-        let y3 = labelR * sinTheta;
-        let z3 = labelR * cosTheta * Math.cos(phi);
+        const x3 = labelR * cosTheta * Math.sin(phi);
+        const y3 = labelR * sinTheta;
+        const z3 = labelR * cosTheta * Math.cos(phi);
 
         const yRot = y3 * Math.cos(0.15) - z3 * Math.sin(0.15);
         const zRot = y3 * Math.sin(0.15) + z3 * Math.cos(0.15);

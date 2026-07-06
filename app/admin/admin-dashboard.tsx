@@ -20,7 +20,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { StarsBackground } from "@/app/components/stars-background";
 import { APPS } from "@/app/apps/_components/app-data";
 
-export default function AdminDashboard({ initialUsers, currentUser }: any) {
+export interface User {
+  id: string;
+  name: string | null;
+  email: string | null;
+  role: string;
+  active: boolean | null;
+  allowedApps: string | null;
+  createdAt: string | Date;
+}
+
+interface AdminDashboardProps {
+  initialUsers: User[];
+  currentUser: User;
+}
+
+export default function AdminDashboard({ initialUsers, currentUser }: AdminDashboardProps) {
   const [users, setUsers] = useState(initialUsers);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -34,10 +49,10 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
     active: true,
     allowedApps: "",
   });
-  const [editingUser, setEditingUser] = useState<any>(null);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
-  const activeUsers = users.filter((u: any) => u.active !== false).length;
-  const adminUsers = users.filter((u: any) => u.role === "admin").length;
+  const activeUsers = users.filter((u: User) => u.active !== false).length;
+  const adminUsers = users.filter((u: User) => u.role === "admin").length;
 
   async function handleDelete(id: string) {
     if (!confirm("Are you sure you want to delete this user?")) return;
@@ -46,7 +61,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
         method: "DELETE",
       });
       if (res.ok) {
-        setUsers(users.filter((u: any) => u.id !== id));
+        setUsers(users.filter((u: User) => u.id !== id));
       } else {
         const data = await res.json();
         alert(data.error || "Failed to delete");
@@ -85,8 +100,8 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
     setLoading(true);
     setError("");
     try {
-      const payload: any = {
-        id: editingUser.id,
+      const payload: Partial<User> & { password?: string } = {
+        id: editingUser!.id,
         name: form.name,
         email: form.email,
         role: form.role,
@@ -102,7 +117,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
       });
       const data = await res.json();
       if (res.ok) {
-        setUsers(users.map((u: any) => (u.id === data.id ? data : u)));
+        setUsers(users.map((u: User) => (u.id === editingUser!.id ? data : u)));
         closeForm();
       } else {
         setError(data.error || "Failed to update user");
@@ -114,11 +129,11 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
     }
   }
 
-  function startEditing(user: any) {
+  function startEditing(user: User) {
     setEditingUser(user);
     setForm({
       name: user.name || "",
-      email: user.email,
+      email: user.email || "",
       password: "",
       role: user.role,
       active: user.active !== false,
@@ -266,7 +281,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: any) {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200/60">
-                    {users.map((user: any) => (
+                    {users.map((user: User) => (
                       <tr key={user.id} className="transition-colors hover:bg-blue-50/60">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
