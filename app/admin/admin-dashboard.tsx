@@ -32,7 +32,13 @@ export interface User {
 
 interface AdminDashboardProps {
   initialUsers: User[];
-  currentUser: User;
+  currentUser: {
+    id?: string | null;
+    name?: string | null;
+    email?: string | null;
+    role?: string | null;
+    image?: string | null;
+  };
 }
 
 export default function AdminDashboard({ initialUsers, currentUser }: AdminDashboardProps) {
