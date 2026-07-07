@@ -8,7 +8,7 @@ import { Suspense } from "react";
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
   const isAuthenticated = !!session;
-  const userEmail = session?.user?.email ?? null;
+
 
   return (
     <>
@@ -17,7 +17,6 @@ export default async function HomePage() {
       <AppsSection
         kind="Private"
         isAuthenticated={isAuthenticated}
-        userEmail={userEmail}
       />
 
       <Suspense fallback={null}>
