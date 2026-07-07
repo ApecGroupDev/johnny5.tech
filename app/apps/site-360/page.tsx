@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { APPS } from "../_components/app-data";
+
 import Link from "next/link";
 import { ArrowLeft, Globe } from "lucide-react";
 import { Container } from "@/app/components/ui/container";
@@ -19,7 +19,7 @@ export default async function Site360Page() {
     redirect("/?error=RestrictedAccess#apps");
   }
 
-  const app = APPS.find((a) => a.slug === "site-360");
+
 
   const embedUrl = "https://site-360-apec.vercel.app/";
 

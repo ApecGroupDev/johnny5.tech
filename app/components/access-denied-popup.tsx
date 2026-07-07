@@ -12,6 +12,7 @@ export function AccessDeniedPopup() {
 
   useEffect(() => {
     if (searchParams?.get("error") === "RestrictedAccess") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShow(true);
       // Clean up the URL to prevent showing the popup again on refresh
       const url = new URL(window.location.href);

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { APPS } from "../_components/app-data";
+
 import Link from "next/link";
 import { ArrowLeft, Crown } from "lucide-react";
 import { Container } from "@/app/components/ui/container";
@@ -19,7 +19,7 @@ export default async function RubyQueenPage() {
     redirect("/?error=RestrictedAccess#apps");
   }
 
-  const app = APPS.find((a) => a.slug === "ruby-queen");
+
 
   const embedUrl = "https://ruby-queen.vercel.app/";
 
@@ -46,7 +46,7 @@ export default async function RubyQueenPage() {
                 Ruby Queen
               </h1>
               <p className="mt-3 text-muted md:text-lg">
-                POS Troubleshooting Assistant. Built from Ms. Peggy's 235-file library.
+                POS Troubleshooting Assistant. Built from Ms. Peggy&apos;s 235-file library.
               </p>
             </div>
 
@@ -111,7 +111,7 @@ export default async function RubyQueenPage() {
             </li>
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
-              <span><strong className="text-ink font-medium">Smarter Tech Understanding:</strong> Gracefully handles typos and tech shorthand with smart guessing instead of frustrating "I don't understand" dead-ends.</span>
+              <span><strong className="text-ink font-medium">Smarter Tech Understanding:</strong> Gracefully handles typos and tech shorthand with smart guessing instead of frustrating &quot;I don&apos;t understand&quot; dead-ends.</span>
             </li>
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>

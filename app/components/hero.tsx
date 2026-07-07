@@ -2,7 +2,7 @@
 
 import { forwardRef, useEffect, useRef } from "react";
 import Image from "next/image";
-import Link from "next/link";
+
 import { StarsBackground } from "./stars-background";
 
 /* ─────────────────────────────────────────────────────────────
@@ -187,7 +187,7 @@ function GlobeCanvas() {
         const py = cy + y2;
         const alpha = 0.08 + (z2 > 0 ? (z2 / ringRadius1) * 0.32 : 0);
         ctx.strokeStyle = `rgba(6,182,212,${alpha})`;
-        if (i === 0) (ctx.beginPath(), ctx.moveTo(px, py));
+        if (i === 0) { ctx.beginPath(); ctx.moveTo(px, py); }
         else ctx.lineTo(px, py);
       }
       ctx.stroke();
@@ -213,7 +213,7 @@ function GlobeCanvas() {
         const py = cy + y2;
         const alpha = 0.05 + (z2 > 0 ? (z2 / ringRadius2) * 0.25 : 0);
         ctx.strokeStyle = `rgba(129,140,248,${alpha})`;
-        if (i === 0) (ctx.beginPath(), ctx.moveTo(px, py));
+        if (i === 0) { ctx.beginPath(); ctx.moveTo(px, py); }
         else ctx.lineTo(px, py);
       }
       ctx.stroke();

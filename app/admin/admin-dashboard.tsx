@@ -72,7 +72,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
         const data = await res.json();
         alert(data.error || "Failed to delete");
       }
-    } catch (err) {
+    } catch {
       alert("An error occurred");
     }
   }
@@ -94,7 +94,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
       } else {
         setError(data.error || "Failed to create user");
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred");
     } finally {
       setLoading(false);
@@ -128,7 +128,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
       } else {
         setError(data.error || "Failed to update user");
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred");
     } finally {
       setLoading(false);

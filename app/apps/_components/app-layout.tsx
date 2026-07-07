@@ -21,7 +21,7 @@ export function AppDetailLayout({
     if (embedUrl) {
       displayUrl = new URL(embedUrl).hostname;
     }
-  } catch (e) {
+  } catch {
     // Keep fallback
   }
 

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { APPS } from "../_components/app-data";
+
 import Link from "next/link";
 import { ArrowLeft, CloudRain } from "lucide-react";
 import { Container } from "@/app/components/ui/container";
@@ -19,8 +19,6 @@ export default async function RainRiskPage() {
   if (session.user.role !== "admin" && !session.user.allowedApps?.includes("rain-risk")) {
     redirect("/?error=RestrictedAccess#apps");
   }
-
-  const app = APPS.find((a) => a.slug === "rain-risk")!;
 
   const embedUrl = "/rain-risk-dashboard.html";
 

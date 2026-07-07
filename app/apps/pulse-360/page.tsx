@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { APPS } from "../_components/app-data";
+
 import Link from "next/link";
 import { ArrowLeft, Map } from "lucide-react";
 import { Container } from "@/app/components/ui/container";
@@ -20,7 +20,7 @@ export default async function ProjectUpdatesPage() {
     redirect("/?error=RestrictedAccess#apps");
   }
 
-  const app = APPS.find((a) => a.slug === "pulse-360")!;
+
 
   const embedUrl = "https://pulse-360-apec.vercel.app/project-updates/index.html";
 
@@ -105,7 +105,7 @@ export default async function ProjectUpdatesPage() {
           <div className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted">
             Release Notes
           </div>
-          <h2 className="mt-4 font-display text-2xl text-ink">What's new in v3.0</h2>
+          <h2 className="mt-4 font-display text-2xl text-ink">What&apos;s new in v3.0</h2>
           <ul className="mt-4 space-y-3 text-muted max-w-2xl">
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>

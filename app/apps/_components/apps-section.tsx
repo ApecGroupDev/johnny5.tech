@@ -12,7 +12,7 @@ type Props = {
   kind: AppKind;
   isAuthenticated: boolean;
   variant?: "page" | "teaser";
-  userEmail?: string | null;
+
   eyebrow?: string;
   title?: string;
   description?: string;
@@ -37,7 +37,7 @@ export function AppsSection({
   kind,
   isAuthenticated,
   variant = "page",
-  userEmail,
+
   eyebrow,
   title,
   description,
