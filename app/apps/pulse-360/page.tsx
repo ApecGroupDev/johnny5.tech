@@ -57,7 +57,7 @@ export default async function ProjectUpdatesPage() {
                   Live
                 </Badge>
                 <Badge tone="accent">
-                  v3.0
+                  v3.1
                 </Badge>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -96,7 +96,7 @@ export default async function ProjectUpdatesPage() {
 
         <div className="mt-10 grid grid-cols-1 gap-6 border-t border-line pt-8 md:grid-cols-4">
           <Info label="Status" value="Live" />
-          <Info label="Version" value="3.0" />
+          <Info label="Version" value="3.1" />
           <Info label="Category" value="Management" />
           <Info label="Data" value="Serverless API" />
         </div>
@@ -105,8 +105,12 @@ export default async function ProjectUpdatesPage() {
           <div className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted">
             Release Notes
           </div>
-          <h2 className="mt-4 font-display text-2xl text-ink">What&apos;s new in v3.0</h2>
+          <h2 className="mt-4 font-display text-2xl text-ink">What&apos;s new in v3.1</h2>
           <ul className="mt-4 space-y-3 text-muted max-w-2xl">
+            <li className="flex gap-3">
+              <span className="text-ink mt-0.5">•</span>
+              <span><strong className="text-ink font-medium">Budget &amp; Accounting Integration:</strong> Each of the 75 active project cards now includes a profitability tracker displaying original quote budget, quoted price, running COGS, and calculated profit, alongside upgraded AI chatbot instructions for financial and profitability analysis.</span>
+            </li>
             <li className="flex gap-3">
               <span className="text-ink mt-0.5">•</span>
               <span><strong className="text-ink font-medium">Searchable Project Picker:</strong> The chat view now has a live-search dropdown to quickly find and select any project by name, company, or city.</span>
