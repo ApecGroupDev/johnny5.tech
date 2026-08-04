@@ -91,7 +91,7 @@ export function AppDetailLayout({
           {locked ? (
             <LockedState />
           ) : (
-            <iframe
+            <iframe sandbox="allow-scripts allow-same-origin"
               src={embedUrl}
               title={app.title}
               className="h-[78vh] min-h-[640px] w-full bg-bg"

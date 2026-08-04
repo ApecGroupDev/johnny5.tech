@@ -79,7 +79,7 @@ export default async function RainRiskPage() {
             </span>
           </div>
 
-          <iframe
+          <iframe sandbox="allow-scripts allow-same-origin"
             src={embedUrl}
             title="Rain Risk Board"
             className="h-[82vh] min-h-[720px] w-full bg-white"

@@ -87,7 +87,7 @@ export default async function ProjectUpdatesPage() {
             </span>
           </div>
 
-          <iframe
+          <iframe sandbox="allow-scripts allow-same-origin"
             src={embedUrl}
             title="PULSE 360 App"
             className="h-[82vh] min-h-180 w-full bg-white"

@@ -78,7 +78,7 @@ export default async function Site360Page() {
             </span>
           </div>
 
-          <iframe
+          <iframe sandbox="allow-scripts allow-same-origin"
             src={embedUrl}
             title="SITE 360"
             className="h-[82vh] min-h-[720px] w-full bg-white"

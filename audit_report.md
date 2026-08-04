@@ -21,15 +21,15 @@
 > The `/api/auth/[...nextauth]` endpoint and the `/api/admin/users` POST (create user) endpoint accept unlimited attempts. There is no CAPTCHA, honeypot, IP rate limiter, or account lockout mechanism.
 
 > [!WARNING]
-> **4. ZERO HTTP SECURITY HEADERS CONFIGURED**
+> **4. (FIXED) ZERO HTTP SECURITY HEADERS CONFIGURED**
 > `next.config.ts` is completely empty. There is no `Content-Security-Policy`, no `Strict-Transport-Security`, no `X-Frame-Options`, no `Referrer-Policy`, and no `Permissions-Policy` configured. The iframes embedding external apps (ruby-queen.vercel.app, pulse-360-apec.vercel.app, etc.) are also completely unsandboxed.
 
 > [!WARNING]
-> **5. NO PRIVACY POLICY, TERMS OF SERVICE, OR COOKIE CONSENT**
+> **5. (FIXED) NO PRIVACY POLICY, TERMS OF SERVICE, OR COOKIE CONSENT**
 > The site collects user credentials, stores sessions via JWTs, and processes personal data (name, email, passwords) — but has no Privacy Policy, Terms of Service, or any legal disclosure page.
 
 > [!IMPORTANT]
-> **6. NO `sitemap.xml` OR `robots.txt` — SEO IS BLIND**
+> **6. (WONTFIX - Internal) NO `sitemap.xml` OR `robots.txt` — SEO IS BLIND**
 > There is no `sitemap.xml`, no `robots.txt`, incomplete Open Graph metadata (OG image uses a relative URL), no Twitter Card meta, and no structured data / JSON-LD schema markup of any kind.
 
 ---
@@ -43,19 +43,19 @@
 | **CRITICAL** | Security | `proxy.ts` is dead code — no middleware protection | [proxy.ts](file:///c:/Projects/johnny5.tech/proxy.ts) | Rename to `middleware.ts` |
 | **HIGH** | Security | No rate limiting on login or admin API | [route.ts](file:///c:/Projects/johnny5.tech/app/api/auth/%5B...nextauth%5D/route.ts) | Add rate limiter (e.g., `upstash/ratelimit` or custom IP tracker) |
 | **HIGH** | Security | No CSRF protection on admin PATCH/DELETE/POST | [route.ts](file:///c:/Projects/johnny5.tech/app/api/admin/users/route.ts) | Validate origin/referer header or use CSRF tokens |
-| **HIGH** | Security | No HTTP security headers | [next.config.ts](file:///c:/Projects/johnny5.tech/next.config.ts) | Add `headers()` config with CSP, HSTS, X-Frame-Options, Referrer-Policy |
-| **HIGH** | Security | iframes unsandboxed — no `sandbox` attribute | Multiple app pages | Add `sandbox="allow-scripts allow-same-origin"` to all iframes |
+| **HIGH** | Security | (FIXED) No HTTP security headers | [next.config.ts](file:///c:/Projects/johnny5.tech/next.config.ts) | Add `headers()` config with CSP, HSTS, X-Frame-Options, Referrer-Policy |
+| **HIGH** | Security | (FIXED) iframes unsandboxed — no `sandbox` attribute | Multiple app pages | Add `sandbox="allow-scripts allow-same-origin"` to all iframes |
 | **HIGH** | Security | `dangerouslySetInnerHTML` in hero (XSS vector) | [hero.tsx:663](file:///c:/Projects/johnny5.tech/app/components/hero.tsx#L663) | Use CSS modules or a `<style>` component instead |
-| **HIGH** | Legal | No Privacy Policy or Terms of Service | Site-wide | Create `/privacy` and `/terms` pages |
-| **HIGH** | Legal | No cookie/analytics consent disclosure | Site-wide | Even without analytics, the JWT session cookie needs disclosure |
+| **HIGH** | Legal | (FIXED) No Privacy Policy or Terms of Service | Site-wide | Create `/privacy` and `/terms` pages |
+| **HIGH** | Legal | (FIXED) No cookie/analytics consent disclosure | Site-wide | Even without analytics, the JWT session cookie needs disclosure |
 | **MEDIUM** | Security | Admin API: no input sanitization on user creation | [route.ts:48](file:///c:/Projects/johnny5.tech/app/api/admin/users/route.ts#L48) | Validate and sanitize `name`, email, `role`, `allowedApps` with zod |
 | **MEDIUM** | Security | Password policy too weak — only `minLength={6}` on client | [admin-dashboard.tsx:481](file:///c:/Projects/johnny5.tech/app/admin/admin-dashboard.tsx#L481) | Enforce min 8 chars + complexity server-side |
-| **MEDIUM** | SEO | No `robots.txt` file | Missing entirely | Create `app/robots.ts` using Next.js metadata API |
-| **MEDIUM** | SEO | No `sitemap.xml` | Missing entirely | Create `app/sitemap.ts` using Next.js metadata API |
-| **MEDIUM** | SEO | OG image uses relative URL (`/logos/apec-logo.webp`) | [layout.tsx:31](file:///c:/Projects/johnny5.tech/app/layout.tsx#L31) | Use absolute URL: `https://johnny5.tech/logos/apec-logo.webp` |
-| **MEDIUM** | SEO | No Twitter Card metadata | [layout.tsx:22](file:///c:/Projects/johnny5.tech/app/layout.tsx#L22) | Add `twitter` metadata object |
-| **MEDIUM** | SEO | No structured data / JSON-LD | Site-wide | Add Organization schema, WebApplication schema |
-| **MEDIUM** | SEO | App page titles are bare strings without site suffix | All app pages | Use template: `"PULSE 360 \| Johnny5"` |
+| **MEDIUM** | SEO | (WONTFIX) No `robots.txt` file | Missing entirely | Create `app/robots.ts` using Next.js metadata API |
+| **MEDIUM** | SEO | (WONTFIX) No `sitemap.xml` | Missing entirely | Create `app/sitemap.ts` using Next.js metadata API |
+| **MEDIUM** | SEO | (WONTFIX) OG image uses relative URL (`/logos/apec-logo.webp`) | [layout.tsx:31](file:///c:/Projects/johnny5.tech/app/layout.tsx#L31) | Use absolute URL: `https://johnny5.tech/logos/apec-logo.webp` |
+| **MEDIUM** | SEO | (WONTFIX) No Twitter Card metadata | [layout.tsx:22](file:///c:/Projects/johnny5.tech/app/layout.tsx#L22) | Add `twitter` metadata object |
+| **MEDIUM** | SEO | (WONTFIX) No structured data / JSON-LD | Site-wide | Add Organization schema, WebApplication schema |
+| **MEDIUM** | SEO | (WONTFIX) App page titles are bare strings without site suffix | All app pages | Use template: `"PULSE 360 \| Johnny5"` |
 | **MEDIUM** | Accessibility | Login form labels not associated with `htmlFor`/`id` | [page.tsx:93-117](file:///c:/Projects/johnny5.tech/app/login/page.tsx#L93-L117) | Add matching `htmlFor` + `id` pairs |
 | **MEDIUM** | Accessibility | Admin form labels not associated with `htmlFor`/`id` | [admin-dashboard.tsx:430-500](file:///c:/Projects/johnny5.tech/app/admin/admin-dashboard.tsx#L430-L500) | Add matching `htmlFor` + `id` pairs |
 | **MEDIUM** | Accessibility | Color contrast: `text-white/35`, `text-white/20` used extensively | Login, Apps sections | Many text elements fall below WCAG 2.1 AA 4.5:1 ratio |
@@ -73,7 +73,7 @@
 | **LOW** | Code | `typewriter.tsx` component is never imported/used | [typewriter.tsx](file:///c:/Projects/johnny5.tech/app/components/motion/typewriter.tsx) | Dead code — remove or use |
 | **LOW** | Code | `prisma.config.ts` defines migrations path but no migrations exist | [prisma.config.ts](file:///c:/Projects/johnny5.tech/prisma.config.ts) | Using `db push` is fine for now, but consider migrations for production |
 | **LOW** | Code | `sync-users.ts` hardcodes reference to "alihusain.me" database | [sync-users.ts:3](file:///c:/Projects/johnny5.tech/prisma/sync-users.ts#L3) | Document or remove if no longer needed |
-| **LOW** | SEO | Home page has no meta description beyond layout default | [page.tsx](file:///c:/Projects/johnny5.tech/app/page.tsx) | Export page-level `metadata` with richer description |
+| **LOW** | SEO | (WONTFIX) Home page has no meta description beyond layout default | [page.tsx](file:///c:/Projects/johnny5.tech/app/page.tsx) | Export page-level `metadata` with richer description |
 | **LOW** | Accessibility | Skip-to-content link: `z-60` may not be a valid Tailwind v4 value | [layout.tsx:51](file:///c:/Projects/johnny5.tech/app/layout.tsx#L51) | Verify or use `z-[60]` |
 | **LOW** | Accessibility | Mobile hamburger menu lacks focus trap | [site-header.tsx:125-163](file:///c:/Projects/johnny5.tech/app/components/site-header.tsx#L125-L163) | Add focus trap when mobile menu is open |
 
@@ -177,7 +177,7 @@ The hero renders a large canvas + text content. The canvas has no fallback and d
 
 ---
 
-### 4. SEO & Structured Data
+### 4. (WONTFIX) SEO & Structured Data (Internal Use Only)
 
 #### Missing Files
 - ❌ No `robots.txt` — search engines get no crawl guidance
