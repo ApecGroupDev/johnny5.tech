@@ -6,7 +6,7 @@ import SiteFooter from "./components/site-footer";
 import CommandPalette from "./components/command-palette";
 import { Providers } from "./providers";
 import { BackgroundEffects } from "./components/background-effects";
-
+import { CookieConsent } from "./components/cookie-consent";
 const sans = Geist({
   variable: "--font-sans-ui",
   subsets: ["latin"],
@@ -60,6 +60,7 @@ export default function RootLayout({
             <SiteFooter />
           </div>
           <CommandPalette />
+          <CookieConsent />
         </Providers>
       </body>
     </html>

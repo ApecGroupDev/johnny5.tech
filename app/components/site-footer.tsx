@@ -21,7 +21,7 @@ export default function SiteFooter() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-10 text-sm md:grid-cols-2">
+          <div className="grid grid-cols-2 gap-10 text-sm md:grid-cols-3">
             <div>
               <div className="mb-3 font-mono text-[11px] text-muted">Site</div>
               <ul className="space-y-2">
@@ -39,6 +39,28 @@ export default function SiteFooter() {
                     href="/#apps"
                   >
                     Apps
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <div className="mb-3 font-mono text-[11px] text-muted">Legal</div>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    className="link-underline text-ink/80 hover:text-ink"
+                    href="/privacy-policy"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="link-underline text-ink/80 hover:text-ink"
+                    href="/terms-of-service"
+                  >
+                    Terms of Service
                   </Link>
                 </li>
               </ul>
