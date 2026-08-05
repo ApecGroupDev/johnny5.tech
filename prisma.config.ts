@@ -6,7 +6,4 @@ export default defineConfig({
   migrations: {
     path: "prisma/migrations",
   },
-  earlyAccess: {
-    loadEnv: path.resolve(__dirname, ".env"),
-  },
 });
