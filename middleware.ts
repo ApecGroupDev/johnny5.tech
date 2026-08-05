@@ -10,5 +10,6 @@ export const config = {
   matcher: [
     "/apps/:path*",
     "/admin/:path*",
+    "/rain-risk-dashboard.html",
   ],
 };
