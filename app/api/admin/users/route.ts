@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -40,6 +41,14 @@ export async function DELETE(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
+  
+  // Rate limit admin user creation: 10 requests per 1 minute
+  const { success } = rateLimit(`admin-user-create:${ip}`, 10, 60 * 1000);
+  if (!success) {
+    return NextResponse.json({ error: "Too Many Requests" }, { status: 429 });
+  }
+
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

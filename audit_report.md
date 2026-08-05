@@ -8,17 +8,17 @@
 
 ## Executive Summary — Top 6 Issues
 
-> [!CAUTION]
-> **1. PRODUCTION API KEYS & DATABASE CREDENTIALS ARE COMMITTED IN `.env`**
-> The `.env` file is tracked in the local workspace and contains **live Anthropic API keys**, **Railway MySQL credentials for two databases**, and the `NEXTAUTH_SECRET`. Although `.env*` is listed in `.gitignore`, the file exists locally and the `NEXTAUTH_SECRET` is literally `"change-me-to-a-random-secret"` — this is a non-random secret in active use.
+> [!NOTE]
+> **1. (FIXED) PRODUCTION API KEYS & DATABASE CREDENTIALS IN `.env`**
+> **UPDATE:** This has been resolved. The `.env` file is properly ignored by `.gitignore` and is NOT tracked by git. Additionally, the `NEXTAUTH_SECRET` has already been updated to a secure random string.
 
-> [!CAUTION]
-> **2. NO MIDDLEWARE FILE EXISTS — `proxy.ts` IS DEAD CODE**
-> The file `proxy.ts` at the project root **looks** like it should be `middleware.ts`, but Next.js only picks up `middleware.ts` (or `.js`). Because it's named `proxy.ts`, **none of the matcher-based auth guards in it are active**, meaning `/apps/:path*` and `/admin/:path*` are NOT protected at the middleware layer. Server-side `redirect()` calls in each page file are the only protection line.
+> [!NOTE]
+> **2. (FALSE POSITIVE) NO MIDDLEWARE FILE EXISTS — `proxy.ts` IS DEAD CODE**
+> **UPDATE:** This was a false positive. In the custom Next.js version used by this project (16.2.9), what used to be called `middleware.ts` has been officially renamed to `proxy.ts`. The proxy file is fully active and the matcher-based auth guards are properly enforcing protection.
 
-> [!WARNING]
-> **3. NO RATE LIMITING, CAPTCHA, OR BRUTE-FORCE PROTECTION ON LOGIN**
-> The `/api/auth/[...nextauth]` endpoint and the `/api/admin/users` POST (create user) endpoint accept unlimited attempts. There is no CAPTCHA, honeypot, IP rate limiter, or account lockout mechanism.
+> [!NOTE]
+> **3. (FIXED) NO RATE LIMITING, CAPTCHA, OR BRUTE-FORCE PROTECTION ON LOGIN**
+> **UPDATE:** This has been resolved. An in-memory rate limiter has been added to `/api/auth/[...nextauth]` (5 attempts/min) and `/api/admin/users` (10 requests/min).
 
 > [!WARNING]
 > **4. (FIXED) ZERO HTTP SECURITY HEADERS CONFIGURED**
@@ -38,10 +38,10 @@
 
 | Severity | Category | Issue | File / Location | Fix |
 |----------|----------|-------|-----------------|-----|
-| **CRITICAL** | Security | Live API keys & DB creds in `.env` | [.env](file:///c:/Projects/johnny5.tech/.env) | Rotate ALL keys/secrets immediately. Ensure `.env` is never committed. Use a secrets manager. |
-| **CRITICAL** | Security | `NEXTAUTH_SECRET` is a default placeholder | [.env:5](file:///c:/Projects/johnny5.tech/.env#L5) | Generate a cryptographically random secret: `openssl rand -base64 32` |
-| **CRITICAL** | Security | `proxy.ts` is dead code — no middleware protection | [proxy.ts](file:///c:/Projects/johnny5.tech/proxy.ts) | Rename to `middleware.ts` |
-| **HIGH** | Security | No rate limiting on login or admin API | [route.ts](file:///c:/Projects/johnny5.tech/app/api/auth/%5B...nextauth%5D/route.ts) | Add rate limiter (e.g., `upstash/ratelimit` or custom IP tracker) |
+| **RESOLVED** | Security | Live API keys & DB creds in `.env` | [.env](file:///c:/Projects/johnny5.tech/.env) | File is ignored by git; keys are only local |
+| **RESOLVED** | Security | `NEXTAUTH_SECRET` is a default placeholder | [.env:5](file:///c:/Projects/johnny5.tech/.env#L5) | Secret has been updated |
+| **RESOLVED** | Security | `proxy.ts` is dead code (FALSE POSITIVE) | [proxy.ts](file:///c:/Projects/johnny5.tech/proxy.ts) | N/A - Next.js uses `proxy.ts` |
+| **RESOLVED** | Security | No rate limiting on login or admin API | [route.ts](file:///c:/Projects/johnny5.tech/app/api/auth/%5B...nextauth%5D/route.ts) | In-memory IP rate limiter added |
 | **HIGH** | Security | No CSRF protection on admin PATCH/DELETE/POST | [route.ts](file:///c:/Projects/johnny5.tech/app/api/admin/users/route.ts) | Validate origin/referer header or use CSRF tokens |
 | **HIGH** | Security | (FIXED) No HTTP security headers | [next.config.ts](file:///c:/Projects/johnny5.tech/next.config.ts) | Add `headers()` config with CSP, HSTS, X-Frame-Options, Referrer-Policy |
 | **HIGH** | Security | (FIXED) iframes unsandboxed — no `sandbox` attribute | Multiple app pages | Add `sandbox="allow-scripts allow-same-origin"` to all iframes |
