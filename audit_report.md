@@ -56,11 +56,11 @@
 | **MEDIUM** | SEO | (WONTFIX) No Twitter Card metadata | [layout.tsx:22](file:///c:/Projects/johnny5.tech/app/layout.tsx#L22) | Add `twitter` metadata object |
 | **MEDIUM** | SEO | (WONTFIX) No structured data / JSON-LD | Site-wide | Add Organization schema, WebApplication schema |
 | **MEDIUM** | SEO | (WONTFIX) App page titles are bare strings without site suffix | All app pages | Use template: `"PULSE 360 \| Johnny5"` |
-| **MEDIUM** | Accessibility | Login form labels not associated with `htmlFor`/`id` | [page.tsx:93-117](file:///c:/Projects/johnny5.tech/app/login/page.tsx#L93-L117) | Add matching `htmlFor` + `id` pairs |
-| **MEDIUM** | Accessibility | Admin form labels not associated with `htmlFor`/`id` | [admin-dashboard.tsx:430-500](file:///c:/Projects/johnny5.tech/app/admin/admin-dashboard.tsx#L430-L500) | Add matching `htmlFor` + `id` pairs |
-| **MEDIUM** | Accessibility | Color contrast: `text-white/35`, `text-white/20` used extensively | Login, Apps sections | Many text elements fall below WCAG 2.1 AA 4.5:1 ratio |
-| **MEDIUM** | Accessibility | No `aria-label` on icon-only delete/edit buttons in admin table | [admin-dashboard.tsx:348-363](file:///c:/Projects/johnny5.tech/app/admin/admin-dashboard.tsx#L348-L363) | Add descriptive `aria-label` attributes |
-| **MEDIUM** | Accessibility | Error messages not live-announced to screen readers | Login, Admin forms | Wrap errors in `aria-live="polite"` region |
+| **RESOLVED** | Accessibility | (FIXED) Login form labels not associated with `htmlFor`/`id` | [page.tsx:93-117](file:///c:/Projects/johnny5.tech/app/login/page.tsx#L93-L117) | Added matching `htmlFor` + `id` pairs |
+| **RESOLVED** | Accessibility | (FIXED) Admin form labels not associated with `htmlFor`/`id` | [admin-dashboard.tsx:430-500](file:///c:/Projects/johnny5.tech/app/admin/admin-dashboard.tsx#L430-L500) | Added matching `htmlFor` + `id` pairs |
+| **RESOLVED** | Accessibility | (FIXED) Color contrast: `text-white/35`, `text-white/20` used extensively | Login, Apps sections | Adjusted opacity upwards to meet WCAG AA |
+| **RESOLVED** | Accessibility | (FIXED) No `aria-label` on icon-only delete/edit buttons in admin table | [admin-dashboard.tsx:348-363](file:///c:/Projects/johnny5.tech/app/admin/admin-dashboard.tsx#L348-L363) | Added descriptive `aria-label` attributes |
+| **RESOLVED** | Accessibility | (FIXED) Error messages not live-announced to screen readers | Login, Admin forms | Wrapped errors in `aria-live="polite"` regions |
 | **RESOLVED** | Performance | (FIXED) `StarsBackground` canvas instantiated 4+ times simultaneously | Hero, AppsSection, Login, Admin | Added IntersectionObserver + Page Visibility to pause when off-screen |
 | **RESOLVED** | Performance | (FIXED) `BackgroundEffects` runs a full-screen RAF loop permanently | [background-effects.tsx](file:///c:/Projects/johnny5.tech/app/components/background-effects.tsx) | Added Page Visibility API + IntersectionObserver |
 | **MEDIUM** | Performance | Hero component is 851 lines / 32KB — monolithic | [hero.tsx](file:///c:/Projects/johnny5.tech/app/components/hero.tsx) | Break into `GlobeCanvas`, `ConnectorCanvas`, `EcosystemNode`, `Hero` subfiles |
@@ -75,7 +75,7 @@
 | **LOW** | Code | `sync-users.ts` hardcodes reference to "alihusain.me" database | [sync-users.ts:3](file:///c:/Projects/johnny5.tech/prisma/sync-users.ts#L3) | Document or remove if no longer needed |
 | **LOW** | SEO | (WONTFIX) Home page has no meta description beyond layout default | [page.tsx](file:///c:/Projects/johnny5.tech/app/page.tsx) | Export page-level `metadata` with richer description |
 | **LOW** | Accessibility | Skip-to-content link: `z-60` may not be a valid Tailwind v4 value | [layout.tsx:51](file:///c:/Projects/johnny5.tech/app/layout.tsx#L51) | Verify or use `z-[60]` |
-| **LOW** | Accessibility | Mobile hamburger menu lacks focus trap | [site-header.tsx:125-163](file:///c:/Projects/johnny5.tech/app/components/site-header.tsx#L125-L163) | Add focus trap when mobile menu is open |
+| **RESOLVED** | Accessibility | (FIXED) Mobile hamburger menu lacks focus trap | [site-header.tsx:125-163](file:///c:/Projects/johnny5.tech/app/components/site-header.tsx#L125-L163) | Added focus trap listener inside open state |
 
 ---
 

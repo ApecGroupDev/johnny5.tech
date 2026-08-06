@@ -349,6 +349,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
                               onClick={() => startEditing(user)}
                               className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
                               title="Modify Protocol"
+                              aria-label="Modify Protocol"
                             >
                               <Pencil className="h-4 w-4" />
                             </button>
@@ -357,6 +358,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
                                 onClick={() => handleDelete(user.id)}
                                 className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-100 rounded-lg transition-colors cursor-pointer"
                                 title="Terminate Code"
+                                aria-label="Terminate Code"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -416,21 +418,24 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
                 onSubmit={editingUser ? handleUpdate : handleCreate}
                 className="space-y-5"
               >
-                {error && (
-                  <div
-                    className={`rounded-lg p-3 text-sm font-medium border ${
-                      editingUser ? "bg-amber-100 text-amber-800 border-amber-200" : "bg-red-100 text-red-800 border-red-200"
-                    }`}
-                  >
-                    {error}
-                  </div>
-                )}
+                <div aria-live="polite" className="min-h-[44px]">
+                  {error && (
+                    <div
+                      className={`rounded-lg p-3 text-sm font-medium border ${
+                        editingUser ? "bg-amber-100 text-amber-800 border-amber-200" : "bg-red-100 text-red-800 border-red-200"
+                      }`}
+                    >
+                      {error}
+                    </div>
+                  )}
+                </div>
 
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
+                  <label htmlFor="name" className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
                     Designation (Name)
                   </label>
                   <input
+                    id="name"
                     required
                     type="text"
                     value={form.name}
@@ -443,10 +448,11 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
                 </div>
 
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
+                  <label htmlFor="email" className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
                     Comlink (Email)
                   </label>
                   <input
+                    id="email"
                     required
                     type="email"
                     value={form.email}
@@ -459,7 +465,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
                 </div>
 
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5 flex items-baseline justify-between">
+                  <label htmlFor="password" className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5 flex items-baseline justify-between">
                     <span>Clearance Code</span>
                     {editingUser && (
                       <span className="text-[10px] text-slate-400 font-normal normal-case tracking-normal">
@@ -468,6 +474,7 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
                     )}
                   </label>
                   <input
+                    id="password"
                     required={!editingUser}
                     type="password"
                     value={form.password}
@@ -484,10 +491,11 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
+                    <label htmlFor="role" className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
                       Rank (Role)
                     </label>
                     <select
+                      id="role"
                       value={form.role}
                       onChange={(e) => setForm({ ...form, role: e.target.value })}
                       className={`w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-inner outline-none transition-all appearance-none ${
@@ -500,10 +508,11 @@ export default function AdminDashboard({ initialUsers, currentUser }: AdminDashb
                   </div>
 
                   <div>
-                    <label className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
+                    <label htmlFor="active" className="text-[10px] uppercase tracking-widest font-bold text-slate-600 block mb-1.5">
                       Status
                     </label>
                     <select
+                      id="active"
                       value={form.active ? "true" : "false"}
                       onChange={(e) =>
                         setForm({ ...form, active: e.target.value === "true" })

@@ -75,7 +75,7 @@ export default function LoginPage() {
             <h1 className="mt-4 font-display text-[28px] font-extrabold tracking-tight text-white sm:text-3xl">
               Identity Verification
             </h1>
-            <p className="mt-2 text-[13px] text-white/45 max-w-sm">
+            <p className="mt-2 text-[13px] text-white/70 max-w-sm">
               Enter secure credentials to establish your authorized workspace
               session.
             </p>
@@ -90,39 +90,43 @@ export default function LoginPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="block font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
+                <label htmlFor="email" className="block font-mono text-[10px] uppercase tracking-[0.18em] text-white/70">
                   Registry Key (Email)
                 </label>
                 <input
+                  id="email"
                   type="email"
                   placeholder="key-identifier@theapecgroup.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="mt-2 block w-full rounded-lg border border-white/10 bg-black/60 px-3.5 py-2.5 text-[13.5px] text-white placeholder:text-white/20 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all duration-200"
+                  className="mt-2 block w-full rounded-lg border border-white/10 bg-black/60 px-3.5 py-2.5 text-[13.5px] text-white placeholder:text-white/50 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all duration-200"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
+                <label htmlFor="password" className="block font-mono text-[10px] uppercase tracking-[0.18em] text-white/70">
                   Passcode
                 </label>
                 <input
+                  id="password"
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="mt-2 block w-full rounded-lg border border-white/10 bg-black/60 px-3.5 py-2.5 text-[13.5px] text-white placeholder:text-white/20 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all duration-200"
+                  className="mt-2 block w-full rounded-lg border border-white/10 bg-black/60 px-3.5 py-2.5 text-[13.5px] text-white placeholder:text-white/50 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all duration-200"
                 />
               </div>
             </div>
 
-            {error && (
-              <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.15em] text-red-400">
-                ⚠ {error}
-              </p>
-            )}
+            <div aria-live="polite" className="mt-4 min-h-[20px]">
+              {error && (
+                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-red-400">
+                  ⚠ {error}
+                </p>
+              )}
+            </div>
 
             <button
               type="submit"
@@ -137,7 +141,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
+            <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/50">
               APEC GROUP SECURE TERMINAL · invite only
             </p>
           </div>
