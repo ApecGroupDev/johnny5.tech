@@ -48,8 +48,8 @@
 | **RESOLVED** | Security | (FIXED) `dangerouslySetInnerHTML` in hero (XSS vector) | [hero.tsx:663](file:///c:/Projects/johnny5.tech/app/components/hero.tsx#L663) | Passed CSS string directly as children to `<style>` |
 | **HIGH** | Legal | (FIXED) No Privacy Policy or Terms of Service | Site-wide | Create `/privacy` and `/terms` pages |
 | **HIGH** | Legal | (FIXED) No cookie/analytics consent disclosure | Site-wide | Even without analytics, the JWT session cookie needs disclosure |
-| **MEDIUM** | Security | Admin API: no input sanitization on user creation | [route.ts:48](file:///c:/Projects/johnny5.tech/app/api/admin/users/route.ts#L48) | Validate and sanitize `name`, email, `role`, `allowedApps` with zod |
-| **MEDIUM** | Security | Password policy too weak — only `minLength={6}` on client | [admin-dashboard.tsx:481](file:///c:/Projects/johnny5.tech/app/admin/admin-dashboard.tsx#L481) | Enforce min 8 chars + complexity server-side |
+| **RESOLVED** | Security | (FIXED) Admin API: no input sanitization on user creation | [route.ts:48](file:///c:/Projects/johnny5.tech/app/api/admin/users/route.ts#L48) | Validated and sanitized with Zod schemas |
+| **RESOLVED** | Security | (FIXED) Password policy too weak — only `minLength={6}` on client | [admin-dashboard.tsx:481](file:///c:/Projects/johnny5.tech/app/admin/admin-dashboard.tsx#L481) | Enforced min 8 chars + complexity server-side via Zod |
 | **MEDIUM** | SEO | (WONTFIX) No `robots.txt` file | Missing entirely | Create `app/robots.ts` using Next.js metadata API |
 | **MEDIUM** | SEO | (WONTFIX) No `sitemap.xml` | Missing entirely | Create `app/sitemap.ts` using Next.js metadata API |
 | **MEDIUM** | SEO | (WONTFIX) OG image uses relative URL (`/logos/apec-logo.webp`) | [layout.tsx:31](file:///c:/Projects/johnny5.tech/app/layout.tsx#L31) | Use absolute URL: `https://johnny5.tech/logos/apec-logo.webp` |

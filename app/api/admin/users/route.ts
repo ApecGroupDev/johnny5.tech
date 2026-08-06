@@ -4,6 +4,33 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { rateLimit } from "@/lib/rate-limit";
+import { z } from "zod";
+
+const passwordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+  .regex(/[0-9]/, "Password must contain at least one number")
+  .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character");
+
+const userCreateSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: passwordSchema,
+  name: z.string().min(1, "Name is required").max(100),
+  role: z.enum(["admin", "user"]).optional().default("user"),
+  active: z.boolean().optional().default(true),
+  allowedApps: z.string().optional().default(""),
+});
+
+const userUpdateSchema = z.object({
+  id: z.string(),
+  email: z.string().email("Invalid email address").optional(),
+  password: z.union([passwordSchema, z.literal("")]).optional(),
+  name: z.string().min(1, "Name is required").max(100).optional(),
+  role: z.enum(["admin", "user"]).optional(),
+  active: z.boolean().optional(),
+  allowedApps: z.string().optional(),
+});
 
 function validateCSRF(req: Request) {
   const origin = req.headers.get("origin");
@@ -86,15 +113,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { email, password, name, role, active, allowedApps } = await req.json();
-  if (!email || !password) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+  let parsed;
+  try {
+    parsed = userCreateSchema.parse(await req.json());
+  } catch (err: any) {
+    return NextResponse.json({ error: err.errors[0].message }, { status: 400 });
+  }
+
+  const { email, password, name, role, active, allowedApps } = parsed;
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) return NextResponse.json({ error: "Email already exists" }, { status: 400 });
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
-    data: { email: email.toLowerCase(), password: hashedPassword, name, role: role || "user", active: active !== false, allowedApps: allowedApps || "" },
+    data: { email: email.toLowerCase(), password: hashedPassword, name, role, active, allowedApps },
     select: { id: true, name: true, email: true, role: true, active: true, allowedApps: true },
   });
 
@@ -111,8 +144,14 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id, email, password, name, role, active, allowedApps } = await req.json();
-  if (!id) return NextResponse.json({ error: "Missing ID" }, { status: 400 });
+  let parsed;
+  try {
+    parsed = userUpdateSchema.parse(await req.json());
+  } catch (err: any) {
+    return NextResponse.json({ error: err.errors[0].message }, { status: 400 });
+  }
+
+  const { id, email, password, name, role, active, allowedApps } = parsed;
 
   if (email) {
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -128,7 +167,7 @@ export async function PATCH(req: Request) {
   if (active !== undefined) dataToUpdate.active = active;
   if (allowedApps !== undefined) dataToUpdate.allowedApps = allowedApps;
   
-  if (password) {
+  if (password && password !== "") {
     dataToUpdate.password = await bcrypt.hash(password, 10);
   }
 
