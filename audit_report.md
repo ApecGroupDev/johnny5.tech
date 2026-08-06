@@ -63,11 +63,11 @@
 | **RESOLVED** | Accessibility | (FIXED) Error messages not live-announced to screen readers | Login, Admin forms | Wrapped errors in `aria-live="polite"` regions |
 | **RESOLVED** | Performance | (FIXED) `StarsBackground` canvas instantiated 4+ times simultaneously | Hero, AppsSection, Login, Admin | Added IntersectionObserver + Page Visibility to pause when off-screen |
 | **RESOLVED** | Performance | (FIXED) `BackgroundEffects` runs a full-screen RAF loop permanently | [background-effects.tsx](file:///c:/Projects/johnny5.tech/app/components/background-effects.tsx) | Added Page Visibility API + IntersectionObserver |
-| **MEDIUM** | Performance | Hero component is 851 lines / 32KB — monolithic | [hero.tsx](file:///c:/Projects/johnny5.tech/app/components/hero.tsx) | Break into `GlobeCanvas`, `ConnectorCanvas`, `EcosystemNode`, `Hero` subfiles |
+| **RESOLVED** | Performance | (FIXED) Hero component is 851 lines / 32KB — monolithic | [hero.tsx](file:///c:/Projects/johnny5.tech/app/components/hero.tsx) | Extracted `GlobeCanvas`, `ConnectorCanvas`, `EcosystemNode` into `app/components/hero/` |
 | **MEDIUM** | Performance | Logo images served as PNG (33KB, 10KB, 6KB) instead of WebP | [public/logos/](file:///c:/Projects/johnny5.tech/public/logos) | Convert to WebP (already have `apec-logo.webp` at 11KB vs PNG at 33KB) |
 | **RESOLVED** | Code | (FIXED) Command palette has stale/broken app routes | [command-palette.tsx:24-26](file:///c:/Projects/johnny5.tech/app/components/command-palette.tsx#L24-L26) | Fixed routes and IDs |
-| **MEDIUM** | Code | Duplicated `Info` component defined locally in 4 app pages | pulse-360, rain-risk, ruby-queen, site-360 | Extract to shared component |
-| **MEDIUM** | Code | Duplicated page layout across 4 app pages | pulse-360, rain-risk, ruby-queen, site-360 | Use `AppDetailLayout` pattern (canopy-configurator already does this) |
+| **RESOLVED** | Code | (FIXED) Duplicated `Info` component defined locally in 4 app pages | pulse-360, rain-risk, ruby-queen, site-360 | Deduped by migrating to shared AppDetailLayout |
+| **RESOLVED** | Code | (FIXED) Duplicated page layout across 4 app pages | pulse-360, rain-risk, ruby-queen, site-360 | Migrated all pages to use the `AppDetailLayout` |
 | **LOW** | Performance | `rain-risk-dashboard.html` (39KB) served as static HTML in public | [public/rain-risk-dashboard.html](file:///c:/Projects/johnny5.tech/public/rain-risk-dashboard.html) | Consider minification or moving to external hosting like other apps |
 | **LOW** | Performance | Dual PNG+WebP logos kept in public — PNG versions unused by code | Logo files | Remove unused PNG duplicates |
 | **RESOLVED** | Code | (FIXED) `typewriter.tsx` component is never imported/used | [typewriter.tsx](file:///c:/Projects/johnny5.tech/app/components/motion/typewriter.tsx) | Removed file |

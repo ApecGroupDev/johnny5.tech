@@ -8,10 +8,12 @@ export function AppDetailLayout({
   app,
   embedUrl,
   locked = false,
+  children,
 }: {
   app: AppEntry;
   embedUrl: string;
   locked?: boolean;
+  children?: React.ReactNode;
 }) {
   const tone =
     app.status === "Live" ? "live" : app.status === "WIP" ? "wip" : "private";
@@ -105,6 +107,8 @@ export function AppDetailLayout({
           <Info label="Category" value={app.category} />
           <Info label="Kind" value={app.kind} />
         </div>
+
+        {children}
 
         <div className="h-24" />
       </Container>
