@@ -5,6 +5,30 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { rateLimit } from "@/lib/rate-limit";
 
+function validateCSRF(req: Request) {
+  const origin = req.headers.get("origin");
+  const host = req.headers.get("host") || req.headers.get("x-forwarded-host");
+  const referer = req.headers.get("referer");
+
+  if (origin && host) {
+    try {
+      return new URL(origin).host === host;
+    } catch {
+      return false;
+    }
+  }
+  
+  if (referer && host) {
+    try {
+      return new URL(referer).host === host;
+    } catch {
+      return false;
+    }
+  }
+
+  return false;
+}
+
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "admin") {
@@ -19,6 +43,10 @@ export async function GET() {
 }
 
 export async function DELETE(req: Request) {
+  if (!validateCSRF(req)) {
+    return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
+  }
+
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -41,6 +69,10 @@ export async function DELETE(req: Request) {
 }
 
 export async function POST(req: Request) {
+  if (!validateCSRF(req)) {
+    return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
+  }
+
   const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
   
   // Rate limit admin user creation: 10 requests per 1 minute
@@ -70,6 +102,10 @@ export async function POST(req: Request) {
 }
 
 export async function PATCH(req: Request) {
+  if (!validateCSRF(req)) {
+    return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
+  }
+
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
