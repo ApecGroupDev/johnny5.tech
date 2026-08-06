@@ -704,9 +704,7 @@ export function Hero() {
           "radial-gradient(ellipse 80% 55% at 68% 50%, rgba(99,102,241,0.13) 0%, rgba(6,182,212,0.06) 42%, transparent 72%), radial-gradient(ellipse 45% 45% at 12% 55%, rgba(234,179,8,0.05) 0%, transparent 65%), #000",
       }}
     >
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
+      <style>{`
         @keyframes hero-float-1 {
           0%, 100% { transform: translate(calc(var(--mx, 0) * -16px), calc(var(--my, 0) * -16px + 0px)); }
           50% { transform: translate(calc(var(--mx, 0) * -16px), calc(var(--my, 0) * -16px - 8px)); }
@@ -723,9 +721,7 @@ export function Hero() {
           0%, 100% { transform: translate(calc(var(--mx, 0) * 22px), calc(var(--my, 0) * 22px + 0px)); }
           50% { transform: translate(calc(var(--mx, 0) * 22px), calc(var(--my, 0) * 22px - 6px)); }
         }
-      `,
-        }}
-      />
+      `}</style>
 
       {/* Layer 1: background twinkling stars */}
       <StarsBackground />

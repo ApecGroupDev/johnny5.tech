@@ -45,7 +45,7 @@
 | **RESOLVED** | Security | (FIXED) No CSRF protection on admin PATCH/DELETE/POST | [route.ts](file:///c:/Projects/johnny5.tech/app/api/admin/users/route.ts) | Added origin/referer validation |
 | **HIGH** | Security | (FIXED) No HTTP security headers | [next.config.ts](file:///c:/Projects/johnny5.tech/next.config.ts) | Add `headers()` config with CSP, HSTS, X-Frame-Options, Referrer-Policy |
 | **HIGH** | Security | (FIXED) iframes unsandboxed — no `sandbox` attribute | Multiple app pages | Add `sandbox="allow-scripts allow-same-origin"` to all iframes |
-| **HIGH** | Security | `dangerouslySetInnerHTML` in hero (XSS vector) | [hero.tsx:663](file:///c:/Projects/johnny5.tech/app/components/hero.tsx#L663) | Use CSS modules or a `<style>` component instead |
+| **RESOLVED** | Security | (FIXED) `dangerouslySetInnerHTML` in hero (XSS vector) | [hero.tsx:663](file:///c:/Projects/johnny5.tech/app/components/hero.tsx#L663) | Passed CSS string directly as children to `<style>` |
 | **HIGH** | Legal | (FIXED) No Privacy Policy or Terms of Service | Site-wide | Create `/privacy` and `/terms` pages |
 | **HIGH** | Legal | (FIXED) No cookie/analytics consent disclosure | Site-wide | Even without analytics, the JWT session cookie needs disclosure |
 | **MEDIUM** | Security | Admin API: no input sanitization on user creation | [route.ts:48](file:///c:/Projects/johnny5.tech/app/api/admin/users/route.ts#L48) | Validate and sanitize `name`, email, `role`, `allowedApps` with zod |
