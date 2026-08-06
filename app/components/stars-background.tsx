@@ -147,17 +147,40 @@ export function StarsBackground() {
         ctx.restore();
       }
 
-      raf = requestAnimationFrame(draw);
+      if (document.visibilityState === "visible" && isIntersecting) {
+        raf = requestAnimationFrame(draw);
+      } else {
+        raf = 0;
+      }
     }
+
+    let isIntersecting = true;
+    
+    function checkState() {
+      if (document.visibilityState === "visible" && isIntersecting) {
+        if (!raf) draw();
+      }
+    }
+
+    const io = new IntersectionObserver(([entry]) => {
+      isIntersecting = entry.isIntersecting;
+      checkState();
+    });
+    io.observe(canvas);
+
+    const handleVis = () => checkState();
+    document.addEventListener("visibilitychange", handleVis);
 
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
     resize();
-    draw();
+    checkState();
 
     return () => {
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
       ro.disconnect();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", handleVis);
     };
   }, []);
 

@@ -42,7 +42,7 @@
 | **RESOLVED** | Security | `NEXTAUTH_SECRET` is a default placeholder | [.env:5](file:///c:/Projects/johnny5.tech/.env#L5) | Secret has been updated |
 | **RESOLVED** | Security | `proxy.ts` is dead code (FALSE POSITIVE) | [proxy.ts](file:///c:/Projects/johnny5.tech/proxy.ts) | N/A - Next.js uses `proxy.ts` |
 | **RESOLVED** | Security | No rate limiting on login or admin API | [route.ts](file:///c:/Projects/johnny5.tech/app/api/auth/%5B...nextauth%5D/route.ts) | In-memory IP rate limiter added |
-| **HIGH** | Security | No CSRF protection on admin PATCH/DELETE/POST | [route.ts](file:///c:/Projects/johnny5.tech/app/api/admin/users/route.ts) | Validate origin/referer header or use CSRF tokens |
+| **RESOLVED** | Security | (FIXED) No CSRF protection on admin PATCH/DELETE/POST | [route.ts](file:///c:/Projects/johnny5.tech/app/api/admin/users/route.ts) | Added origin/referer validation |
 | **HIGH** | Security | (FIXED) No HTTP security headers | [next.config.ts](file:///c:/Projects/johnny5.tech/next.config.ts) | Add `headers()` config with CSP, HSTS, X-Frame-Options, Referrer-Policy |
 | **HIGH** | Security | (FIXED) iframes unsandboxed — no `sandbox` attribute | Multiple app pages | Add `sandbox="allow-scripts allow-same-origin"` to all iframes |
 | **HIGH** | Security | `dangerouslySetInnerHTML` in hero (XSS vector) | [hero.tsx:663](file:///c:/Projects/johnny5.tech/app/components/hero.tsx#L663) | Use CSS modules or a `<style>` component instead |
@@ -61,16 +61,16 @@
 | **MEDIUM** | Accessibility | Color contrast: `text-white/35`, `text-white/20` used extensively | Login, Apps sections | Many text elements fall below WCAG 2.1 AA 4.5:1 ratio |
 | **MEDIUM** | Accessibility | No `aria-label` on icon-only delete/edit buttons in admin table | [admin-dashboard.tsx:348-363](file:///c:/Projects/johnny5.tech/app/admin/admin-dashboard.tsx#L348-L363) | Add descriptive `aria-label` attributes |
 | **MEDIUM** | Accessibility | Error messages not live-announced to screen readers | Login, Admin forms | Wrap errors in `aria-live="polite"` region |
-| **MEDIUM** | Performance | `StarsBackground` canvas instantiated 4+ times simultaneously | Hero, AppsSection, Login, Admin | Reuse a single global instance or use IntersectionObserver to pause off-screen canvases |
-| **MEDIUM** | Performance | `BackgroundEffects` runs a full-screen RAF loop permanently | [background-effects.tsx](file:///c:/Projects/johnny5.tech/app/components/background-effects.tsx) | Add visibility-based pause (Page Visibility API) |
+| **RESOLVED** | Performance | (FIXED) `StarsBackground` canvas instantiated 4+ times simultaneously | Hero, AppsSection, Login, Admin | Added IntersectionObserver + Page Visibility to pause when off-screen |
+| **RESOLVED** | Performance | (FIXED) `BackgroundEffects` runs a full-screen RAF loop permanently | [background-effects.tsx](file:///c:/Projects/johnny5.tech/app/components/background-effects.tsx) | Added Page Visibility API + IntersectionObserver |
 | **MEDIUM** | Performance | Hero component is 851 lines / 32KB — monolithic | [hero.tsx](file:///c:/Projects/johnny5.tech/app/components/hero.tsx) | Break into `GlobeCanvas`, `ConnectorCanvas`, `EcosystemNode`, `Hero` subfiles |
 | **MEDIUM** | Performance | Logo images served as PNG (33KB, 10KB, 6KB) instead of WebP | [public/logos/](file:///c:/Projects/johnny5.tech/public/logos) | Convert to WebP (already have `apec-logo.webp` at 11KB vs PNG at 33KB) |
-| **MEDIUM** | Code | Command palette has stale/broken app routes | [command-palette.tsx:24-26](file:///c:/Projects/johnny5.tech/app/components/command-palette.tsx#L24-L26) | Fix: `pulse-360` → `/apps/pulse-360` (not `/apps/project-updates`), `site360` → `/apps/site-360` (not `/apps/site360`) |
+| **RESOLVED** | Code | (FIXED) Command palette has stale/broken app routes | [command-palette.tsx:24-26](file:///c:/Projects/johnny5.tech/app/components/command-palette.tsx#L24-L26) | Fixed routes and IDs |
 | **MEDIUM** | Code | Duplicated `Info` component defined locally in 4 app pages | pulse-360, rain-risk, ruby-queen, site-360 | Extract to shared component |
 | **MEDIUM** | Code | Duplicated page layout across 4 app pages | pulse-360, rain-risk, ruby-queen, site-360 | Use `AppDetailLayout` pattern (canopy-configurator already does this) |
 | **LOW** | Performance | `rain-risk-dashboard.html` (39KB) served as static HTML in public | [public/rain-risk-dashboard.html](file:///c:/Projects/johnny5.tech/public/rain-risk-dashboard.html) | Consider minification or moving to external hosting like other apps |
 | **LOW** | Performance | Dual PNG+WebP logos kept in public — PNG versions unused by code | Logo files | Remove unused PNG duplicates |
-| **LOW** | Code | `typewriter.tsx` component is never imported/used | [typewriter.tsx](file:///c:/Projects/johnny5.tech/app/components/motion/typewriter.tsx) | Dead code — remove or use |
+| **RESOLVED** | Code | (FIXED) `typewriter.tsx` component is never imported/used | [typewriter.tsx](file:///c:/Projects/johnny5.tech/app/components/motion/typewriter.tsx) | Removed file |
 | **LOW** | Code | `prisma.config.ts` defines migrations path but no migrations exist | [prisma.config.ts](file:///c:/Projects/johnny5.tech/prisma.config.ts) | Using `db push` is fine for now, but consider migrations for production |
 | **LOW** | Code | `sync-users.ts` hardcodes reference to "alihusain.me" database | [sync-users.ts:3](file:///c:/Projects/johnny5.tech/prisma/sync-users.ts#L3) | Document or remove if no longer needed |
 | **LOW** | SEO | (WONTFIX) Home page has no meta description beyond layout default | [page.tsx](file:///c:/Projects/johnny5.tech/app/page.tsx) | Export page-level `metadata` with richer description |
@@ -145,7 +145,7 @@ The login flow goes directly through NextAuth's `CredentialsProvider.authorize()
 
 ### 3. Performance & Core Web Vitals
 
-#### Multiple Simultaneous Canvas Animations
+#### (FIXED) Multiple Simultaneous Canvas Animations
 
 The site runs **at minimum 2 full-screen canvas animations** on every page:
 1. **`BackgroundEffects`** — fixed, full-viewport canvas drawing 440 objects per frame (280 distant stars + 160 warp streaks)
@@ -190,7 +190,7 @@ The hero renders a large canvas + text content. The canvas has no fallback and d
 - App sub-pages use bare `title` strings without the site name suffix
 - No canonical URLs set
 
-#### Command Palette Routes Are Wrong (Would Be 404s)
+#### (FIXED) Command Palette Routes Are Wrong (Would Be 404s)
 In [command-palette.tsx](file:///c:/Projects/johnny5.tech/app/components/command-palette.tsx#L24-L26):
 ```ts
 { id: "pulse-360", label: "PULSE 360", href: "/apps/project-updates" },  // ❌ should be /apps/pulse-360
@@ -248,8 +248,8 @@ Even `text-muted` (defined as `#a1a1aa`) on black (`#000`) gives about **5.5:1**
 | Item | Location | Issue |
 |------|----------|-------|
 | `proxy.ts` | Project root | Should be `middleware.ts` or deleted |
-| `typewriter.tsx` | `components/motion/` | Imported nowhere — dead code |
-| `app-previews.tsx` exports (`CadPreview`, `RainPreview`, etc.) | `_components/` | These preview components are defined but rendered nowhere in the current card implementation — they're exported but unused |
+| `typewriter.tsx` | `components/motion/` | (FIXED) Removed dead code |
+| `app-previews.tsx` exports (`CadPreview`, `RainPreview`, etc.) | `_components/` | (FIXED) Removed unused preview exports |
 
 #### Duplicated Patterns
 The `Info` helper component is **defined locally 4 times** (identically) in:
@@ -292,7 +292,7 @@ While the content is a static string (not user input), this is a code smell. Use
 
 2. **Regenerate `NEXTAUTH_SECRET`** — run `openssl rand -base64 32` and update `.env`. One line change.
 
-3. **Fix command palette routes** — change two `href` strings in [command-palette.tsx](file:///c:/Projects/johnny5.tech/app/components/command-palette.tsx#L24-L26):
+3. **(FIXED) Fix command palette routes** — changed two `href` strings in [command-palette.tsx](file:///c:/Projects/johnny5.tech/app/components/command-palette.tsx#L24-L26):
    ```diff
    -{ id: "pulse-360", ..., href: "/apps/project-updates" },
    +{ id: "pulse-360", ..., href: "/apps/pulse-360" },

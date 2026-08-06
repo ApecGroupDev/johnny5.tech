@@ -308,15 +308,38 @@ function GlobeCanvas() {
       ctx.fillText("SHAPING THE FUTURE", cx, cy + r * 0.32);
       ctx.restore();
 
-      raf = requestAnimationFrame(draw);
+      if (document.visibilityState === "visible" && isIntersecting) {
+        raf = requestAnimationFrame(draw);
+      } else {
+        raf = 0;
+      }
     }
+    
+    let isIntersecting = true;
+    function checkState() {
+      if (document.visibilityState === "visible" && isIntersecting) {
+        if (!raf) draw();
+      }
+    }
+
+    const io = new IntersectionObserver(([entry]) => {
+      isIntersecting = entry.isIntersecting;
+      checkState();
+    });
+    io.observe(canvas);
+
+    const handleVis = () => checkState();
+    document.addEventListener("visibilitychange", handleVis);
+
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
     resize();
-    draw();
+    checkState();
     return () => {
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
       ro.disconnect();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", handleVis);
     };
   }, []);
   return (
@@ -497,16 +520,38 @@ function ConnectorCanvas({
         }
       });
 
-      raf = requestAnimationFrame(draw);
+      if (document.visibilityState === "visible" && isIntersecting) {
+        raf = requestAnimationFrame(draw);
+      } else {
+        raf = 0;
+      }
     }
+
+    let isIntersecting = true;
+    function checkState() {
+      if (document.visibilityState === "visible" && isIntersecting) {
+        if (!raf) draw();
+      }
+    }
+
+    const io = new IntersectionObserver(([entry]) => {
+      isIntersecting = entry.isIntersecting;
+      checkState();
+    });
+    io.observe(canvas);
+
+    const handleVis = () => checkState();
+    document.addEventListener("visibilitychange", handleVis);
 
     const ro = new ResizeObserver(resize);
     if (containerRef.current) ro.observe(containerRef.current);
     resize();
-    draw();
+    checkState();
     return () => {
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
       ro.disconnect();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", handleVis);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
