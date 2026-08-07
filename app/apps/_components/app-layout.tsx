@@ -93,7 +93,7 @@ export function AppDetailLayout({
           {locked ? (
             <LockedState />
           ) : (
-            <iframe sandbox="allow-scripts allow-same-origin"
+            <iframe sandbox="allow-scripts allow-same-origin allow-downloads allow-popups allow-forms"
               src={embedUrl}
               title={app.title}
               className="h-[78vh] min-h-[640px] w-full bg-bg"
