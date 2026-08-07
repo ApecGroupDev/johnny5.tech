@@ -7,6 +7,7 @@ import CommandPalette from "./components/command-palette";
 import { Providers } from "./providers";
 import { BackgroundEffects } from "./components/background-effects";
 import { CookieConsent } from "./components/cookie-consent";
+import { Analytics } from "@vercel/analytics/next";
 const sans = Geist({
   variable: "--font-sans-ui",
   subsets: ["latin"],
@@ -62,6 +63,7 @@ export default function RootLayout({
           <CommandPalette />
           <CookieConsent />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
